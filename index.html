@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16123A">
+<title>Kártyák</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap&subset=latin,latin-ext" rel="stylesheet">
+<style>
+/* ─── tokens ─────────────────────────────────────────────── */
+:root{
+  --ink:#16123A;
+  --ink-lift:#221C55;
+  --paper:#F6ECDD;
+  --hot:#FF3E5B;
+  --gold:#F0B429;
+  --dim:#8B84C0;
+  --disc: 78vw;
+  --font: "Bricolage Grotesque", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+@media (min-height:800px){ :root{ --disc: 72vw; } }
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:var(--font);
+  font-optical-sizing:auto;
+  overflow:hidden;
+  overscroll-behavior:none;
+  display:flex;
+  flex-direction:column;
+  padding:max(16px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));
+}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+[hidden]{display:none !important}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:4px}
+
+/* ─── shell ──────────────────────────────────────────────── */
+header{
+  display:flex;align-items:baseline;justify-content:space-between;
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--dim);min-height:20px;flex:0 0 auto;
+}
+#out{color:var(--dim);font-weight:600}
+#out[data-live="1"]{color:var(--hot)}
+
+main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:0}
+.view{display:none;width:100%;flex-direction:column;align-items:center;gap:26px}
+.view.on{display:flex}
+
+footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:14px}
+
+/* ─── the disc: signature element ────────────────────────── */
+.deck{position:relative;width:var(--disc);height:var(--disc);max-width:340px;max-height:340px}
+.ring{position:absolute;inset:0;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:3;stroke-linecap:round}
+.ring .track{stroke:var(--ink-lift)}
+.ring .fill{stroke:var(--hot);stroke-dasharray:0 999;transition:stroke-dasharray .9s linear}
+
+.vinyl{
+  position:absolute;inset:14px;border-radius:50%;
+  background:
+    repeating-radial-gradient(circle at 50% 50%, #0d0b22 0 1px, #14112c 1px 3px),
+    radial-gradient(circle at 34% 28%, #2b2555 0%, #0b0919 62%);
+  box-shadow:0 18px 44px rgba(0,0,0,.55), inset 0 0 0 1px rgba(246,236,221,.07);
+  animation:spin 3.4s linear infinite;
+  animation-play-state:paused;
+  display:grid;place-items:center;
+}
+.vinyl[data-spin="1"]{animation-play-state:running}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){ .vinyl{animation:none} }
+
+/* the blank label — the whole point of the screen */
+.label{
+  width:47%;aspect-ratio:1;border-radius:50%;
+  background:var(--paper);
+  display:grid;place-items:center;text-align:center;padding:6%;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.14);
+  position:relative;
+}
+.label::after{
+  content:"";position:absolute;width:7%;aspect-ratio:1;border-radius:50%;
+  background:var(--ink);box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);
+}
+.blank{color:#B9A98F;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600}
+.printed{display:none;color:var(--ink);line-height:1.15;animation:print .5s ease-out both}
+.label[data-revealed="1"] .blank{display:none}
+.label[data-revealed="1"] .printed{display:block}
+.label[data-revealed="1"]::after{display:none}
+@keyframes print{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+.printed .yr{font-size:clamp(30px,11vw,46px);font-weight:800;letter-spacing:-.03em;display:block}
+.printed .ti{font-size:clamp(10px,3.3vw,13px);font-weight:600;display:block;margin-top:2px;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.printed .ar{font-size:clamp(9px,3vw,12px);opacity:.62;display:block;margin-top:2px;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+
+/* ─── controls ───────────────────────────────────────────── */
+.big{
+  width:78px;height:78px;border-radius:50%;
+  background:var(--hot);color:#fff;
+  display:grid;place-items:center;
+  box-shadow:0 10px 26px rgba(255,62,91,.34);
+  transition:transform .12s ease;
+}
+.big:active{transform:scale(.93)}
+.big svg{width:30px;height:30px;fill:currentColor}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.pill{
+  padding:13px 22px;border-radius:999px;
+  border:1.5px solid var(--ink-lift);color:var(--paper);
+  font-size:15px;font-weight:600;transition:border-color .15s, background .15s;
+}
+.pill:active{background:var(--ink-lift)}
+.pill.key{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.pill.ghost{border-color:transparent;color:var(--dim);font-weight:400;font-size:14px}
+
+/* ─── scanner ────────────────────────────────────────────── */
+.scope{
+  position:relative;width:min(84vw,340px);aspect-ratio:1;
+  border-radius:20px;overflow:hidden;background:#0b0919;
+  box-shadow:inset 0 0 0 1.5px var(--ink-lift);
+}
+.scope video{width:100%;height:100%;object-fit:cover;display:block}
+.crop{position:absolute;inset:11%;border-radius:8px;
+  box-shadow:0 0 0 2px var(--hot), 0 0 0 999px rgba(22,18,58,.55)}
+
+/* ─── copy ───────────────────────────────────────────────── */
+h1{font-size:clamp(26px,7.6vw,34px);font-weight:800;letter-spacing:-.035em;line-height:1.05;text-align:center}
+.sub{color:var(--dim);font-size:15px;line-height:1.5;text-align:center;max-width:30ch}
+.note{color:var(--dim);font-size:13px;line-height:1.5;text-align:center;max-width:34ch}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
+  background:var(--ink-lift);padding:3px 6px;border-radius:5px;word-break:break-all;color:var(--paper)}
+.err{color:var(--hot);font-size:14px;text-align:center;line-height:1.5;max-width:34ch;min-height:1.2em}
+.devs{display:flex;flex-direction:column;gap:8px;width:100%;max-width:320px}
+.dev{padding:14px 16px;border-radius:12px;background:var(--ink-lift);text-align:left;font-size:15px;font-weight:600}
+</style>
+</head>
+<body>
+
+<header>
+  <span>Kártyák</span>
+  <span id="out">—</span>
+</header>
+
+<main>
+
+  <!-- 1. belépés / beállítás -->
+  <section class="view on" id="v-auth">
+    <h1>Egy kártya, egy dal,<br>semmi más.</h1>
+    <p class="sub">A telefon nem mutatja meg a címet, amíg meg nem nyomod a Felfedést.</p>
+    <p class="err" id="auth-err"></p>
+  </section>
+
+  <!-- 2. szkennelés -->
+  <section class="view" id="v-scan">
+    <div class="scope"><video id="cam" playsinline muted></video><div class="crop"></div></div>
+    <p class="sub">Tartsd a kártya QR-kódját a keretbe.</p>
+    <p class="err" id="scan-err"></p>
+  </section>
+
+  <!-- 3. lejátszás -->
+  <section class="view" id="v-play">
+    <div class="deck">
+      <svg class="ring" viewBox="0 0 100 100" aria-hidden="true">
+        <circle class="track" cx="50" cy="50" r="48.5"></circle>
+        <circle class="fill" id="prog" cx="50" cy="50" r="48.5"></circle>
+      </svg>
+      <div class="vinyl" id="vinyl">
+        <div class="label" id="label">
+          <span class="blank">nincs felirat</span>
+          <span class="printed"><b class="yr" id="r-yr"></b><b class="ti" id="r-ti"></b><b class="ar" id="r-ar"></b></span>
+        </div>
+      </div>
+    </div>
+    <p class="err" id="play-err"></p>
+  </section>
+
+  <!-- 4. eszközválasztó (tartalék út) -->
+  <section class="view" id="v-dev">
+    <h1>Máshol szólaljon meg</h1>
+    <p class="sub">Ez a böngésző nem tud lejátszani. Indítsd el a Spotify appot, majd válaszd ki itt.</p>
+    <div class="devs" id="dev-list"></div>
+    <p class="err" id="dev-err"></p>
+  </section>
+
+</main>
+
+<footer>
+  <div id="f-auth">
+    <button class="pill key" id="b-login">Belépés Spotifyval</button>
+  </div>
+
+  <div id="f-scan" hidden>
+    <button class="pill ghost" id="b-cancel">Mégse</button>
+  </div>
+
+  <div id="f-play" hidden style="display:flex;flex-direction:column;align-items:center;gap:16px">
+    <button class="big" id="b-toggle" aria-label="Lejátszás">
+      <svg id="ico" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="row">
+      <button class="pill" id="b-reveal">Felfedés</button>
+      <button class="pill key" id="b-next">Következő kártya</button>
+    </div>
+  </div>
+
+  <div id="f-dev" hidden>
+    <button class="pill" id="b-redev">Lista frissítése</button>
+  </div>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   BEÁLLÍTÁS — csak ezt az egy sort kell kitöltened.
+   Developer Dashboard → az appod → Client ID
+   ══════════════════════════════════════════════════════════ */
+const CLIENT_ID = "";
+
+/* A Dashboardon Redirect URI-nak pontosan ezt vedd fel: */
+const REDIRECT_URI = location.origin + location.pathname;
+
+const SCOPES = [
+  "streaming",
+  "user-read-email",
+  "user-read-private",
+  "user-modify-playback-state",
+  "user-read-playback-state"
+].join(" ");
+
+/* ── állapot ──────────────────────────────────────────────── */
+let deviceId = null;      // ahol szól: SDK-lejátszó vagy távoli eszköz
+let usingSdk = false;
+let player = null;
+let trackId = null;
+let playing = false;
+let poller = null;
+let wakeLock = null;
+
+const $ = id => document.getElementById(id);
+const views = ["auth","scan","play","dev"];
+
+function show(name){
+  views.forEach(v => {
+    $("v-"+v).classList.toggle("on", v === name);
+    $("f-"+v).hidden = v !== name;
+  });
+}
+function status(text, live){
+  $("out").textContent = text;
+  $("out").dataset.live = live ? "1" : "0";
+}
+
+/* ══════════ 1. PKCE bejelentkezés ═════════════════════════ */
+const rand = n => {
+  const a = new Uint8Array(n); crypto.getRandomValues(a);
+  return Array.from(a, b => ("0"+b.toString(16)).slice(-2)).join("");
+};
+const b64url = buf => btoa(String.fromCharCode(...new Uint8Array(buf)))
+  .replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+
+async function login(){
+  const verifier = rand(48);
+  sessionStorage.setItem("pkce", verifier);
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier));
+  const q = new URLSearchParams({
+    client_id: CLIENT_ID, response_type: "code", redirect_uri: REDIRECT_URI,
+    code_challenge_method: "S256", code_challenge: b64url(digest), scope: SCOPES
+  });
+  location.href = "https://accounts.spotify.com/authorize?" + q;
+}
+
+async function tokenCall(body){
+  const r = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams(body)
+  });
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error_description || j.error || "token hiba");
+  const old = JSON.parse(localStorage.getItem("tok") || "null");
+  localStorage.setItem("tok", JSON.stringify({
+    access_token: j.access_token,
+    refresh_token: j.refresh_token || (old && old.refresh_token),
+    expires_at: Date.now() + j.expires_in * 1000
+  }));
+  return j.access_token;
+}
+
+async function getToken(){
+  const t = JSON.parse(localStorage.getItem("tok") || "null");
+  if (!t) return null;
+  if (Date.now() < t.expires_at - 30000) return t.access_token;
+  if (!t.refresh_token) { localStorage.removeItem("tok"); return null; }
+  try {
+    return await tokenCall({ client_id: CLIENT_ID, grant_type: "refresh_token", refresh_token: t.refresh_token });
+  } catch(e) { localStorage.removeItem("tok"); return null; }
+}
+
+/* ══════════ 2. Web API ════════════════════════════════════ */
+async function api(path, opts = {}){
+  const token = await getToken();
+  if (!token) throw new Error("Lejárt a belépés. Töltsd újra az oldalt.");
+  const r = await fetch("https://api.spotify.com/v1/" + path, {
+    ...opts,
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json", ...(opts.headers||{}) }
+  });
+  if (r.status === 204) return null;
+  const j = await r.json().catch(() => null);
+  if (!r.ok) {
+    const msg = j && j.error && j.error.message ? j.error.message : "HTTP " + r.status;
+    const e = new Error(msg); e.status = r.status; throw e;
+  }
+  return j;
+}
+
+/* ══════════ 3. Web Playback SDK ═══════════════════════════ */
+function loadSdk(){
+  return new Promise((resolve, reject) => {
+    window.onSpotifyWebPlaybackSDKReady = resolve;
+    const s = document.createElement("script");
+    s.src = "https://sdk.scdn.co/spotify-player.js";
+    s.onerror = () => reject(new Error("Nem töltődött be a Spotify SDK."));
+    document.head.appendChild(s);
+    setTimeout(() => reject(new Error("Időtúllépés az SDK betöltésekor.")), 12000);
+  });
+}
+
+async function startSdk(){
+  await loadSdk();
+  player = new Spotify.Player({
+    name: "Kártyák",
+    getOAuthToken: cb => getToken().then(t => cb(t)),
+    volume: 0.9
+  });
+
+  player.addListener("player_state_changed", s => {
+    if (!s) return;
+    playing = !s.paused;
+    paint(s.position, s.duration);
+    icon();
+  });
+
+  ["initialization_error","authentication_error","account_error"].forEach(ev =>
+    player.addListener(ev, () => { usingSdk = false; deviceId = null; })
+  );
+  player.addListener("playback_error", ({message}) => $("play-err").textContent = message);
+
+  const ready = new Promise((resolve, reject) => {
+    player.addListener("ready", ({ device_id }) => resolve(device_id));
+    setTimeout(() => reject(new Error("Az SDK nem jelentkezett be lejátszóként.")), 9000);
+  });
+
+  const ok = await player.connect();
+  if (!ok) throw new Error("Nem sikerült csatlakozni.");
+  deviceId = await ready;
+  usingSdk = true;
+  status("ezen a telefonon", true);
+}
+
+/* ══════════ 4. lejátszás ══════════════════════════════════ */
+async function play(id){
+  trackId = id;
+  reset();
+  show("play");
+  $("play-err").textContent = "";
+  try {
+    await api("me/player/play" + (deviceId ? "?device_id=" + deviceId : ""), {
+      method: "PUT", body: JSON.stringify({ uris: ["spotify:track:" + id] })
+    });
+    playing = true; icon(); spin(true);
+    if (!usingSdk) startPolling();
+    keepAwake();
+  } catch(e) {
+    if (e.status === 404) { await pickDevice(); return; }
+    $("play-err").textContent = e.message;
+  }
+}
+
+async function toggle(){
+  try {
+    if (usingSdk && player) { await player.togglePlay(); }
+    else {
+      await api("me/player/" + (playing ? "pause" : "play") + (deviceId ? "?device_id=" + deviceId : ""), { method: "PUT" });
+      playing = !playing;
+    }
+    icon();
+  } catch(e){ $("play-err").textContent = e.message; }
+}
+
+function startPolling(){
+  clearInterval(poller);
+  poller = setInterval(async () => {
+    try {
+      const s = await api("me/player");
+      if (!s || !s.item) return;
+      playing = s.is_playing; icon();
+      paint(s.progress_ms, s.item.duration_ms);
+    } catch(e){}
+  }, 1200);
+}
+
+function paint(pos, dur){
+  const pct = dur ? Math.min(pos / dur, 1) : 0;
+  const c = 2 * Math.PI * 48.5;
+  $("prog").style.strokeDasharray = (pct * c).toFixed(1) + " " + c.toFixed(1);
+  spin(playing);
+}
+const spin = on => $("vinyl").dataset.spin = on ? "1" : "0";
+function icon(){
+  $("ico").innerHTML = playing
+    ? '<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>'
+    : '<path d="M8 5v14l11-7z"/>';
+  $("b-toggle").setAttribute("aria-label", playing ? "Szünet" : "Lejátszás");
+  spin(playing);
+}
+function reset(){
+  $("label").dataset.revealed = "0";
+  $("prog").style.strokeDasharray = "0 999";
+  clearInterval(poller);
+}
+
+async function reveal(){
+  if (!trackId) return;
+  try {
+    const t = await api("tracks/" + trackId);
+    $("r-yr").textContent = (t.album.release_date || "").slice(0, 4);
+    $("r-ti").textContent = t.name;
+    $("r-ar").textContent = t.artists.map(a => a.name).join(", ");
+    $("label").dataset.revealed = "1";
+  } catch(e){ $("play-err").textContent = e.message; }
+}
+
+/* ══════════ 5. eszközválasztó (ha nincs SDK) ══════════════ */
+async function pickDevice(){
+  show("dev");
+  $("dev-err").textContent = "";
+  $("dev-list").innerHTML = "";
+  try {
+    const { devices } = await api("me/player/devices");
+    if (!devices.length) {
+      $("dev-err").textContent = "Nincs elérhető eszköz. Nyisd meg a Spotify appot és játssz le benne bármit egy pillanatra, aztán frissítsd a listát.";
+      return;
+    }
+    devices.forEach(d => {
+      const b = document.createElement("button");
+      b.className = "dev";
+      b.textContent = d.name + (d.is_active ? " · aktív" : "");
+      b.onclick = async () => {
+        deviceId = d.id; usingSdk = false;
+        status(d.name, true);
+        await api("me/player", { method: "PUT", body: JSON.stringify({ device_ids: [d.id], play: false }) }).catch(()=>{});
+        if (trackId) play(trackId); else scan();
+      };
+      $("dev-list").appendChild(b);
+    });
+  } catch(e){ $("dev-err").textContent = e.message; }
+}
+
+/* ══════════ 6. QR olvasás a böngészőben ═══════════════════ */
+let stream = null, scanning = false;
+
+function parseId(text){
+  const s = (text || "").trim();
+  let m;
+  if ((m = s.match(/spotify:track:([A-Za-z0-9]{22})/))) return m[1];
+  if ((m = s.match(/open\.spotify\.com\/(?:intl-[a-z-]+\/)?track\/([A-Za-z0-9]{22})/))) return m[1];
+  if ((m = s.match(/[#\/]([A-Za-z0-9]{22})(?:[?&#]|$)/))) return m[1];
+  if (/^[A-Za-z0-9]{22}$/.test(s)) return s;
+  return null;
+}
+
+async function scan(){
+  show("scan");
+  $("scan-err").textContent = "";
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } } });
+  } catch(e){
+    $("scan-err").textContent = "Nincs kameraengedély. Add meg a böngésző beállításaiban.";
+    return;
+  }
+  const v = $("cam");
+  v.srcObject = stream;
+  await v.play();
+  scanning = true;
+
+  if ("BarcodeDetector" in window) {
+    const det = new BarcodeDetector({ formats: ["qr_code"] });
+    const tick = async () => {
+      if (!scanning) return;
+      try {
+        const hits = await det.detect(v);
+        if (hits.length && hit(hits[0].rawValue)) return;
+      } catch(e){}
+      requestAnimationFrame(tick);
+    };
+    tick();
+  } else {
+    if (!window.jsQR) {
+      await new Promise((res, rej) => {
+        const s = document.createElement("script");
+        s.src = "https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js";
+        s.onload = res; s.onerror = rej; document.head.appendChild(s);
+      }).catch(() => { $("scan-err").textContent = "Nem töltődött be a QR-olvasó."; });
+    }
+    const cv = document.createElement("canvas"), ctx = cv.getContext("2d", { willReadFrequently: true });
+    const tick = () => {
+      if (!scanning) return;
+      if (v.videoWidth) {
+        cv.width = v.videoWidth; cv.height = v.videoHeight;
+        ctx.drawImage(v, 0, 0);
+        const d = ctx.getImageData(0, 0, cv.width, cv.height);
+        const r = window.jsQR && window.jsQR(d.data, cv.width, cv.height);
+        if (r && hit(r.data)) return;
+      }
+      requestAnimationFrame(tick);
+    };
+    tick();
+  }
+}
+
+function stopScan(){
+  scanning = false;
+  if (stream) stream.getTracks().forEach(t => t.stop());
+  stream = null;
+}
+
+function hit(text){
+  const id = parseId(text);
+  if (!id) { $("scan-err").textContent = "Ez nem ismerős kód. Tartsd rá egy másikra."; return false; }
+  stopScan();
+  if (navigator.vibrate) navigator.vibrate(18);
+  play(id);
+  return true;
+}
+
+/* ══════════ 7. képernyő ébren ═════════════════════════════ */
+async function keepAwake(){
+  try { if ("wakeLock" in navigator) wakeLock = await navigator.wakeLock.request("screen"); } catch(e){}
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && !wakeLock) keepAwake();
+});
+
+/* ══════════ 8. indulás ════════════════════════════════════ */
+$("b-login").onclick = login;
+$("b-cancel").onclick = () => { stopScan(); show("play"); };
+$("b-toggle").onclick = toggle;
+$("b-reveal").onclick = reveal;
+$("b-next").onclick = () => { if (player) player.activateElement && player.activateElement(); scan(); };
+$("b-redev").onclick = pickDevice;
+
+async function boot(){
+  if (!CLIENT_ID) {
+    $("auth-err").innerHTML = "Töltsd ki a CLIENT_ID-t a fájl elején, és vedd fel Redirect URI-nak ezt:<br><code>" + REDIRECT_URI + "</code>";
+    $("b-login").disabled = true;
+    $("b-login").style.opacity = .4;
+    return;
+  }
+
+  // QR-ből érkezett track ID a hash-ben — mentsük, mert a belépés eldobja
+  const fromHash = parseId(location.hash);
+  if (fromHash) {
+    sessionStorage.setItem("pending", fromHash);
+    history.replaceState(null, "", REDIRECT_URI);
+  }
+
+  // visszatérés a Spotify belépésből
+  const code = new URLSearchParams(location.search).get("code");
+  if (code) {
+    try {
+      await tokenCall({
+        client_id: CLIENT_ID, grant_type: "authorization_code", code,
+        redirect_uri: REDIRECT_URI, code_verifier: sessionStorage.getItem("pkce")
+      });
+      history.replaceState(null, "", REDIRECT_URI);
+    } catch(e){
+      $("auth-err").textContent = e.message;
+      return;
+    }
+  }
+
+  if (!(await getToken())) { show("auth"); return; }
+
+  status("csatlakozás…");
+  try {
+    await startSdk();
+  } catch(e){
+    status("külső eszköz");
+    await pickDevice();
+    return;
+  }
+
+  const pending = sessionStorage.getItem("pending");
+  if (pending) { sessionStorage.removeItem("pending"); play(pending); }
+  else { show("play"); $("play-err").textContent = ""; scanReady(); }
+}
+
+function scanReady(){
+  // első koppintás egyben feloldja a mobil autoplay-tiltást is
+  show("play");
+  $("b-next").textContent = "Kártya beolvasása";
+  $("b-toggle").style.opacity = .35;
+  const once = () => {
+    $("b-next").textContent = "Következő kártya";
+    $("b-toggle").style.opacity = 1;
+    $("b-next").removeEventListener("click", once);
+  };
+  $("b-next").addEventListener("click", once);
+}
+
+boot();
+</script>
+</body>
+</html>
