@@ -659,6 +659,11 @@ async function boot(){
   if (MOCK) {
     status("fejlesztői mód", true);
     scanReady();
+    const exitBtn = document.createElement("button");
+    exitBtn.className = "pill ghost";
+    exitBtn.textContent = "Kilépés a fejlesztői módból";
+    exitBtn.onclick = () => { location.search = ""; };
+    $("f-play").appendChild(exitBtn);
     return;
   }
 
