@@ -55,11 +55,14 @@ main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-he
 footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:14px}
 
 /* ─── the disc: signature element ────────────────────────── */
-.deck{position:relative;width:var(--disc);height:var(--disc);max-width:340px;max-height:340px}
+.deck{position:relative;width:var(--disc);height:var(--disc);max-width:340px;max-height:340px;cursor:pointer}
 .ring{position:absolute;inset:0;transform:rotate(-90deg)}
 .ring circle{fill:none;stroke-width:3;stroke-linecap:round}
 .ring .track{stroke:var(--ink-lift)}
 .ring .fill{stroke:var(--hot);stroke-dasharray:0 999;transition:stroke-dasharray .9s linear}
+.ring .scrub{stroke:transparent;stroke-width:22;pointer-events:stroke;touch-action:none;cursor:grab}
+.ring .scrub:active{cursor:grabbing}
+.ring .fill[data-dragging="1"]{transition:none}
 
 .vinyl{
   position:absolute;inset:14px;border-radius:50%;
@@ -87,7 +90,7 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
   content:"";position:absolute;width:7%;aspect-ratio:1;border-radius:50%;
   background:var(--ink);box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);
 }
-.blank{color:#B9A98F;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600}
+.blank{position:absolute;inset:8%;width:84%;height:84%;object-fit:cover;border-radius:50%}
 .printed{display:none;color:var(--ink);line-height:1.15;animation:print .5s ease-out both}
 .label[data-revealed="1"] .blank{display:none}
 .label[data-revealed="1"] .printed{display:block}
@@ -165,14 +168,15 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 
   <!-- 3. lejátszás -->
   <section class="view" id="v-play">
-    <div class="deck">
+    <div class="deck" id="deck">
       <svg class="ring" viewBox="0 0 100 100" aria-hidden="true">
         <circle class="track" cx="50" cy="50" r="48.5"></circle>
         <circle class="fill" id="prog" cx="50" cy="50" r="48.5"></circle>
+        <circle class="scrub" id="scrub" cx="50" cy="50" r="48.5"></circle>
       </svg>
       <div class="vinyl" id="vinyl">
         <div class="label" id="label">
-          <span class="blank">nincs felirat</span>
+          <img class="blank" src="szabker_budapest_ifi.svg" alt="">
           <span class="printed"><b class="yr" id="r-yr"></b><b class="ti" id="r-ti"></b><b class="ar" id="r-ar"></b></span>
         </div>
       </div>
@@ -204,7 +208,6 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
       <svg id="ico" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
     </button>
     <div class="row">
-      <button class="pill" id="b-reveal">Felfedés</button>
       <button class="pill key" id="b-next">Következő kártya</button>
     </div>
   </div>
@@ -224,6 +227,10 @@ const CLIENT_ID = "f7422fa486d24a799f4e68f6f796bc3e";
 /* A Dashboardon Redirect URI-nak pontosan ezt vedd fel: */
 const REDIRECT_URI = location.origin + location.pathname;
 
+/* ?mock=1 a URL-ben: kihagyja a Spotify belépést/API-t, kitalált adatokkal
+   fut a felület, hogy a UI-n lehessen dolgozni bejelentkezés nélkül. */
+const MOCK = new URLSearchParams(location.search).get("mock") === "1";
+
 const SCOPES = [
   "streaming",
   "user-read-email",
@@ -240,6 +247,8 @@ let trackId = null;
 let playing = false;
 let poller = null;
 let wakeLock = null;
+let curDur = 0;
+let dragging = false;
 
 const $ = id => document.getElementById(id);
 const views = ["auth","scan","play","dev"];
@@ -302,7 +311,43 @@ async function getToken(){
 }
 
 /* ══════════ 2. Web API ════════════════════════════════════ */
+let mockPos = 0, mockDur = 180000, mockPlaying = false, mockStart = 0;
+
+function mockApi(path, opts){
+  const method = (opts.method || "GET").toUpperCase();
+  if (path.startsWith("me/player/play")) {
+    mockPlaying = true; mockStart = Date.now() - mockPos;
+    return Promise.resolve(null);
+  }
+  if (path.startsWith("me/player/pause")) {
+    mockPlaying = false; mockPos = Date.now() - mockStart;
+    return Promise.resolve(null);
+  }
+  if (path.startsWith("me/player/seek")) {
+    const ms = parseInt(new URLSearchParams(path.split("?")[1]).get("position_ms")) || 0;
+    mockPos = ms; mockStart = Date.now() - mockPos;
+    return Promise.resolve(null);
+  }
+  if (path === "me/player/devices") {
+    return Promise.resolve({ devices: [{ id: "mock-device", name: "Mock hangszóró", is_active: true }] });
+  }
+  if (path === "me/player" && method === "GET") {
+    if (mockPlaying) mockPos = Date.now() - mockStart;
+    if (mockPos >= mockDur) { mockPos = 0; mockStart = Date.now(); }
+    return Promise.resolve({ is_playing: mockPlaying, progress_ms: mockPos, item: { duration_ms: mockDur } });
+  }
+  if (path.startsWith("tracks/")) {
+    return Promise.resolve({
+      name: "Mock Dal Címe",
+      artists: [{ name: "Mock Előadó" }],
+      album: { release_date: "1999-05-01" }
+    });
+  }
+  return Promise.resolve(null);
+}
+
 async function api(path, opts = {}){
+  if (MOCK) return mockApi(path, opts);
   const token = await getToken();
   if (!token) throw new Error("Lejárt a belépés. Töltsd újra az oldalt.");
   const r = await fetch("https://api.spotify.com/v1/" + path, {
@@ -339,7 +384,7 @@ async function startSdk(){
   });
 
   player.addListener("player_state_changed", s => {
-    if (!s) return;
+    if (!s || dragging) return;
     playing = !s.paused;
     paint(s.position, s.duration);
     icon();
@@ -397,7 +442,7 @@ function startPolling(){
   poller = setInterval(async () => {
     try {
       const s = await api("me/player");
-      if (!s || !s.item) return;
+      if (!s || !s.item || dragging) return;
       playing = s.is_playing; icon();
       paint(s.progress_ms, s.item.duration_ms);
     } catch(e){}
@@ -405,12 +450,51 @@ function startPolling(){
 }
 
 function paint(pos, dur){
+  curDur = dur;
   const pct = dur ? Math.min(pos / dur, 1) : 0;
   const c = 2 * Math.PI * 48.5;
   $("prog").style.strokeDasharray = (pct * c).toFixed(1) + " " + c.toFixed(1);
   spin(playing);
 }
 const spin = on => $("vinyl").dataset.spin = on ? "1" : "0";
+
+/* ── húzható progress-gyűrű: pozícióváltás (seek) ─────────── */
+function ringFraction(evt){
+  const r = $("deck").getBoundingClientRect();
+  const dx = evt.clientX - (r.left + r.width / 2);
+  const dy = evt.clientY - (r.top + r.height / 2);
+  const a = Math.atan2(dy, dx) + Math.PI / 2;
+  const norm = ((a % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+  return norm / (2 * Math.PI);
+}
+
+async function seekTo(ms){
+  try {
+    if (usingSdk && player) await player.seek(ms);
+    else await api("me/player/seek?position_ms=" + ms + (deviceId ? "&device_id=" + deviceId : ""), { method: "PUT" });
+    paint(ms, curDur);
+  } catch(e){ $("play-err").textContent = e.message; }
+}
+
+$("scrub").addEventListener("click", e => e.stopPropagation());
+$("scrub").addEventListener("pointerdown", e => {
+  e.stopPropagation();
+  if (!curDur) return;
+  dragging = true;
+  $("prog").dataset.dragging = "1";
+  $("scrub").setPointerCapture(e.pointerId);
+  paint(ringFraction(e) * curDur, curDur);
+});
+$("scrub").addEventListener("pointermove", e => {
+  if (!dragging) return;
+  paint(ringFraction(e) * curDur, curDur);
+});
+$("scrub").addEventListener("pointerup", async e => {
+  if (!dragging) return;
+  dragging = false;
+  $("prog").dataset.dragging = "0";
+  await seekTo(Math.round(ringFraction(e) * curDur));
+});
 function icon(){
   $("ico").innerHTML = playing
     ? '<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>'
@@ -421,6 +505,7 @@ function icon(){
 function reset(){
   $("label").dataset.revealed = "0";
   $("prog").style.strokeDasharray = "0 999";
+  curDur = 0;
   clearInterval(poller);
 }
 
@@ -475,6 +560,7 @@ function parseId(text){
 }
 
 async function scan(){
+  if (MOCK) { hit("0".repeat(22)); return; }
   show("scan");
   $("scan-err").textContent = "";
   try {
@@ -550,11 +636,32 @@ document.addEventListener("visibilitychange", () => {
 $("b-login").onclick = login;
 $("b-cancel").onclick = () => { stopScan(); show("play"); };
 $("b-toggle").onclick = toggle;
-$("b-reveal").onclick = reveal;
+$("deck").onclick = reveal;
 $("b-next").onclick = () => { if (player) player.activateElement && player.activateElement(); scan(); };
 $("b-redev").onclick = pickDevice;
 
 async function boot(){
+  // helyi tesztelésnél (nem a github.io élő címen) egy gomb, ami bejelentkezés
+  // nélkül, kitalált adatokkal indítja a felületet
+  if (!MOCK && location.hostname !== "kritdamage.github.io") {
+    const f = $("f-auth");
+    f.style.display = "flex";
+    f.style.flexDirection = "column";
+    f.style.alignItems = "center";
+    f.style.gap = "10px";
+    const mockBtn = document.createElement("button");
+    mockBtn.className = "pill ghost";
+    mockBtn.textContent = "Fejlesztői mód";
+    mockBtn.onclick = () => { location.search = "?mock=1"; };
+    f.appendChild(mockBtn);
+  }
+
+  if (MOCK) {
+    status("fejlesztői mód", true);
+    scanReady();
+    return;
+  }
+
   if (!CLIENT_ID) {
     $("auth-err").innerHTML = "Töltsd ki a CLIENT_ID-t a fájl elején, és vedd fel Redirect URI-nak ezt:<br><code>" + REDIRECT_URI + "</code>";
     $("b-login").disabled = true;
