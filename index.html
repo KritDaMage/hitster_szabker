@@ -82,6 +82,23 @@ main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;paddin
 .view{display:none;width:100%;flex-direction:column;align-items:center;gap:26px}
 .view.on{display:flex}
 
+/* ─── jobb oldali fiók: dalszöveg (próba, mint a bal oldali menü) ── */
+.lyrics-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;
+  opacity:0;pointer-events:none;transition:opacity .25s ease;
+}
+.lyrics-overlay.open{opacity:1;pointer-events:auto}
+#v-lyrics{
+  display:flex !important;flex-direction:column;align-items:stretch;gap:12px;
+  position:fixed;top:0;right:0;bottom:0;width:100%;max-width:640px;
+  background:var(--ink);z-index:21;
+  padding:max(24px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));
+  box-shadow:-12px 0 40px rgba(0,0,0,.4);
+  transform:translateX(100%);transition:transform .25s ease;
+}
+#v-lyrics.open{transform:translateX(0)}
+.lyrics-close-row{flex:0 0 auto;display:flex;justify-content:flex-end}
+
 footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:14px}
 
 /* ─── the disc: signature element ────────────────────────── */
@@ -183,8 +200,8 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .dev{padding:14px 16px;border-radius:12px;background:var(--ink-lift);text-align:left;font-size:15px;font-weight:600}
 
 /* ─── dalszöveg ──────────────────────────────────────────── */
-#v-lyrics.on,#v-catalog.on{align-items:stretch;align-self:stretch}
-.lyrics-scroll{width:100%;max-width:640px;margin:0 auto;height:100%;overflow-y:auto;
+#v-catalog.on{align-items:stretch;align-self:stretch}
+.lyrics-scroll{width:100%;max-width:640px;margin:0 auto;flex:1 1 auto;min-height:0;overflow-y:auto;
   display:flex;flex-direction:column;gap:20px;padding:4px 4px 20px}
 .lyrics-head{display:flex;flex-direction:column;gap:6px;padding-bottom:16px;border-bottom:1px solid rgba(246,236,221,.12);
   position:sticky;top:0;background:var(--ink);z-index:1}
@@ -211,6 +228,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 </header>
 
 <div class="menu-overlay" id="menu-overlay"></div>
+<div class="lyrics-overlay" id="lyrics-overlay"></div>
 <nav class="menu" id="menu">
   <h2>Mód</h2>
   <button class="menu-item" data-mode="general">Általános</button>
@@ -282,8 +300,11 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
     <p class="err" id="dev-err"></p>
   </section>
 
-  <!-- 5. dalszöveg (Szabker dicsi mód) -->
+  <!-- 5. dalszöveg (Szabker dicsi mód) — jobb oldali fiók, próba -->
   <section class="view" id="v-lyrics">
+    <div class="lyrics-close-row">
+      <button class="pill ghost" id="b-lyrics-back">Vissza</button>
+    </div>
     <div class="lyrics-scroll" id="lyrics-scroll"></div>
   </section>
 
@@ -320,10 +341,6 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 
   <div id="f-dev" hidden>
     <button class="pill" id="b-redev">Lista frissítése</button>
-  </div>
-
-  <div id="f-lyrics" hidden>
-    <button class="pill ghost" id="b-lyrics-back">Vissza</button>
   </div>
 
   <div id="f-catalog" hidden>
@@ -367,7 +384,7 @@ let randomMode = localStorage.getItem("randomMode") === "1";
 let dragging = false;
 
 const $ = id => document.getElementById(id);
-const views = ["auth","scan","play","dev","lyrics","catalog"];
+const views = ["auth","scan","play","dev","catalog"];
 
 function show(name){
   views.forEach(v => {
@@ -673,6 +690,7 @@ function reset(){
   clearInterval(poller);
   lyricsData = null;
   $("b-lyrics").style.visibility = "hidden";
+  closeLyricsDrawer();
 }
 
 async function resetPlayback(){
@@ -690,8 +708,15 @@ async function resetPlayback(){
 
 let lyricsData = null;
 let revealed = { title: "", artist: "", huTitle: "" };
-let lyricsReturnView = "play";   // hova menjen a dalszöveg "Vissza" gombja
 let catalogReturnView = "play";  // hova menjen a katalógus "Vissza" gombja
+function openLyricsDrawer(){
+  $("v-lyrics").classList.add("open");
+  $("lyrics-overlay").classList.add("open");
+}
+function closeLyricsDrawer(){
+  $("v-lyrics").classList.remove("open");
+  $("lyrics-overlay").classList.remove("open");
+}
 async function loadLyrics(id){
   try {
     const r = await fetch("lyrics/" + id + ".json", { cache: "no-store" });
@@ -743,9 +768,8 @@ function renderCatalogList(filter){
       const data = await loadLyrics(entry.id);
       if (!data) return;
       lyricsData = data;
-      lyricsReturnView = "catalog";
       renderLyrics();
-      show("lyrics");
+      openLyricsDrawer();
     };
     list.appendChild(b);
   });
@@ -840,7 +864,6 @@ async function reveal(){
     $("label").dataset.revealed = "1";
 
     lyricsData = null;
-    lyricsReturnView = "play";
     $("b-lyrics").style.visibility = "hidden";
     if (mode === "szabker") {
       lyricsData = await loadLyrics(trackId);
@@ -991,8 +1014,9 @@ $("b-next").onclick = () => {
   if (randomMode && mode === "szabker") playRandom(); else scan();
 };
 $("b-redev").onclick = pickDevice;
-$("b-lyrics").onclick = () => { lyricsReturnView = "play"; show("lyrics"); renderLyrics(); };
-$("b-lyrics-back").onclick = () => show(lyricsReturnView);
+$("b-lyrics").onclick = () => { renderLyrics(); openLyricsDrawer(); };
+$("b-lyrics-back").onclick = closeLyricsDrawer;
+$("lyrics-overlay").onclick = closeLyricsDrawer;
 $("b-catalog").onclick = openCatalog;
 $("b-catalog-back").onclick = () => show(catalogReturnView);
 $("catalog-search").addEventListener("input", () => renderCatalogList($("catalog-search").value));
