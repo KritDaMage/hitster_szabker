@@ -1,0 +1,11 @@
+{
+  "title": "A kegyelem árad",
+  "original_title": "Mercy Is Falling",
+  "author": "David Ruis",
+  "translator": "Szőcs Réka & Prazsák László",
+  "sections": [
+    { "type": "verse", "text": "A kegyelem árad és árad és árad,\nA kegyelem árad, mint az eső,\nA kegyelem árad és árad mindenhol." },
+    { "type": "verse", "text": "A szeretet árad és árad és árad,\nA szeretet árad, mint az eső,\nA szeretet árad és árad mindenhol." },
+    { "type": "chorus", "text": "Jézus, Tebenned bízom, Jézus, irgalmad kísér,\nJézus, veled táncolok örökké!" }
+  ]
+}

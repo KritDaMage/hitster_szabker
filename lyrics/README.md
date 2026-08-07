@@ -35,10 +35,55 @@ listában — ott, ahol a dalban ténylegesen elhangzik.
   kitöltöd őket, ezek jelennek meg a dalszöveg-nézet tetején — ha nem, az app
   visszaesik a Spotifytól kapott (és a `SZABKER_TITLES`-ben megadott) címre,
   előadóra.
-- `type`: `"verse"` (versszak), `"chorus"` (refrén), `"bridge"` (híd) — vagy
-  bármi más rövid angol szó (pl. `"coda"`), ha egy szakasz nem illik ebbe a
-  három kategóriába; ilyenkor a nézet egyszerűen ezt a szót írja ki címkeként.
+- `type`: rövid angol szó, ami a nézetben szó szerint megjelenik címkeként —
+  ezért érdemes a dal tényleges szerkezetét leírni, nem csak a legközelebbi
+  ismert kategóriát ráhúzni. Gyakori értékek:
+  - `"intro"` — hangszeres/szöveg nélküli bevezető
+  - `"verse"` (versszak) — a történetet viszi előre, versszakonként más szöveg
+  - `"pre-chorus"` (előkórus) — rövid átvezető a versszak és a refrén között;
+    jellemzően többször is előfordul, és mindig ugyanabba a refrénbe torkollik
+  - `"chorus"` (refrén) — a dal visszatérő magja, szövege általában azonos
+  - `"bridge"` (híd) — a dal közepe felé egyszer előforduló, a többitől
+    harmóniában/dallamban eltérő rész — **ne keverd össze az előkórussal**:
+    a bridge egyedi és kontrasztos, az előkórus ismétlődik és a refrénhez vezet
+  - `"outro"` — záró rész, ami nem ismétlődő refrén és nem is önálló bridge
+  - `"coda"` — ha van egy külön, formailag elváló zárókód a végén
+
+  Ha egyik sem illik pontosan, bármi más rövid angol szó is használható —
+  a lényeg, hogy a címke a szakasz valódi szerepét tükrözze, ne a legutóbb
+  használt sablont.
 - `text`: a szakasz sorai, `\n`-nel elválasztva.
 
 Ha egy dalhoz nincs itt fájl, a „Dalszöveg" gomb egyszerűen nem jelenik meg
 felfedéskor — nem kell mindegyikhez azonnal elkészíteni.
+
+## `index.json` — a dalkatalógus
+
+A menü „Szabker dicsi" módban megjelenő „Dalkatalógus" gombja ezt a fájlt
+tölti be, hogy felsorolhassa az összes olyan dalt, amihez tényleges
+dalszöveg-fájl készült — kártya beolvasása nélkül is böngészhető, és
+mindegyik sor átvisz a saját dalszövegére.
+
+Formátum: `{ id, title }` párok tömbje, a `title` a lyrics-fájl `title`
+mezőjével egyezik meg:
+
+```json
+[
+  { "id": "4uLU6hMCjMI75M1A2tKUQC", "title": "Magyar cím" }
+]
+```
+
+**Amikor felveszel egy új `<track ID>.json` dalszöveg-fájlt, vedd fel ide is
+egy sorral** — ez a két hely nincs automatikusan szinkronban, statikus
+GitHub Pages hosting mellett nincs könyvtárlistázás, amiből az app magától
+összeszedhetné. A `0000000000000000000000.json` mock fixtúrát szándékosan
+NEM tartalmazza (azt az app `?mock=1` alatt kézzel fűzi hozzá).
+
+## `0000000000000000000000.json`
+
+Ez **nem** egy valódi dal — ez a fejlesztői mód (`?mock=1`) fixtúrája. A
+`scan()` mock módban mindig a `"0".repeat(22)` track ID-t „olvassa be”
+(`index.html`, `MOCK` blokk), így ez a fájl kell ahhoz, hogy a
+dalszöveg-nézetet be lehessen tesztelni bejelentkezés nélkül. Ne töröld, és
+ne írj bele valódi dalt — ha egy tényleges számot dolgozol fel, azt a saját
+track ID-jával mentsd.

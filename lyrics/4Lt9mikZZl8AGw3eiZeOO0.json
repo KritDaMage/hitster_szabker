@@ -1,0 +1,13 @@
+{
+  "title": "Győztes leszel",
+  "original_title": "Destined to Win",
+  "author": "Eddie DeGarmo & Dana Key",
+  "translator": "Haulik Emese",
+  "sections": [
+    { "type": "verse", "text": "Isten így szól mindenkihez, ki fényt hord szívében és szeretetet:\n„Nem kell többé rettegnetek, ha a hegyektől nem látjátok az eget!”\nMert van, aki lecsendesíti a tenger vizét,\nVan egy név, mely győzelemre vezeti népét." },
+    { "type": "chorus", "text": "Mindig győztes leszel, ha karja felemel, szelleme vezérel.\nGyőztes leszel, ha életeden át Istenedre nézel,\nMindig győztes leszel!" },
+    { "type": "verse", "text": "Az úton elfáradunk, és szívünkben olykor fellázadunk\nDe egyvalamit jól tudunk, hogy a trónhoz a kereszten át jutunk." },
+    { "type": "bridge", "text": "Mert szavad legyen kardom, igéd pajzsom és páncélom!\nKrisztussal oldalunkon mindig győzni fogunk!" },
+    { "type": "outro", "text": "Mindig győztes, mindig győztes leszel!" }
+  ]
+}

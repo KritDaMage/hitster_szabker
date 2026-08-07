@@ -73,7 +73,7 @@ header{
 }
 .menu.open{transform:translateX(0)}
 .menu h2{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
-.menu-dev{display:flex;flex-direction:column;gap:8px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(246,236,221,.12)}
+.menu-dev,.menu-catalog{display:flex;flex-direction:column;gap:8px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(246,236,221,.12)}
 .menu-link{margin-top:auto;padding:10px 16px;font-size:13px;color:var(--dim);text-align:left;text-decoration:underline;text-underline-offset:3px}
 .menu-item{padding:14px 16px;border-radius:12px;text-align:left;font-size:16px;font-weight:600;color:var(--paper)}
 .menu-item[aria-current="true"]{background:var(--paper);color:var(--ink)}
@@ -169,14 +169,26 @@ h1{font-size:clamp(26px,7.6vw,34px);font-weight:800;letter-spacing:-.035em;line-
 code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   background:var(--ink-lift);padding:3px 6px;border-radius:5px;word-break:break-all;color:var(--paper)}
 .err{color:var(--hot);font-size:14px;text-align:center;line-height:1.5;max-width:34ch;height:2.4em;overflow:hidden}
-.devs{display:flex;flex-direction:column;gap:8px;width:100%;max-width:320px}
+.devs{display:flex;flex-direction:column;gap:8px;width:100%;max-width:420px;margin:0 auto}
+.catalog-search{width:100%;max-width:420px;margin:0 auto;padding:14px 16px;border-radius:12px;
+  background:var(--ink-lift);color:var(--paper);font:inherit;font-size:15px;border:none;outline:none;
+  -webkit-appearance:none;appearance:none}
+.catalog-search::placeholder{color:var(--dim)}
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%}
+.switch-row span{font-size:14px;font-weight:600;color:var(--dim)}
+.switch{position:relative;width:42px;height:24px;border-radius:999px;background:var(--ink-lift);flex:0 0 auto;transition:background .2s ease}
+.switch[aria-checked="true"]{background:var(--hot)}
+.switch-knob{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--paper);transition:transform .2s ease}
+.switch[aria-checked="true"] .switch-knob{transform:translateX(18px)}
 .dev{padding:14px 16px;border-radius:12px;background:var(--ink-lift);text-align:left;font-size:15px;font-weight:600}
 
 /* ─── dalszöveg ──────────────────────────────────────────── */
-#v-lyrics.on{align-items:stretch}
+#v-lyrics.on,#v-catalog.on{align-items:stretch;align-self:stretch}
 .lyrics-scroll{width:100%;max-width:640px;margin:0 auto;height:100%;overflow-y:auto;
   display:flex;flex-direction:column;gap:20px;padding:4px 4px 20px}
-.lyrics-head{display:flex;flex-direction:column;gap:6px;padding-bottom:16px;border-bottom:1px solid rgba(246,236,221,.12)}
+.lyrics-head{display:flex;flex-direction:column;gap:6px;padding-bottom:16px;border-bottom:1px solid rgba(246,236,221,.12);
+  position:sticky;top:0;background:var(--ink);z-index:1}
+.catalog-top{position:sticky;top:0;background:var(--ink);z-index:1;display:flex;flex-direction:column;gap:20px;padding-bottom:4px}
 .lyrics-title{font-size:clamp(22px,6vw,28px);font-weight:800;letter-spacing:-.03em;line-height:1.15;color:var(--paper)}
 .lyrics-meta{display:flex;flex-direction:column;gap:2px;margin-top:4px}
 .lyrics-meta-line{font-size:13px;color:var(--dim);line-height:1.5}
@@ -203,6 +215,15 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   <h2>Mód</h2>
   <button class="menu-item" data-mode="general">Általános</button>
   <button class="menu-item" data-mode="szabker">Szabker dicsi</button>
+
+  <div class="menu-catalog" id="menu-catalog" hidden>
+    <h2>Dicsi</h2>
+    <label class="switch-row">
+      <span>QR nélkül</span>
+      <button type="button" class="switch" id="b-random-toggle" role="switch" aria-checked="false"><span class="switch-knob"></span></button>
+    </label>
+    <button class="menu-item" id="b-catalog">Dalkatalógus</button>
+  </div>
 
   <div class="menu-dev" id="menu-dev" hidden>
     <h2>Fejlesztői navigáció</h2>
@@ -266,6 +287,17 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
     <div class="lyrics-scroll" id="lyrics-scroll"></div>
   </section>
 
+  <!-- 6. dalkatalógus (Szabker dicsi mód) -->
+  <section class="view" id="v-catalog">
+    <div class="lyrics-scroll">
+      <div class="catalog-top">
+        <h1 class="lyrics-title">Dalkatalógus</h1>
+        <input type="search" class="catalog-search" id="catalog-search" placeholder="Keresés…">
+      </div>
+      <div class="devs" id="catalog-list"></div>
+    </div>
+  </section>
+
 </main>
 
 <footer>
@@ -293,6 +325,10 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   <div id="f-lyrics" hidden>
     <button class="pill ghost" id="b-lyrics-back">Vissza</button>
   </div>
+
+  <div id="f-catalog" hidden>
+    <button class="pill ghost" id="b-catalog-back">Vissza</button>
+  </div>
 </footer>
 
 <script>
@@ -317,21 +353,6 @@ const SCOPES = [
   "user-read-playback-state"
 ].join(" ");
 
-/* ══════════════════════════════════════════════════════════
-   SZABKER DICSI MÓD — track ID → magyar cím.
-   Ide kell felvenni a párokat, pl.:
-     "4uLU6hMCjMI75M1A2tKUQC": "Soha ne add fel",
-   A track ID ugyanaz, mint a QR-kódoknál (a Spotify-megosztólink
-   végén). Szabker módban felfedéskor az előadó helyén ez a cím
-   jelenik meg; ha egy track ID nincs itt felsorolva, marad a
-   Spotify-tól kapott előadónév.
-   ══════════════════════════════════════════════════════════ */
-const SZABKER_TITLES = {
-  // "trackId1": "Magyar cím 1",
-  // "trackId2": "Magyar cím 2",
-};
-if (MOCK) SZABKER_TITLES["0".repeat(22)] = "Minta Magyar Cím";
-
 /* ── állapot ──────────────────────────────────────────────── */
 let deviceId = null;      // ahol szól: SDK-lejátszó vagy távoli eszköz
 let usingSdk = false;
@@ -342,10 +363,11 @@ let poller = null;
 let wakeLock = null;
 let curDur = 0;
 let mode = localStorage.getItem("mode") || "general";
+let randomMode = localStorage.getItem("randomMode") === "1";
 let dragging = false;
 
 const $ = id => document.getElementById(id);
-const views = ["auth","scan","play","dev","lyrics"];
+const views = ["auth","scan","play","dev","lyrics","catalog"];
 
 function show(name){
   views.forEach(v => {
@@ -483,8 +505,16 @@ async function startSdk(){
 
   player.addListener("player_state_changed", s => {
     if (!s || dragging) return;
+    const wasPlaying = playing;
     playing = !s.paused;
-    paint(s.position, s.duration);
+    // az SDK lejátszás közben gyakran újraküldi ezt az eseményt, kicsit
+    // pontatlan pozícióval — csak akkor korrigálunk, ha tényleg eltér
+    // (különben minden apró eltérésnél megremegne a bakelit)
+    const predicted = wasPlaying ? posBase + (performance.now() - posBaseAt) : posBase;
+    const drift = Math.abs(s.position - predicted);
+    if (drift > 350 || s.duration !== curDur || wasPlaying !== playing) {
+      paint(s.position, s.duration);
+    }
     icon();
   });
 
@@ -556,7 +586,7 @@ function startPolling(){
 
 let posBase = 0, posBaseAt = 0;
 
-const SPIN_MS = 3400; // egy teljes bakelit-fordulat ennyi ezredmásodpercnyi zenénként
+const SPIN_MS = 7000; // egy teljes bakelit-fordulat ennyi ezredmásodpercnyi zenénként
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const vinylDeg = posMs => posMs / SPIN_MS * 360;
 
@@ -660,12 +690,75 @@ async function resetPlayback(){
 
 let lyricsData = null;
 let revealed = { title: "", artist: "", huTitle: "" };
+let lyricsReturnView = "play";   // hova menjen a dalszöveg "Vissza" gombja
+let catalogReturnView = "play";  // hova menjen a katalógus "Vissza" gombja
 async function loadLyrics(id){
   try {
     const r = await fetch("lyrics/" + id + ".json", { cache: "no-store" });
     if (!r.ok) return null;
     return await r.json();
   } catch(e){ return null; }
+}
+
+/* eredeti cím + évszám + magyar cím a Spotify helyett, lásd titles.json */
+let titlesCache = null;
+async function loadTitles(){
+  if (titlesCache) return titlesCache;
+  try {
+    const r = await fetch("titles.json", { cache: "no-store" });
+    titlesCache = r.ok ? await r.json() : {};
+  } catch(e){ titlesCache = {}; }
+  if (MOCK) titlesCache["0".repeat(22)] = { title: "Mock Eredeti Cím", year: 1999, hu: "Minta Magyar Cím" };
+  return titlesCache;
+}
+
+async function loadCatalog(){
+  try {
+    const r = await fetch("lyrics/index.json", { cache: "no-store" });
+    if (!r.ok) return [];
+    return await r.json();
+  } catch(e){ return []; }
+}
+
+let catalogEntries = [];
+
+function renderCatalogList(filter){
+  const list = $("catalog-list");
+  list.innerHTML = "";
+  const q = filter.trim().toLowerCase();
+  const shown = q ? catalogEntries.filter(e => e.title.toLowerCase().includes(q)) : catalogEntries;
+  if (!shown.length) {
+    const p = document.createElement("p");
+    p.className = "sub";
+    p.style.margin = "0 auto";
+    p.textContent = catalogEntries.length ? "Nincs találat." : "Még nincs egyetlen dal sem a katalógusban.";
+    list.appendChild(p);
+    return;
+  }
+  shown.forEach(entry => {
+    const b = document.createElement("button");
+    b.className = "dev";
+    b.textContent = entry.title;
+    b.onclick = async () => {
+      const data = await loadLyrics(entry.id);
+      if (!data) return;
+      lyricsData = data;
+      lyricsReturnView = "catalog";
+      renderLyrics();
+      show("lyrics");
+    };
+    list.appendChild(b);
+  });
+}
+
+async function openCatalog(){
+  catalogReturnView = views.find(v => v !== "catalog" && $("v-"+v).classList.contains("on")) || "play";
+  closeMenu();
+  show("catalog");
+  $("catalog-search").value = "";
+  catalogEntries = await loadCatalog();
+  if (MOCK) catalogEntries = catalogEntries.concat([{ id: "0".repeat(22), title: "Minta Magyar Cím" }]);
+  renderCatalogList("");
 }
 
 function metaLine(label, value){
@@ -734,17 +827,20 @@ async function reveal(){
   if (!trackId || $("label").dataset.revealed === "1") return;
   try {
     const t = await api("tracks/" + trackId);
-    const originalTitle = t.name;
+    const titles = await loadTitles();
+    const override = titles[trackId];
+    const originalTitle = (override && override.title) || t.name;
     const originalArtist = t.artists.map(a => a.name).join(", ");
-    const huTitle = mode === "szabker" ? SZABKER_TITLES[trackId] : null;
+    const huTitle = mode === "szabker" ? (override && override.hu) : null;
     revealed = { title: originalTitle, artist: originalArtist, huTitle: huTitle || "" };
 
-    $("r-yr").textContent = (t.album.release_date || "").slice(0, 4);
-    $("r-ti").textContent = originalTitle;
-    $("r-ar").textContent = huTitle || originalArtist;
+    $("r-yr").textContent = (override && override.year) ? String(override.year) : (t.album.release_date || "").slice(0, 4);
+    $("r-ti").textContent = huTitle || originalTitle;
+    $("r-ar").textContent = huTitle ? originalTitle : originalArtist;
     $("label").dataset.revealed = "1";
 
     lyricsData = null;
+    lyricsReturnView = "play";
     $("b-lyrics").style.visibility = "hidden";
     if (mode === "szabker") {
       lyricsData = await loadLyrics(trackId);
@@ -859,6 +955,24 @@ function hit(text){
   return true;
 }
 
+/* QR nélküli mód: véletlen dal a dalkatalógusból, ismétlés nélkül,
+   amíg az összes dalon végig nem megy — utána (vagy a kapcsoló
+   átbillentésekor) újraindul a kör */
+let randomPool = [];
+async function playRandom(){
+  const entries = await loadCatalog();
+  if (!entries.length) { $("play-err").textContent = "Nincs dal a katalógusban."; return; }
+  const ids = entries.map(e => e.id);
+  randomPool = randomPool.filter(id => ids.includes(id));
+  if (!randomPool.length) {
+    randomPool = ids.length > 1 ? ids.filter(id => id !== trackId) : ids.slice();
+  }
+  const idx = Math.floor(Math.random() * randomPool.length);
+  const id = randomPool.splice(idx, 1)[0];
+  if (navigator.vibrate) navigator.vibrate(18);
+  play(id);
+}
+
 /* ══════════ 7. képernyő ébren ═════════════════════════════ */
 async function keepAwake(){
   try { if ("wakeLock" in navigator) wakeLock = await navigator.wakeLock.request("screen"); } catch(e){}
@@ -872,10 +986,16 @@ $("b-login").onclick = login;
 $("b-cancel").onclick = () => { stopScan(); show("play"); };
 $("b-toggle").onclick = toggle;
 $("deck").onclick = reveal;
-$("b-next").onclick = () => { if (player) player.activateElement && player.activateElement(); scan(); };
+$("b-next").onclick = () => {
+  if (player) player.activateElement && player.activateElement();
+  if (randomMode && mode === "szabker") playRandom(); else scan();
+};
 $("b-redev").onclick = pickDevice;
-$("b-lyrics").onclick = () => { show("lyrics"); renderLyrics(); };
-$("b-lyrics-back").onclick = () => show("play");
+$("b-lyrics").onclick = () => { lyricsReturnView = "play"; show("lyrics"); renderLyrics(); };
+$("b-lyrics-back").onclick = () => show(lyricsReturnView);
+$("b-catalog").onclick = openCatalog;
+$("b-catalog-back").onclick = () => show(catalogReturnView);
+$("catalog-search").addEventListener("input", () => renderCatalogList($("catalog-search").value));
 
 async function boot(){
   if (MOCK) {
@@ -932,10 +1052,11 @@ async function boot(){
 function scanReady(){
   // első koppintás egyben feloldja a mobil autoplay-tiltást is
   show("play");
-  $("b-next").textContent = "Kártya beolvasása";
+  const useRandom = randomMode && mode === "szabker";
+  $("b-next").textContent = useRandom ? "Véletlen dal indítása" : "Kártya beolvasása";
   $("b-toggle").style.opacity = .35;
   const once = () => {
-    $("b-next").textContent = "Következő kártya";
+    $("b-next").textContent = useRandom ? "Következő véletlen dal" : "Következő kártya";
     $("b-toggle").style.opacity = 1;
     $("b-next").removeEventListener("click", once);
   };
@@ -946,9 +1067,20 @@ function scanReady(){
 function applyMode(){
   document.body.dataset.mode = mode;
   $("blank-logo").hidden = mode !== "szabker";
+  $("menu-catalog").hidden = mode !== "szabker";
   document.querySelectorAll(".menu-item").forEach(b => {
     b.setAttribute("aria-current", b.dataset.mode === mode ? "true" : "false");
   });
+}
+function applyRandomMode(){
+  $("b-random-toggle").setAttribute("aria-checked", randomMode ? "true" : "false");
+}
+function toggleRandomMode(){
+  randomMode = !randomMode;
+  localStorage.setItem("randomMode", randomMode ? "1" : "0");
+  randomPool = [];
+  applyRandomMode();
+  if (!trackId) scanReady();
 }
 function openMenu(){ $("menu").classList.add("open"); $("menu-overlay").classList.add("open"); }
 function closeMenu(){ $("menu").classList.remove("open"); $("menu-overlay").classList.remove("open"); }
@@ -965,7 +1097,9 @@ document.querySelectorAll(".menu-item[data-mode]").forEach(b => {
     if (changed) await resetPlayback();
   };
 });
+$("b-random-toggle").onclick = toggleRandomMode;
 applyMode();
+applyRandomMode();
 
 if (MOCK) {
   $("menu-dev").hidden = false;
