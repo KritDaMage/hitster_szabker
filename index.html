@@ -41,12 +41,34 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 
 /* ─── shell ──────────────────────────────────────────────── */
 header{
-  display:flex;align-items:baseline;justify-content:space-between;
+  display:flex;align-items:center;justify-content:space-between;
   font-size:11px;letter-spacing:.18em;text-transform:uppercase;
   color:var(--dim);min-height:20px;flex:0 0 auto;
 }
+.head-left{display:flex;align-items:center;gap:10px}
+.hamburger{width:22px;height:22px;display:grid;place-items:center;color:var(--paper)}
+.hamburger svg{width:20px;height:20px}
 #out{color:var(--dim);font-weight:600}
 #out[data-live="1"]{color:var(--hot)}
+
+/* ─── bal oldali menü ────────────────────────────────────── */
+.menu-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;
+  opacity:0;pointer-events:none;transition:opacity .25s ease;
+}
+.menu-overlay.open{opacity:1;pointer-events:auto}
+.menu{
+  position:fixed;top:0;left:0;bottom:0;width:76%;max-width:280px;
+  background:var(--ink-lift);z-index:21;padding:max(24px,env(safe-area-inset-top)) 18px 18px;
+  display:flex;flex-direction:column;gap:8px;
+  transform:translateX(-100%);transition:transform .25s ease;
+}
+.menu.open{transform:translateX(0)}
+.menu h2{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.menu-dev{display:flex;flex-direction:column;gap:8px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(246,236,221,.12)}
+.menu-link{margin-top:auto;padding:10px 16px;font-size:13px;color:var(--dim);text-align:left;text-decoration:underline;text-underline-offset:3px}
+.menu-item{padding:14px 16px;border-radius:12px;text-align:left;font-size:16px;font-weight:600;color:var(--paper)}
+.menu-item[aria-current="true"]{background:var(--paper);color:var(--ink)}
 
 main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:0}
 .view{display:none;width:100%;flex-direction:column;align-items:center;gap:26px}
@@ -59,10 +81,9 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
 .ring{position:absolute;inset:0;transform:rotate(-90deg)}
 .ring circle{fill:none;stroke-width:3;stroke-linecap:round}
 .ring .track{stroke:var(--ink-lift)}
-.ring .fill{stroke:var(--hot);stroke-dasharray:0 999;transition:stroke-dasharray .9s linear}
+.ring .fill{stroke:var(--hot);stroke-dasharray:0 999}
 .ring .scrub{stroke:transparent;stroke-width:22;pointer-events:stroke;touch-action:none;cursor:grab}
 .ring .scrub:active{cursor:grabbing}
-.ring .fill[data-dragging="1"]{transition:none}
 
 .vinyl{
   position:absolute;inset:14px;border-radius:50%;
@@ -70,13 +91,8 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
     repeating-radial-gradient(circle at 50% 50%, #0d0b22 0 1px, #14112c 1px 3px),
     radial-gradient(circle at 34% 28%, #2b2555 0%, #0b0919 62%);
   box-shadow:0 18px 44px rgba(0,0,0,.55), inset 0 0 0 1px rgba(246,236,221,.07);
-  animation:spin 3.4s linear infinite;
-  animation-play-state:paused;
   display:grid;place-items:center;
 }
-.vinyl[data-spin="1"]{animation-play-state:running}
-@keyframes spin{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){ .vinyl{animation:none} }
 
 /* the blank label — the whole point of the screen */
 .label{
@@ -85,21 +101,26 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
   display:grid;place-items:center;text-align:center;padding:6%;
   box-shadow:inset 0 0 0 1px rgba(0,0,0,.14);
   position:relative;
+  overflow:hidden;
 }
 .label::after{
   content:"";position:absolute;width:7%;aspect-ratio:1;border-radius:50%;
   background:var(--ink);box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);
 }
-.blank{position:absolute;inset:8%;width:84%;height:84%;object-fit:cover;border-radius:50%}
-.printed{display:none;color:var(--ink);line-height:1.15;animation:print .5s ease-out both}
+#blank-logo{position:absolute;inset:8%;width:84%;height:84%;object-fit:cover;border-radius:50%}
+.printed{
+  display:none;color:var(--ink);line-height:1.15;animation:print .5s ease-out both;
+  position:absolute;inset:16%;
+  flex-direction:column;justify-content:center;align-items:center;
+}
 .label[data-revealed="1"] .blank{display:none}
-.label[data-revealed="1"] .printed{display:block}
+.label[data-revealed="1"] .printed{display:flex}
 .label[data-revealed="1"]::after{display:none}
 @keyframes print{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
-.printed .yr{font-size:clamp(30px,11vw,46px);font-weight:800;letter-spacing:-.03em;display:block}
-.printed .ti{font-size:clamp(10px,3.3vw,13px);font-weight:600;display:block;margin-top:2px;
-  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.printed .ar{font-size:clamp(9px,3vw,12px);opacity:.62;display:block;margin-top:2px;
+.printed .yr{font-size:clamp(26px,9vw,40px);font-weight:800;letter-spacing:-.03em;display:block}
+.printed .ti{font-size:clamp(9px,2.8vw,12px);font-weight:600;margin-top:2px;width:100%;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-overflow:ellipsis}
+.printed .ar{font-size:clamp(9px,3vw,12px);opacity:.62;display:block;margin-top:2px;width:100%;
   overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 
 /* ─── controls ───────────────────────────────────────────── */
@@ -114,7 +135,7 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
 .big svg{width:30px;height:30px;fill:currentColor}
 .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .pill{
-  padding:13px 22px;border-radius:999px;
+  padding:13px 22px;border-radius:999px;height:44px;box-sizing:border-box;
   border:1.5px solid var(--ink-lift);color:var(--paper);
   font-size:15px;font-weight:600;transition:border-color .15s, background .15s;
 }
@@ -124,7 +145,7 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
 
 /* ─── scanner ────────────────────────────────────────────── */
 .scope{
-  position:relative;width:min(84vw,340px);aspect-ratio:1;
+  position:relative;width:var(--disc);height:var(--disc);max-width:340px;max-height:340px;
   border-radius:20px;overflow:hidden;background:#0b0919;
   box-shadow:inset 0 0 0 1.5px var(--ink-lift);
 }
@@ -135,20 +156,59 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
 /* ─── copy ───────────────────────────────────────────────── */
 h1{font-size:clamp(26px,7.6vw,34px);font-weight:800;letter-spacing:-.035em;line-height:1.05;text-align:center}
 .sub{color:var(--dim);font-size:15px;line-height:1.5;text-align:center;max-width:30ch}
+.scan-sub{height:44px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .note{color:var(--dim);font-size:13px;line-height:1.5;text-align:center;max-width:34ch}
 code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   background:var(--ink-lift);padding:3px 6px;border-radius:5px;word-break:break-all;color:var(--paper)}
-.err{color:var(--hot);font-size:14px;text-align:center;line-height:1.5;max-width:34ch;min-height:1.2em}
+.err{color:var(--hot);font-size:14px;text-align:center;line-height:1.5;max-width:34ch;height:2.4em;overflow:hidden}
 .devs{display:flex;flex-direction:column;gap:8px;width:100%;max-width:320px}
 .dev{padding:14px 16px;border-radius:12px;background:var(--ink-lift);text-align:left;font-size:15px;font-weight:600}
+
+/* ─── dalszöveg ──────────────────────────────────────────── */
+#v-lyrics.on{align-items:stretch}
+.lyrics-scroll{width:100%;max-width:640px;margin:0 auto;height:100%;overflow-y:auto;
+  display:flex;flex-direction:column;gap:20px;padding:4px 4px 20px}
+.lyrics-head{display:flex;flex-direction:column;gap:6px;padding-bottom:16px;border-bottom:1px solid rgba(246,236,221,.12)}
+.lyrics-title{font-size:clamp(22px,6vw,28px);font-weight:800;letter-spacing:-.03em;line-height:1.15;color:var(--paper)}
+.lyrics-meta{display:flex;flex-direction:column;gap:2px;margin-top:4px}
+.lyrics-meta-line{font-size:13px;color:var(--dim);line-height:1.5}
+.lyrics-meta-line b{font-weight:600}
+.lyrics-section{display:flex;flex-direction:column;gap:4px}
+.lyrics-label{color:var(--dim);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600}
+.lyrics-text{color:var(--paper);font-size:16px;line-height:1.5;white-space:pre;overflow-x:auto}
 </style>
 </head>
 <body>
 
 <header>
-  <span>Kártyák</span>
+  <div class="head-left">
+    <button class="hamburger" id="b-menu" aria-label="Menü">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <span>Kártyák</span>
+  </div>
   <span id="out">—</span>
 </header>
+
+<div class="menu-overlay" id="menu-overlay"></div>
+<nav class="menu" id="menu">
+  <h2>Mód</h2>
+  <button class="menu-item" data-mode="general">Általános</button>
+  <button class="menu-item" data-mode="szabker">Szabker dicsi</button>
+
+  <div class="menu-dev" id="menu-dev" hidden>
+    <h2>Fejlesztői navigáció</h2>
+    <button class="menu-item" data-view="auth">Belépés</button>
+    <button class="menu-item" data-view="scan">Szkennelés</button>
+    <button class="menu-item" data-view="play">Lejátszás</button>
+    <button class="menu-item" data-view="dev">Eszközválasztó</button>
+    <button class="menu-item" data-err="play">Hiba: lejátszás</button>
+    <button class="menu-item" data-err="scan">Hiba: szkennelés</button>
+    <button class="menu-item" data-err="dev">Hiba: eszközválasztó</button>
+  </div>
+
+  <button class="menu-link" id="b-mock-toggle" hidden></button>
+</nav>
 
 <main>
 
@@ -162,7 +222,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   <!-- 2. szkennelés -->
   <section class="view" id="v-scan">
     <div class="scope"><video id="cam" playsinline muted></video><div class="crop"></div></div>
-    <p class="sub">Tartsd a kártya QR-kódját a keretbe.</p>
+    <p class="sub scan-sub">Tartsd a kártya QR-kódját a keretbe.</p>
     <p class="err" id="scan-err"></p>
   </section>
 
@@ -176,11 +236,12 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
       </svg>
       <div class="vinyl" id="vinyl">
         <div class="label" id="label">
-          <img class="blank" src="szabker_budapest_ifi.svg" alt="">
+          <img class="blank" id="blank-logo" src="szabker_budapest_ifi.svg" alt="">
           <span class="printed"><b class="yr" id="r-yr"></b><b class="ti" id="r-ti"></b><b class="ar" id="r-ar"></b></span>
         </div>
       </div>
     </div>
+    <button class="pill ghost" id="b-lyrics" style="visibility:hidden">Dalszöveg</button>
     <p class="err" id="play-err"></p>
   </section>
 
@@ -190,6 +251,11 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
     <p class="sub">Ez a böngésző nem tud lejátszani. Indítsd el a Spotify appot, majd válaszd ki itt.</p>
     <div class="devs" id="dev-list"></div>
     <p class="err" id="dev-err"></p>
+  </section>
+
+  <!-- 5. dalszöveg (Szabker dicsi mód) -->
+  <section class="view" id="v-lyrics">
+    <div class="lyrics-scroll" id="lyrics-scroll"></div>
   </section>
 
 </main>
@@ -215,6 +281,10 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   <div id="f-dev" hidden>
     <button class="pill" id="b-redev">Lista frissítése</button>
   </div>
+
+  <div id="f-lyrics" hidden>
+    <button class="pill ghost" id="b-lyrics-back">Vissza</button>
+  </div>
 </footer>
 
 <script>
@@ -239,6 +309,21 @@ const SCOPES = [
   "user-read-playback-state"
 ].join(" ");
 
+/* ══════════════════════════════════════════════════════════
+   SZABKER DICSI MÓD — track ID → magyar cím.
+   Ide kell felvenni a párokat, pl.:
+     "4uLU6hMCjMI75M1A2tKUQC": "Soha ne add fel",
+   A track ID ugyanaz, mint a QR-kódoknál (a Spotify-megosztólink
+   végén). Szabker módban felfedéskor az előadó helyén ez a cím
+   jelenik meg; ha egy track ID nincs itt felsorolva, marad a
+   Spotify-tól kapott előadónév.
+   ══════════════════════════════════════════════════════════ */
+const SZABKER_TITLES = {
+  // "trackId1": "Magyar cím 1",
+  // "trackId2": "Magyar cím 2",
+};
+if (MOCK) SZABKER_TITLES["0".repeat(22)] = "Minta Magyar Cím";
+
 /* ── állapot ──────────────────────────────────────────────── */
 let deviceId = null;      // ahol szól: SDK-lejátszó vagy távoli eszköz
 let usingSdk = false;
@@ -248,10 +333,11 @@ let playing = false;
 let poller = null;
 let wakeLock = null;
 let curDur = 0;
+let mode = localStorage.getItem("mode") || "general";
 let dragging = false;
 
 const $ = id => document.getElementById(id);
-const views = ["auth","scan","play","dev"];
+const views = ["auth","scan","play","dev","lyrics"];
 
 function show(name){
   views.forEach(v => {
@@ -311,11 +397,19 @@ async function getToken(){
 }
 
 /* ══════════ 2. Web API ════════════════════════════════════ */
-let mockPos = 0, mockDur = 180000, mockPlaying = false, mockStart = 0;
+let mockPos = 0, mockDur = 15000, mockPlaying = false, mockStart = 0;
+let mockTrackIndex = 0;
+const MOCK_TRACKS = [
+  { name: "Mock Dal Címe", artists: [{ name: "Mock Előadó" }], album: { release_date: "1999-05-01" } },
+  { name: "Egy Nagyon Hosszú És Terjengős Dalcím, Ami Biztos Nem Fér Ki Egy Sorba", artists: [{ name: "Rendkívül Hosszú Előadói Név Feat. Egy Másik Előadó" }], album: { release_date: "1987-03-01" } },
+  { name: "Rövid", artists: [{ name: "X" }], album: { release_date: "" } },
+  { name: "Ékezetes Cím: Őrült Szép Nyár", artists: [{ name: "Dűlő Fűzfa Együttes" }], album: { release_date: "2021-11-05" } }
+];
 
 function mockApi(path, opts){
   const method = (opts.method || "GET").toUpperCase();
   if (path.startsWith("me/player/play")) {
+    if (opts.body) { mockPos = 0; mockTrackIndex = (mockTrackIndex + 1) % MOCK_TRACKS.length; }
     mockPlaying = true; mockStart = Date.now() - mockPos;
     return Promise.resolve(null);
   }
@@ -337,11 +431,7 @@ function mockApi(path, opts){
     return Promise.resolve({ is_playing: mockPlaying, progress_ms: mockPos, item: { duration_ms: mockDur } });
   }
   if (path.startsWith("tracks/")) {
-    return Promise.resolve({
-      name: "Mock Dal Címe",
-      artists: [{ name: "Mock Előadó" }],
-      album: { release_date: "1999-05-01" }
-    });
+    return Promise.resolve({ ...MOCK_TRACKS[mockTrackIndex], duration_ms: mockDur });
   }
   return Promise.resolve(null);
 }
@@ -417,7 +507,9 @@ async function play(id){
     await api("me/player/play" + (deviceId ? "?device_id=" + deviceId : ""), {
       method: "PUT", body: JSON.stringify({ uris: ["spotify:track:" + id] })
     });
-    playing = true; icon(); spin(true);
+    playing = true; icon();
+    posBase = 0; posBaseAt = performance.now();
+    api("tracks/" + id).then(t => { if (trackId === id) curDur = t.duration_ms; }).catch(()=>{});
     if (!usingSdk) startPolling();
     keepAwake();
   } catch(e) {
@@ -431,6 +523,11 @@ async function toggle(){
     if (usingSdk && player) { await player.togglePlay(); }
     else {
       await api("me/player/" + (playing ? "pause" : "play") + (deviceId ? "?device_id=" + deviceId : ""), { method: "PUT" });
+      if (playing) {
+        posBase = Math.min(posBase + (performance.now() - posBaseAt), curDur || posBase);
+      } else {
+        posBaseAt = performance.now();
+      }
       playing = !playing;
     }
     icon();
@@ -449,14 +546,38 @@ function startPolling(){
   }, 1200);
 }
 
-function paint(pos, dur){
-  curDur = dur;
-  const pct = dur ? Math.min(pos / dur, 1) : 0;
+let posBase = 0, posBaseAt = 0;
+
+const SPIN_MS = 3400; // egy teljes bakelit-fordulat ennyi ezredmásodpercnyi zenénként
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const vinylDeg = posMs => posMs / SPIN_MS * 360;
+
+function renderRing(pos){
+  const pct = curDur ? Math.min(pos / curDur, 1) : 0;
   const c = 2 * Math.PI * 48.5;
   $("prog").style.strokeDasharray = (pct * c).toFixed(1) + " " + c.toFixed(1);
-  spin(playing);
 }
-const spin = on => $("vinyl").dataset.spin = on ? "1" : "0";
+function renderVinyl(pos){
+  if (reduceMotion) return;
+  $("vinyl").style.transform = "rotate(" + vinylDeg(pos).toFixed(1) + "deg)";
+}
+
+function paint(pos, dur){
+  curDur = dur;
+  posBase = pos;
+  posBaseAt = performance.now();
+  renderRing(pos);
+  renderVinyl(pos);
+}
+
+function tickVisual(){
+  if (playing && !dragging && curDur) {
+    const pos = Math.min(posBase + (performance.now() - posBaseAt), curDur);
+    renderRing(pos);
+    renderVinyl(pos);
+  }
+  requestAnimationFrame(tickVisual);
+}
 
 /* ── húzható progress-gyűrű: pozícióváltás (seek) ─────────── */
 function ringFraction(evt){
@@ -481,18 +602,19 @@ $("scrub").addEventListener("pointerdown", e => {
   e.stopPropagation();
   if (!curDur) return;
   dragging = true;
-  $("prog").dataset.dragging = "1";
   $("scrub").setPointerCapture(e.pointerId);
+  $("vinyl").style.transition = "transform .4s ease";
   paint(ringFraction(e) * curDur, curDur);
 });
 $("scrub").addEventListener("pointermove", e => {
   if (!dragging) return;
+  $("vinyl").style.transition = "none";
   paint(ringFraction(e) * curDur, curDur);
 });
 $("scrub").addEventListener("pointerup", async e => {
   if (!dragging) return;
   dragging = false;
-  $("prog").dataset.dragging = "0";
+  $("vinyl").style.transition = "";
   await seekTo(Math.round(ringFraction(e) * curDur));
 });
 function icon(){
@@ -500,23 +622,121 @@ function icon(){
     ? '<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>'
     : '<path d="M8 5v14l11-7z"/>';
   $("b-toggle").setAttribute("aria-label", playing ? "Szünet" : "Lejátszás");
-  spin(playing);
 }
 function reset(){
   $("label").dataset.revealed = "0";
   $("prog").style.strokeDasharray = "0 999";
   curDur = 0;
   clearInterval(poller);
+  lyricsData = null;
+  $("b-lyrics").style.visibility = "hidden";
+}
+
+async function resetPlayback(){
+  if (!trackId) return;
+  try {
+    if (usingSdk && player) await player.pause();
+    else if (playing) await api("me/player/pause" + (deviceId ? "?device_id=" + deviceId : ""), { method: "PUT" });
+  } catch(e){}
+  trackId = null;
+  playing = false;
+  reset();
+  icon();
+  scanReady();
+}
+
+let lyricsData = null;
+let revealed = { title: "", artist: "", huTitle: "" };
+async function loadLyrics(id){
+  try {
+    const r = await fetch("lyrics/" + id + ".json", { cache: "no-store" });
+    if (!r.ok) return null;
+    return await r.json();
+  } catch(e){ return null; }
+}
+
+function metaLine(label, value){
+  const p = document.createElement("p");
+  p.className = "lyrics-meta-line";
+  const b = document.createElement("b");
+  b.textContent = label + ": ";
+  p.appendChild(b);
+  p.appendChild(document.createTextNode(value));
+  return p;
+}
+
+function renderLyrics(){
+  const wrap = $("lyrics-scroll");
+  wrap.innerHTML = "";
+
+  const huTitle = (lyricsData && lyricsData.title) || revealed.huTitle;
+  const originalTitle = (lyricsData && lyricsData.original_title) || revealed.title;
+  const author = (lyricsData && lyricsData.author) || revealed.artist;
+
+  const head = document.createElement("div");
+  head.className = "lyrics-head";
+  const h1 = document.createElement("h1");
+  h1.className = "lyrics-title";
+  h1.textContent = huTitle || originalTitle;
+  head.appendChild(h1);
+
+  const meta = document.createElement("div");
+  meta.className = "lyrics-meta";
+  if (huTitle && originalTitle) meta.appendChild(metaLine("Eredeti cím", originalTitle));
+  if (author) meta.appendChild(metaLine("Előadó", author));
+  if (lyricsData && lyricsData.translator) meta.appendChild(metaLine("Fordította", lyricsData.translator));
+  if (meta.childNodes.length) head.appendChild(meta);
+  wrap.appendChild(head);
+
+  const sections = (lyricsData && lyricsData.sections) || [];
+  const texts = [];
+  sections.forEach(sec => {
+    const block = document.createElement("div");
+    block.className = "lyrics-section";
+    const label = document.createElement("div");
+    label.className = "lyrics-label";
+    label.textContent = sec.type;
+    const text = document.createElement("p");
+    text.className = "lyrics-text";
+    text.textContent = sec.text;
+    block.appendChild(label);
+    block.appendChild(text);
+    wrap.appendChild(block);
+    texts.push(text);
+  });
+
+  requestAnimationFrame(() => texts.forEach(fitText));
+}
+
+function fitText(el){
+  let size = parseFloat(getComputedStyle(el).fontSize);
+  const min = 11;
+  while (el.scrollWidth > el.clientWidth + 1 && size > min) {
+    size -= 0.5;
+    el.style.fontSize = size + "px";
+  }
 }
 
 async function reveal(){
-  if (!trackId) return;
+  if (!trackId || $("label").dataset.revealed === "1") return;
   try {
     const t = await api("tracks/" + trackId);
+    const originalTitle = t.name;
+    const originalArtist = t.artists.map(a => a.name).join(", ");
+    const huTitle = mode === "szabker" ? SZABKER_TITLES[trackId] : null;
+    revealed = { title: originalTitle, artist: originalArtist, huTitle: huTitle || "" };
+
     $("r-yr").textContent = (t.album.release_date || "").slice(0, 4);
-    $("r-ti").textContent = t.name;
-    $("r-ar").textContent = t.artists.map(a => a.name).join(", ");
+    $("r-ti").textContent = originalTitle;
+    $("r-ar").textContent = huTitle || originalArtist;
     $("label").dataset.revealed = "1";
+
+    lyricsData = null;
+    $("b-lyrics").style.visibility = "hidden";
+    if (mode === "szabker") {
+      lyricsData = await loadLyrics(trackId);
+      if (lyricsData) $("b-lyrics").style.visibility = "visible";
+    }
   } catch(e){ $("play-err").textContent = e.message; }
 }
 
@@ -564,7 +784,9 @@ async function scan(){
   show("scan");
   $("scan-err").textContent = "";
   try {
-    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } } });
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } }
+    });
   } catch(e){
     $("scan-err").textContent = "Nincs kameraengedély. Add meg a böngésző beállításaiban.";
     return;
@@ -589,7 +811,7 @@ async function scan(){
     if (!window.jsQR) {
       await new Promise((res, rej) => {
         const s = document.createElement("script");
-        s.src = "https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js";
+        s.src = "https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js";
         s.onload = res; s.onerror = rej; document.head.appendChild(s);
       }).catch(() => { $("scan-err").textContent = "Nem töltődött be a QR-olvasó."; });
     }
@@ -639,31 +861,13 @@ $("b-toggle").onclick = toggle;
 $("deck").onclick = reveal;
 $("b-next").onclick = () => { if (player) player.activateElement && player.activateElement(); scan(); };
 $("b-redev").onclick = pickDevice;
+$("b-lyrics").onclick = () => { show("lyrics"); renderLyrics(); };
+$("b-lyrics-back").onclick = () => show("play");
 
 async function boot(){
-  // helyi tesztelésnél (nem a github.io élő címen) egy gomb, ami bejelentkezés
-  // nélkül, kitalált adatokkal indítja a felületet
-  if (!MOCK && location.hostname !== "kritdamage.github.io") {
-    const f = $("f-auth");
-    f.style.display = "flex";
-    f.style.flexDirection = "column";
-    f.style.alignItems = "center";
-    f.style.gap = "10px";
-    const mockBtn = document.createElement("button");
-    mockBtn.className = "pill ghost";
-    mockBtn.textContent = "Fejlesztői mód";
-    mockBtn.onclick = () => { location.search = "?mock=1"; };
-    f.appendChild(mockBtn);
-  }
-
   if (MOCK) {
     status("fejlesztői mód", true);
     scanReady();
-    const exitBtn = document.createElement("button");
-    exitBtn.className = "pill ghost";
-    exitBtn.textContent = "Kilépés a fejlesztői módból";
-    exitBtn.onclick = () => { location.search = ""; };
-    $("f-play").appendChild(exitBtn);
     return;
   }
 
@@ -725,7 +929,64 @@ function scanReady(){
   $("b-next").addEventListener("click", once);
 }
 
+/* ══════════ 9. bal oldali menü / mód ═══════════════════════ */
+function applyMode(){
+  document.body.dataset.mode = mode;
+  $("blank-logo").hidden = mode !== "szabker";
+  document.querySelectorAll(".menu-item").forEach(b => {
+    b.setAttribute("aria-current", b.dataset.mode === mode ? "true" : "false");
+  });
+}
+function openMenu(){ $("menu").classList.add("open"); $("menu-overlay").classList.add("open"); }
+function closeMenu(){ $("menu").classList.remove("open"); $("menu-overlay").classList.remove("open"); }
+
+$("b-menu").onclick = openMenu;
+$("menu-overlay").onclick = closeMenu;
+document.querySelectorAll(".menu-item[data-mode]").forEach(b => {
+  b.onclick = async () => {
+    const changed = b.dataset.mode !== mode;
+    mode = b.dataset.mode;
+    localStorage.setItem("mode", mode);
+    applyMode();
+    closeMenu();
+    if (changed) await resetPlayback();
+  };
+});
+applyMode();
+
+if (MOCK) {
+  $("menu-dev").hidden = false;
+  document.querySelectorAll(".menu-item[data-view]").forEach(b => {
+    b.onclick = () => {
+      closeMenu();
+      const v = b.dataset.view;
+      if (v === "dev") {
+        pickDevice();
+      } else {
+        show(v);
+      }
+    };
+  });
+  document.querySelectorAll(".menu-item[data-err]").forEach(b => {
+    b.onclick = () => {
+      closeMenu();
+      const kind = b.dataset.err;
+      if (kind === "play") { show("play"); $("play-err").textContent = "Lejárt a belépés. Töltsd újra az oldalt."; }
+      else if (kind === "scan") { show("scan"); $("scan-err").textContent = "Ez nem ismerős kód. Tartsd rá egy másikra."; }
+      else if (kind === "dev") { show("dev"); $("dev-err").textContent = "Nincs elérhető eszköz. Nyisd meg a Spotify appot és játssz le benne bármit egy pillanatra, aztán frissítsd a listát."; }
+    };
+  });
+  $("b-mock-toggle").hidden = false;
+  $("b-mock-toggle").textContent = "Kilépés a fejlesztői módból";
+  $("b-mock-toggle").onclick = () => { location.search = ""; };
+} else if (location.hostname !== "kritdamage.github.io") {
+  $("b-mock-toggle").hidden = false;
+  $("b-mock-toggle").textContent = "Fejlesztői mód";
+  $("b-mock-toggle").onclick = () => { location.search = "?mock=1"; };
+}
+
 boot();
+requestAnimationFrame(tickVisual);
 </script>
 </body>
 </html>
