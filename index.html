@@ -23,13 +23,20 @@
 @media (min-height:800px){ :root{ --disc: 72vw; } }
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%}
+*{scrollbar-width:thin;scrollbar-color:var(--ink-lift) transparent}
+*::-webkit-scrollbar{width:8px;height:8px}
+*::-webkit-scrollbar-track{background:transparent}
+*::-webkit-scrollbar-thumb{background:var(--ink-lift);border-radius:999px}
+*::-webkit-scrollbar-thumb:hover{background:var(--dim)}
+html{height:100%}
 body{
+  min-height:100%;
   background:var(--ink);
   color:var(--paper);
   font-family:var(--font);
   font-optical-sizing:auto;
-  overflow:hidden;
+  overflow-x:hidden;
+  overflow-y:auto;
   overscroll-behavior:none;
   display:flex;
   flex-direction:column;
@@ -61,6 +68,7 @@ header{
   position:fixed;top:0;left:0;bottom:0;width:76%;max-width:280px;
   background:var(--ink-lift);z-index:21;padding:max(24px,env(safe-area-inset-top)) 18px 18px;
   display:flex;flex-direction:column;gap:8px;
+  overflow-y:auto;overflow-x:hidden;
   transform:translateX(-100%);transition:transform .25s ease;
 }
 .menu.open{transform:translateX(0)}
@@ -70,7 +78,7 @@ header{
 .menu-item{padding:14px 16px;border-radius:12px;text-align:left;font-size:16px;font-weight:600;color:var(--paper)}
 .menu-item[aria-current="true"]{background:var(--paper);color:var(--ink)}
 
-main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:0}
+main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;padding:20px 0}
 .view{display:none;width:100%;flex-direction:column;align-items:center;gap:26px}
 .view.on{display:flex}
 
@@ -78,11 +86,11 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
 
 /* ─── the disc: signature element ────────────────────────── */
 .deck{position:relative;width:var(--disc);height:var(--disc);max-width:340px;max-height:340px;cursor:pointer}
-.ring{position:absolute;inset:0;transform:rotate(-90deg)}
+.ring{position:absolute;inset:0;transform:rotate(-90deg);touch-action:none}
 .ring circle{fill:none;stroke-width:3;stroke-linecap:round}
 .ring .track{stroke:var(--ink-lift)}
 .ring .fill{stroke:var(--hot);stroke-dasharray:0 999}
-.ring .scrub{stroke:transparent;stroke-width:22;pointer-events:stroke;touch-action:none;cursor:grab}
+.ring .scrub{stroke:transparent;stroke-width:34;pointer-events:stroke;touch-action:none;cursor:grab}
 .ring .scrub:active{cursor:grabbing}
 
 .vinyl{
@@ -616,6 +624,11 @@ $("scrub").addEventListener("pointerup", async e => {
   dragging = false;
   $("vinyl").style.transition = "";
   await seekTo(Math.round(ringFraction(e) * curDur));
+});
+$("scrub").addEventListener("pointercancel", () => {
+  if (!dragging) return;
+  dragging = false;
+  $("vinyl").style.transition = "";
 });
 function icon(){
   $("ico").innerHTML = playing
