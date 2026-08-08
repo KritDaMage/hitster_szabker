@@ -1,0 +1,13 @@
+{
+  "title": "Minden lehetséges",
+  "original_title": "All Things Are Possible",
+  "author": "Darlene Zschech",
+  "sections": [
+    { "type": "verse", "text": "Hatalmas Úr, én Megtartóm,\na bajban biztos oltalom.\nNincsen más név, csak Jézus,\nerőt és hatalmat hordoz." },
+    { "type": "verse", "text": "Sziklára állítottál fel,\nonnan soha nem mozdulok el,\nreményem csakis Tőled jön,\nén Uram és Megmentőm!" },
+    { "type": "verse", "text": "Dicséret árad ajkamról,\nIgéd a szívemben honol,\núj dallal magasztal a szám,\na lelkem Téged áld!" },
+    { "type": "verse", "text": "Te töltöd be az életem, örömöd az én erősségem,\núj dallal magasztal a szám, a lelkem Téged áld!" },
+    { "type": "pre-chorus", "text": "Amikor félek, velem vagy,\nha csüggedek, Te adsz hitet,\nmert nevedben bízom én!" },
+    { "type": "chorus", "text": "Minden lehetséges!" }
+  ]
+}

@@ -98,6 +98,7 @@ main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;paddin
 }
 #v-lyrics.open{transform:translateX(0)}
 .lyrics-close-row{flex:0 0 auto;display:flex;justify-content:flex-end}
+.lyrics-pager-row{flex:0 0 auto}
 
 footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:14px}
 
@@ -206,10 +207,23 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .lyrics-head{display:flex;flex-direction:column;gap:6px;padding-bottom:16px;border-bottom:1px solid rgba(246,236,221,.12);
   position:sticky;top:0;background:var(--ink);z-index:1}
 .catalog-top{position:sticky;top:0;background:var(--ink);z-index:1;display:flex;flex-direction:column;gap:20px;padding-bottom:4px}
+.lyrics-player{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.lyrics-player-btn{width:40px;height:40px;border-radius:50%;background:var(--hot);color:#fff;
+  display:grid;place-items:center;flex:0 0 auto}
+.lyrics-player-btn:active{transform:scale(.93)}
+.lyrics-player-btn svg{width:18px;height:18px;fill:currentColor}
+.lyrics-player-bar{flex:1 1 auto;height:6px;border-radius:999px;background:var(--ink-lift);overflow:hidden;
+  touch-action:none;cursor:grab}
+.lyrics-player-fill{height:100%;width:0%;background:var(--hot);pointer-events:none}
 .lyrics-title{font-size:clamp(22px,6vw,28px);font-weight:800;letter-spacing:-.03em;line-height:1.15;color:var(--paper)}
 .lyrics-meta{display:flex;flex-direction:column;gap:2px;margin-top:4px}
 .lyrics-meta-line{font-size:13px;color:var(--dim);line-height:1.5}
 .lyrics-meta-line b{font-weight:600}
+.lyrics-pager{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px}
+.lyrics-pager-btn{width:32px;height:32px;border-radius:50%;background:var(--ink-lift);color:var(--paper);
+  display:grid;place-items:center;font-size:18px;font-weight:700;flex:0 0 auto}
+.lyrics-pager-btn:active{transform:scale(.93)}
+.lyrics-pager-label{color:var(--dim);font-size:13px;font-weight:600;min-width:3.5ch;text-align:center}
 .lyrics-section{display:flex;flex-direction:column;gap:4px}
 .lyrics-label{color:var(--dim);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600}
 .lyrics-text{color:var(--paper);font-size:16px;line-height:1.5;white-space:pre;overflow-x:auto}
@@ -306,6 +320,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
       <button class="pill ghost" id="b-lyrics-back">Vissza</button>
     </div>
     <div class="lyrics-scroll" id="lyrics-scroll"></div>
+    <div class="lyrics-pager-row" id="lyrics-pager-row"></div>
   </section>
 
   <!-- 6. dalkatalógus (Szabker dicsi mód) -->
@@ -483,15 +498,24 @@ function mockApi(path, opts){
   return Promise.resolve(null);
 }
 
+function authExpired(){
+  localStorage.removeItem("tok");
+  closeLyricsDrawer();
+  show("auth");
+  $("auth-err").textContent = "Lejárt a bejelentkezés. Lépj be újra.";
+  throw new Error("Lejárt a belépés. Töltsd újra az oldalt.");
+}
+
 async function api(path, opts = {}){
   if (MOCK) return mockApi(path, opts);
   const token = await getToken();
-  if (!token) throw new Error("Lejárt a belépés. Töltsd újra az oldalt.");
+  if (!token) return authExpired();
   const r = await fetch("https://api.spotify.com/v1/" + path, {
     ...opts,
     headers: { Authorization: "Bearer " + token, "Content-Type": "application/json", ...(opts.headers||{}) }
   });
   if (r.status === 204) return null;
+  if (r.status === 401) return authExpired();
   const j = await r.json().catch(() => null);
   if (!r.ok) {
     const msg = j && j.error && j.error.message ? j.error.message : "HTTP " + r.status;
@@ -553,11 +577,7 @@ async function startSdk(){
 }
 
 /* ══════════ 4. lejátszás ══════════════════════════════════ */
-async function play(id){
-  trackId = id;
-  reset();
-  show("play");
-  $("play-err").textContent = "";
+async function startPlayback(id){
   try {
     await api("me/player/play" + (deviceId ? "?device_id=" + deviceId : ""), {
       method: "PUT", body: JSON.stringify({ uris: ["spotify:track:" + id] })
@@ -571,6 +591,13 @@ async function play(id){
     if (e.status === 404) { await pickDevice(); return; }
     $("play-err").textContent = e.message;
   }
+}
+async function play(id){
+  trackId = id;
+  reset();
+  show("play");
+  $("play-err").textContent = "";
+  await startPlayback(id);
 }
 
 async function toggle(){
@@ -616,6 +643,11 @@ function renderVinyl(pos){
   if (reduceMotion) return;
   $("vinyl").style.transform = "rotate(" + vinylDeg(pos).toFixed(1) + "deg)";
 }
+function renderLyricsPlayer(pos){
+  const fill = document.getElementById("lyrics-player-fill");
+  if (!fill || trackId !== lyricsPlayerTrackId) return;
+  fill.style.width = (curDur ? Math.min(pos / curDur, 1) * 100 : 0) + "%";
+}
 
 function paint(pos, dur){
   curDur = dur;
@@ -623,6 +655,7 @@ function paint(pos, dur){
   posBaseAt = performance.now();
   renderRing(pos);
   renderVinyl(pos);
+  renderLyricsPlayer(pos);
 }
 
 function tickVisual(){
@@ -630,6 +663,7 @@ function tickVisual(){
     const pos = Math.min(posBase + (performance.now() - posBaseAt), curDur);
     renderRing(pos);
     renderVinyl(pos);
+    renderLyricsPlayer(pos);
   }
   requestAnimationFrame(tickVisual);
 }
@@ -677,11 +711,17 @@ $("scrub").addEventListener("pointercancel", () => {
   dragging = false;
   $("vinyl").style.transition = "";
 });
+const PLAY_ICON_PATH = "M8 5v14l11-7z";
+const PAUSE_ICON_PATH = "M6 5h4v14H6zm8 0h4v14h-4z";
 function icon(){
-  $("ico").innerHTML = playing
-    ? '<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>'
-    : '<path d="M8 5v14l11-7z"/>';
+  $("ico").innerHTML = '<path d="' + (playing ? PAUSE_ICON_PATH : PLAY_ICON_PATH) + '"/>';
   $("b-toggle").setAttribute("aria-label", playing ? "Szünet" : "Lejátszás");
+  const lp = document.getElementById("lyrics-player-btn");
+  if (lp) {
+    const lpPlaying = playing && trackId === lyricsPlayerTrackId;
+    lp.innerHTML = '<svg viewBox="0 0 24 24"><path d="' + (lpPlaying ? PAUSE_ICON_PATH : PLAY_ICON_PATH) + '"/></svg>';
+    lp.setAttribute("aria-label", lpPlaying ? "Szünet" : "Lejátszás");
+  }
 }
 function reset(){
   $("label").dataset.revealed = "0";
@@ -707,11 +747,23 @@ async function resetPlayback(){
 }
 
 let lyricsData = null;
+let lyricsVersionIndex = 0;  // melyik fordítás van megjelenítve, ha több is van
 let revealed = { title: "", artist: "", huTitle: "" };
 let catalogReturnView = "play";  // hova menjen a katalógus "Vissza" gombja
+let lyricsPlayerTrackId = null;  // csak katalógusból nyitott dalszövegnél: lejátszó gomb + progress sáv a cím fölött
 function openLyricsDrawer(){
   $("v-lyrics").classList.add("open");
   $("lyrics-overlay").classList.add("open");
+}
+async function toggleLyricsPlayer(){
+  const id = lyricsPlayerTrackId;
+  if (!id) return;
+  if (trackId === id) {
+    await toggle();
+  } else {
+    trackId = id;
+    await startPlayback(id);
+  }
 }
 function closeLyricsDrawer(){
   $("v-lyrics").classList.remove("open");
@@ -768,6 +820,8 @@ function renderCatalogList(filter){
       const data = await loadLyrics(entry.id);
       if (!data) return;
       lyricsData = data;
+      lyricsVersionIndex = 0;
+      lyricsPlayerTrackId = entry.id;
       renderLyrics();
       openLyricsDrawer();
     };
@@ -782,6 +836,7 @@ async function openCatalog(){
   $("catalog-search").value = "";
   catalogEntries = await loadCatalog();
   if (MOCK) catalogEntries = catalogEntries.concat([{ id: "0".repeat(22), title: "Minta Magyar Cím" }]);
+  catalogEntries.sort((a, b) => a.title.localeCompare(b.title, "hu"));
   renderCatalogList("");
 }
 
@@ -798,13 +853,63 @@ function metaLine(label, value){
 function renderLyrics(){
   const wrap = $("lyrics-scroll");
   wrap.innerHTML = "";
+  const pagerRow = $("lyrics-pager-row");
+  pagerRow.innerHTML = "";
 
-  const huTitle = (lyricsData && lyricsData.title) || revealed.huTitle;
-  const originalTitle = (lyricsData && lyricsData.original_title) || revealed.title;
-  const author = (lyricsData && lyricsData.author) || revealed.artist;
+  // több fordítás: lyricsData.versions tömb, mindegyik elem ugyanolyan alakú,
+  // mint eddig a lyricsData maga (title/original_title/author/translator/sections)
+  const versions = (lyricsData && Array.isArray(lyricsData.versions)) ? lyricsData.versions
+    : lyricsData ? [lyricsData] : [];
+  if (lyricsVersionIndex >= versions.length) lyricsVersionIndex = 0;
+  const active = versions[lyricsVersionIndex] || null;
+
+  const huTitle = (active && active.title) || revealed.huTitle;
+  const originalTitle = (active && active.original_title) || revealed.title;
+  const author = (active && active.author) || revealed.artist;
 
   const head = document.createElement("div");
   head.className = "lyrics-head";
+
+  if (lyricsPlayerTrackId) {
+    const lp = document.createElement("div");
+    lp.className = "lyrics-player";
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "lyrics-player-btn";
+    btn.className = "lyrics-player-btn";
+    btn.onclick = toggleLyricsPlayer;
+    const bar = document.createElement("div");
+    bar.className = "lyrics-player-bar";
+    const fill = document.createElement("div");
+    fill.id = "lyrics-player-fill";
+    fill.className = "lyrics-player-fill";
+    bar.appendChild(fill);
+    const barFrac = e => {
+      const r = bar.getBoundingClientRect();
+      return Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+    };
+    bar.addEventListener("pointerdown", e => {
+      if (trackId !== lyricsPlayerTrackId || !curDur) return;
+      e.stopPropagation();
+      dragging = true;
+      bar.setPointerCapture(e.pointerId);
+      paint(barFrac(e) * curDur, curDur);
+    });
+    bar.addEventListener("pointermove", e => {
+      if (!dragging) return;
+      paint(barFrac(e) * curDur, curDur);
+    });
+    bar.addEventListener("pointerup", async e => {
+      if (!dragging) return;
+      dragging = false;
+      await seekTo(Math.round(barFrac(e) * curDur));
+    });
+    bar.addEventListener("pointercancel", () => { dragging = false; });
+    lp.appendChild(btn);
+    lp.appendChild(bar);
+    head.appendChild(lp);
+  }
+
   const h1 = document.createElement("h1");
   h1.className = "lyrics-title";
   h1.textContent = huTitle || originalTitle;
@@ -814,11 +919,36 @@ function renderLyrics(){
   meta.className = "lyrics-meta";
   if (huTitle && originalTitle) meta.appendChild(metaLine("Eredeti cím", originalTitle));
   if (author) meta.appendChild(metaLine("Előadó", author));
-  if (lyricsData && lyricsData.translator) meta.appendChild(metaLine("Fordította", lyricsData.translator));
+  if (active && active.translator) meta.appendChild(metaLine("Fordította", active.translator));
   if (meta.childNodes.length) head.appendChild(meta);
-  wrap.appendChild(head);
 
-  const sections = (lyricsData && lyricsData.sections) || [];
+  if (versions.length > 1) {
+    const pager = document.createElement("div");
+    pager.className = "lyrics-pager";
+    const prev = document.createElement("button");
+    prev.type = "button";
+    prev.className = "lyrics-pager-btn";
+    prev.setAttribute("aria-label", "Előző fordítás");
+    prev.textContent = "‹";
+    prev.onclick = () => { lyricsVersionIndex = (lyricsVersionIndex - 1 + versions.length) % versions.length; renderLyrics(); };
+    const label = document.createElement("span");
+    label.className = "lyrics-pager-label";
+    label.textContent = (lyricsVersionIndex + 1) + " / " + versions.length;
+    const next = document.createElement("button");
+    next.type = "button";
+    next.className = "lyrics-pager-btn";
+    next.setAttribute("aria-label", "Következő fordítás");
+    next.textContent = "›";
+    next.onclick = () => { lyricsVersionIndex = (lyricsVersionIndex + 1) % versions.length; renderLyrics(); };
+    pager.appendChild(prev);
+    pager.appendChild(label);
+    pager.appendChild(next);
+    pagerRow.appendChild(pager);
+  }
+  wrap.appendChild(head);
+  if (lyricsPlayerTrackId) icon();
+
+  const sections = (active && active.sections) || [];
   const texts = [];
   sections.forEach(sec => {
     const block = document.createElement("div");
@@ -864,6 +994,7 @@ async function reveal(){
     $("label").dataset.revealed = "1";
 
     lyricsData = null;
+    lyricsVersionIndex = 0;
     $("b-lyrics").style.visibility = "hidden";
     if (mode === "szabker") {
       lyricsData = await loadLyrics(trackId);
@@ -1014,9 +1145,13 @@ $("b-next").onclick = () => {
   if (randomMode && mode === "szabker") playRandom(); else scan();
 };
 $("b-redev").onclick = pickDevice;
-$("b-lyrics").onclick = () => { renderLyrics(); openLyricsDrawer(); };
-$("b-lyrics-back").onclick = closeLyricsDrawer;
-$("lyrics-overlay").onclick = closeLyricsDrawer;
+$("b-lyrics").onclick = () => { lyricsPlayerTrackId = null; renderLyrics(); openLyricsDrawer(); };
+function closeLyricsDrawerByUser(){
+  if (lyricsPlayerTrackId && trackId === lyricsPlayerTrackId && playing) toggle();
+  closeLyricsDrawer();
+}
+$("b-lyrics-back").onclick = closeLyricsDrawerByUser;
+$("lyrics-overlay").onclick = closeLyricsDrawerByUser;
 $("b-catalog").onclick = openCatalog;
 $("b-catalog-back").onclick = () => show(catalogReturnView);
 $("catalog-search").addEventListener("input", () => renderCatalogList($("catalog-search").value));
@@ -1104,7 +1239,7 @@ function toggleRandomMode(){
   localStorage.setItem("randomMode", randomMode ? "1" : "0");
   randomPool = [];
   applyRandomMode();
-  if (!trackId) scanReady();
+  if (!trackId && $("v-play").classList.contains("on")) scanReady();
 }
 function openMenu(){ $("menu").classList.add("open"); $("menu-overlay").classList.add("open"); }
 function closeMenu(){ $("menu").classList.remove("open"); $("menu-overlay").classList.remove("open"); }

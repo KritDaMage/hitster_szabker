@@ -5,7 +5,7 @@ Ide kerülnek a Szabker dicsi módhoz tartozó teljes dalszövegek, egy fájl da
 ## Fájlnév
 
 `<track ID>.json` — ugyanaz a 22 karakteres track ID, amit a QR-kódoknál és a
-`SZABKER_TITLES`-nél is használunk (a Spotify-megosztólink végén van).
+gyökérbeli `titles.json`-nél is használunk (a Spotify-megosztólink végén van).
 
 Példa: `4uLU6hMCjMI75M1A2tKUQC.json`
 
@@ -33,8 +33,8 @@ listában — ott, ahol a dalban ténylegesen elhangzik.
 
 - `title`, `original_title`, `author`, `translator`: mind opcionális. Ha
   kitöltöd őket, ezek jelennek meg a dalszöveg-nézet tetején — ha nem, az app
-  visszaesik a Spotifytól kapott (és a `SZABKER_TITLES`-ben megadott) címre,
-  előadóra.
+  visszaesik a Spotifytól kapott (és a gyökérbeli `titles.json`-ben megadott)
+  címre, előadóra.
 - `type`: rövid angol szó, ami a nézetben szó szerint megjelenik címkeként —
   ezért érdemes a dal tényleges szerkezetét leírni, nem csak a legközelebbi
   ismert kategóriát ráhúzni. Gyakori értékek:
@@ -56,6 +56,30 @@ listában — ott, ahol a dalban ténylegesen elhangzik.
 
 Ha egy dalhoz nincs itt fájl, a „Dalszöveg" gomb egyszerűen nem jelenik meg
 felfedéskor — nem kell mindegyikhez azonnal elkészíteni.
+
+## Több fordítás egy dalhoz
+
+Ha egy dalnak több, egymástól független magyar fordítása is létezik, ne írd
+felül az egyiket a másikkal — tedd fel mindkettőt egy `versions` tömbbe. Egy
+`versions`-elem pontosan ugyanolyan alakú, mint eddig maga a fájl volt
+(`title`, `original_title`, `author`, `translator`, `sections`):
+
+```json
+{
+  "versions": [
+    { "translator": "Első fordító", "sections": [ ... ] },
+    { "translator": "Második fordító", "sections": [ ... ] }
+  ]
+}
+```
+
+Ha `versions` van jelen, az app lapozó gombokat (‹ ›) jelenít meg a
+dalszöveg fejlécében, és mindig az éppen kiválasztott elem `title`/
+`original_title`/`author`/`translator`/`sections` mezőit használja — a
+`title`/`original_title`/`author`/`translator`/`sections` mezőket ilyenkor
+a legfelső szinten nem kell (és nem is szabad) kitölteni, csak a
+`versions` elemein belül. Ha egy dalnak csak egy fordítása van, maradhat a
+régi, lapos formátum (`versions` nélkül) — nem kötelező áttérni.
 
 ## `index.json` — a dalkatalógus
 
