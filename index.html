@@ -73,7 +73,20 @@ header{
 }
 .menu.open{transform:translateX(0)}
 .menu h2{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
-.menu-dev,.menu-catalog{display:flex;flex-direction:column;gap:8px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(246,236,221,.12)}
+.menu-dev{display:flex;flex-direction:column;gap:8px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(246,236,221,.12)}
+.menu-divider{border-top:1px solid rgba(246,236,221,.12);margin-top:18px}
+.menu-catalog{
+  display:flex;flex-direction:column;gap:8px;
+  margin-top:0;
+  max-height:0;opacity:0;overflow:hidden;transform:translateY(-10px);
+  transition:max-height .3s ease, opacity .25s ease, transform .25s ease, margin-top .3s ease;
+  pointer-events:none;
+}
+.menu-catalog.show{
+  margin-top:18px;
+  max-height:260px;opacity:1;transform:translateY(0);
+  pointer-events:auto;
+}
 .menu-link{margin-top:auto;padding:10px 16px;font-size:13px;color:var(--dim);text-align:left;text-decoration:underline;text-underline-offset:3px}
 .menu-item{padding:14px 16px;border-radius:12px;text-align:left;font-size:16px;font-weight:600;color:var(--paper)}
 .menu-item[aria-current="true"]{background:var(--paper);color:var(--ink)}
@@ -248,7 +261,9 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   <button class="menu-item" data-mode="general">Általános</button>
   <button class="menu-item" data-mode="szabker">Szabker dicsi</button>
 
-  <div class="menu-catalog" id="menu-catalog" hidden>
+  <div class="menu-divider"></div>
+
+  <div class="menu-catalog" id="menu-catalog">
     <h2>Dicsi</h2>
     <label class="switch-row">
       <span>QR nélkül</span>
@@ -548,13 +563,21 @@ async function startSdk(){
     if (!s || dragging) return;
     const wasPlaying = playing;
     playing = !s.paused;
-    // az SDK lejátszás közben gyakran újraküldi ezt az eseményt, kicsit
-    // pontatlan pozícióval — csak akkor korrigálunk, ha tényleg eltér
-    // (különben minden apró eltérésnél megremegne a bakelit)
-    const predicted = wasPlaying ? posBase + (performance.now() - posBaseAt) : posBase;
-    const drift = Math.abs(s.position - predicted);
-    if (drift > 350 || s.duration !== curDur || wasPlaying !== playing) {
-      paint(s.position, s.duration);
+    // egy új szám indításakor (pufferelés közben) az SDK gyakran küld
+    // pár másodpercig pontatlan/rángatózó pozíciót és paused-állapotot —
+    // ez alatt a "beállási" ablak alatt nem korrigálunk pozíciót, csak
+    // az időtartamot vesszük át, ha még nem ismertük
+    const settling = performance.now() - lastPlayIssuedAt < 2000;
+    if (!curDur && s.duration) curDur = s.duration;
+    if (!settling) {
+      // az SDK lejátszás közben gyakran újraküldi ezt az eseményt, kicsit
+      // pontatlan pozícióval — csak akkor korrigálunk, ha tényleg eltér
+      // (különben minden apró eltérésnél megremegne a bakelit)
+      const predicted = wasPlaying ? posBase + (performance.now() - posBaseAt) : posBase;
+      const drift = Math.abs(s.position - predicted);
+      if (drift > 350 || s.duration !== curDur || wasPlaying !== playing) {
+        paint(s.position, s.duration);
+      }
     }
     icon();
   });
@@ -578,6 +601,7 @@ async function startSdk(){
 
 /* ══════════ 4. lejátszás ══════════════════════════════════ */
 async function startPlayback(id){
+  lastPlayIssuedAt = performance.now();
   try {
     await api("me/player/play" + (deviceId ? "?device_id=" + deviceId : ""), {
       method: "PUT", body: JSON.stringify({ uris: ["spotify:track:" + id] })
@@ -593,6 +617,7 @@ async function startPlayback(id){
   }
 }
 async function play(id){
+  if (!MOCK && !(await getToken())) { try { authExpired(); } catch(e){} return; }
   trackId = id;
   reset();
   show("play");
@@ -629,6 +654,7 @@ function startPolling(){
 }
 
 let posBase = 0, posBaseAt = 0;
+let lastPlayIssuedAt = 0;  // mikor indítottunk mi magunk lejátszást — ez alatt az SDK pufferelési zaja ne rángassa a bakelitet
 
 const SPIN_MS = 7000; // egy teljes bakelit-fordulat ennyi ezredmásodpercnyi zenénként
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -760,10 +786,11 @@ async function toggleLyricsPlayer(){
   if (!id) return;
   if (trackId === id) {
     await toggle();
-  } else {
-    trackId = id;
-    await startPlayback(id);
+    return;
   }
+  if (!MOCK && !(await getToken())) { try { authExpired(); } catch(e){} return; }
+  trackId = id;
+  await startPlayback(id);
 }
 function closeLyricsDrawer(){
   $("v-lyrics").classList.remove("open");
@@ -1208,7 +1235,8 @@ async function boot(){
   else { show("play"); $("play-err").textContent = ""; scanReady(); }
 }
 
-function scanReady(){
+async function scanReady(){
+  if (!MOCK && !(await getToken())) { try { authExpired(); } catch(e){} return; }
   // első koppintás egyben feloldja a mobil autoplay-tiltást is
   show("play");
   const useRandom = randomMode && mode === "szabker";
@@ -1226,7 +1254,7 @@ function scanReady(){
 function applyMode(){
   document.body.dataset.mode = mode;
   $("blank-logo").hidden = mode !== "szabker";
-  $("menu-catalog").hidden = mode !== "szabker";
+  $("menu-catalog").classList.toggle("show", mode === "szabker");
   document.querySelectorAll(".menu-item").forEach(b => {
     b.setAttribute("aria-current", b.dataset.mode === mode ? "true" : "false");
   });
@@ -1252,7 +1280,6 @@ document.querySelectorAll(".menu-item[data-mode]").forEach(b => {
     mode = b.dataset.mode;
     localStorage.setItem("mode", mode);
     applyMode();
-    closeMenu();
     if (changed) await resetPlayback();
   };
 });

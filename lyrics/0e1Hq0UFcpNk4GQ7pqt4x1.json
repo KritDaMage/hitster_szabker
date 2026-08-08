@@ -1,0 +1,10 @@
+{
+  "title": "Jézusé, minden Jézusé",
+  "original_title": "Jesus, All For Jesus",
+  "author": "Robin Mark",
+  "sections": [
+    { "type": "verse", "text": "Jézusé, minden Jézusé, minden gondolatom,\nA sorsom és a lényem!\nJézusé, minden Jézusé, minden gondolatom,\nA sorsom és a lényem!" },
+    { "type": "verse", "text": "Minden vágyam, tervem, gondolatom,\nNéked átadom, a kezedbe rakom!\nMinden vágyam, tervem, gondolatom,\nNéked átadom, a kezedbe rakom!" },
+    { "type": "chorus", "text": "Mert hol Jézus az Úr, csak ott van szabadság!\nMert hol Jézus az Úr, csak ott van gyógyulás!" }
+  ]
+}

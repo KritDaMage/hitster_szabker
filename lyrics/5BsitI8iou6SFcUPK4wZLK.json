@@ -4,11 +4,11 @@
   "author": "Don Potter",
   "translator": "Prazsák László, Erős Tibor",
   "sections": [
-    { "type": "verse", "text": "A sátánt legyőzték a bárány vérével\nÉs az ő szavuk bizonyságával\nNem kímélték még az életüket sem\nEnnek örülnek a mennyben" },
-    { "type": "pre-chorus", "text": "Itt a földön üldözés vár rátok\nmégis örüljetek mert:" },
-    { "type": "chorus", "text": "Én már legyőztem\nÉn már legyőztem\nÉn már legyőztem a világot" },
-    { "type": "verse", "text": "A sátánt legyőzzük a bárány vérével\nÉs a mi szavunk bizonyságával.\nNem kíméljük az életünket sem\nEnnek örülnek a mennyben" },
-    { "type": "pre-chorus", "text": "Itt a földön üldözés vár majd ránk is\nMégis örvendezünk, mert" },
+    { "type": "verse", "text": "A sátánt legyőzték a bárány vérével,\nÉs az ő szavuk bizonyságával.\nNem kímélték még az életüket sem.\nEnnek örülnek a mennyben." },
+    { "type": "pre-chorus", "text": "Itt a földön üldözés vár rátok,\nmégis örüljetek, mert:" },
+    { "type": "chorus", "text": "Én már legyőztem!\nÉn már legyőztem!\nÉn már legyőztem a világot!" },
+    { "type": "verse", "text": "A sátánt legyőzzük a bárány vérével,\nÉs a mi szavunk bizonyságával.\nNem kíméljük az életünket sem.\nEnnek örülnek a mennyben." },
+    { "type": "pre-chorus", "text": "Itt a földön üldözés vár majd ránk is,\nmégis örvendezünk, mert:" },
     { "type": "outro", "text": "Győztesek vagyunk. A világ fölött." }
   ]
 }
