@@ -55,6 +55,9 @@ header{
 .head-left{display:flex;align-items:center;gap:10px}
 .hamburger{width:22px;height:22px;display:grid;place-items:center;color:var(--paper)}
 .hamburger svg{width:20px;height:20px}
+.head-mode{display:flex;flex-direction:column;gap:3px}
+.head-progress{display:flex;align-items:center;gap:8px;font-size:9px}
+.head-progress button{color:var(--hot);text-decoration:underline;text-underline-offset:2px}
 #out{color:var(--dim);font-weight:600}
 #out[data-live="1"]{color:var(--hot)}
 
@@ -215,6 +218,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 
 /* ─── dalszöveg ──────────────────────────────────────────── */
 #v-catalog.on{align-items:stretch;align-self:stretch}
+#v-catalog .lyrics-scroll{max-width:900px;scrollbar-gutter:stable}
 .lyrics-scroll{width:100%;max-width:640px;margin:0 auto;flex:1 1 auto;min-height:0;overflow-y:auto;
   display:flex;flex-direction:column;gap:20px;padding:4px 4px 20px}
 .lyrics-head{display:flex;flex-direction:column;gap:6px;padding-bottom:16px;border-bottom:1px solid rgba(246,236,221,.12);
@@ -240,6 +244,26 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .lyrics-section{display:flex;flex-direction:column;gap:4px}
 .lyrics-label{color:var(--dim);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600}
 .lyrics-text{color:var(--paper);font-size:16px;line-height:1.5;white-space:pre;overflow-x:auto}
+
+/* ─── dalkatalógus táblázat ──────────────────────────────── */
+.catalog-table{width:100%;margin:0 auto;border-collapse:collapse;table-layout:fixed;
+  background:var(--ink-lift);border-radius:12px;overflow:hidden}
+.catalog-table th{text-align:left;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);font-weight:700;padding:10px 12px;border-bottom:1px solid rgba(246,236,221,.14);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.catalog-table td{padding:12px;font-size:14px;line-height:1.35;color:var(--paper);
+  border-bottom:1px solid rgba(246,236,221,.08);overflow-wrap:break-word}
+.catalog-table tbody tr:last-child td{border-bottom:none}
+.catalog-table tbody tr{cursor:pointer}
+.catalog-table tbody tr:active{background:rgba(255,255,255,.06)}
+.catalog-table .num{color:var(--dim);font-variant-numeric:tabular-nums}
+.catalog-table .orig{color:var(--dim)}
+.catalog-table .year{text-align:right;color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap}
+.catalog-table col.col-num{width:48px}
+.catalog-table col.col-year{width:64px}
+.catalog-table th.sortable{cursor:pointer;user-select:none}
+.catalog-table th.sortable:active{color:var(--paper)}
+.sort-arrow{display:inline-block;margin-left:4px;width:0.8em;color:inherit}
 </style>
 </head>
 <body>
@@ -249,7 +273,13 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
     <button class="hamburger" id="b-menu" aria-label="Menü">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
     </button>
-    <span>Kártyák</span>
+    <div class="head-mode">
+      <span id="mode-label">Kártyák</span>
+      <div class="head-progress" id="head-progress" hidden>
+        <span id="reveal-counter">0 / 0</span>
+        <button type="button" id="b-reveal-reset">Újrakezdés</button>
+      </div>
+    </div>
   </div>
   <span id="out">—</span>
 </header>
@@ -345,7 +375,20 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
         <h1 class="lyrics-title">Dalkatalógus</h1>
         <input type="search" class="catalog-search" id="catalog-search" placeholder="Keresés…">
       </div>
-      <div class="devs" id="catalog-list"></div>
+      <table class="catalog-table">
+        <colgroup>
+          <col class="col-num"><col class="col-title"><col class="col-orig"><col class="col-year">
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="num">#</th>
+            <th class="sortable" data-sort="title">Cím<span class="sort-arrow" id="sort-arrow-title"></span></th>
+            <th class="sortable" data-sort="original_title">Eredeti cím<span class="sort-arrow" id="sort-arrow-original_title"></span></th>
+            <th class="sortable year" data-sort="year">Év<span class="sort-arrow" id="sort-arrow-year"></span></th>
+          </tr>
+        </thead>
+        <tbody id="catalog-list"></tbody>
+      </table>
     </div>
   </section>
 
@@ -618,14 +661,26 @@ async function startPlayback(id){
 }
 async function play(id){
   if (!MOCK && !(await getToken())) { try { authExpired(); } catch(e){} return; }
+  pendingRestoreId = null;
   trackId = id;
   reset();
   show("play");
   $("play-err").textContent = "";
+  if (mode === "szabker") {
+    revealedIds.add(id);
+    updateRevealProgress();
+  }
   await startPlayback(id);
 }
 
 async function toggle(){
+  if (pendingRestoreId !== null) {
+    const id = pendingRestoreId;
+    pendingRestoreId = null;
+    try { await startPlayback(id); }
+    catch(e){ $("play-err").textContent = e.message; }
+    return;
+  }
   try {
     if (usingSdk && player) { await player.togglePlay(); }
     else {
@@ -752,24 +807,92 @@ function icon(){
 function reset(){
   $("label").dataset.revealed = "0";
   $("prog").style.strokeDasharray = "0 999";
+  $("vinyl").style.transform = "rotate(0deg)";
   curDur = 0;
+  posBase = 0;
+  pendingRestoreId = null;
   clearInterval(poller);
   lyricsData = null;
   $("b-lyrics").style.visibility = "hidden";
+  const lpFill = document.getElementById("lyrics-player-fill");
+  if (lpFill) lpFill.style.width = "0%";
   closeLyricsDrawer();
 }
 
 async function resetPlayback(){
-  if (!trackId) return;
-  try {
-    if (usingSdk && player) await player.pause();
-    else if (playing) await api("me/player/pause" + (deviceId ? "?device_id=" + deviceId : ""), { method: "PUT" });
-  } catch(e){}
+  if (trackId) {
+    try {
+      if (usingSdk && player) await player.pause();
+      else if (playing) await api("me/player/pause" + (deviceId ? "?device_id=" + deviceId : ""), { method: "PUT" });
+    } catch(e){}
+  }
   trackId = null;
   playing = false;
   reset();
   icon();
   scanReady();
+}
+
+/* ── mód-memória: Általános/Szabker dicsi külön-külön megjegyzi,
+   melyik dal szólt, mikor elhagytuk azt a módot — visszaváltáskor
+   elölről indul, nem kell a pontos pozíciót visszatekerni */
+let modeMemory = { general: null, szabker: null };
+let pendingRestoreId = null;  // ha nem null: a következő lejátszás-gombnyomásnak ezt kell elindítania elölről
+
+function snapshotMode(){
+  if (!trackId) return null;
+  return {
+    trackId,
+    revealedFlag: $("label").dataset.revealed === "1",
+    revealed: { ...revealed },
+    yrText: $("r-yr").textContent
+  };
+}
+
+async function pauseCurrentPlayback(){
+  if (!playing) return;
+  try {
+    if (usingSdk && player) await player.pause();
+    else await api("me/player/pause" + (deviceId ? "?device_id=" + deviceId : ""), { method: "PUT" });
+  } catch(e){}
+  playing = false;
+}
+
+async function restoreModeSnapshot(snap){
+  pendingRestoreId = null;
+  if (!snap) {
+    trackId = null;
+    playing = false;
+    reset();
+    icon();
+    scanReady();
+    return;
+  }
+  trackId = snap.trackId;
+  curDur = 0;
+  posBase = 0;
+  posBaseAt = performance.now();
+  playing = false;
+  pendingRestoreId = snap.trackId;
+  revealed = snap.revealed;
+  lyricsData = null;
+  lyricsVersionIndex = 0;
+  $("b-lyrics").style.visibility = "hidden";
+  $("label").dataset.revealed = snap.revealedFlag ? "1" : "0";
+  if (snap.revealedFlag) {
+    $("r-yr").textContent = snap.yrText;
+    $("r-ti").textContent = snap.revealed.huTitle || snap.revealed.title;
+    $("r-ar").textContent = snap.revealed.huTitle ? snap.revealed.title : snap.revealed.artist;
+  }
+  renderRing(0);
+  renderVinyl(0);
+  icon();
+  show("play");
+  $("b-toggle").style.opacity = 1;
+  if (snap.revealedFlag && mode === "szabker") {
+    lyricsData = await loadLyrics(trackId);
+    if (lyricsData) $("b-lyrics").style.visibility = "visible";
+  }
 }
 
 let lyricsData = null;
@@ -789,6 +912,7 @@ async function toggleLyricsPlayer(){
     return;
   }
   if (!MOCK && !(await getToken())) { try { authExpired(); } catch(e){} return; }
+  pendingRestoreId = null;
   trackId = id;
   await startPlayback(id);
 }
@@ -825,25 +949,60 @@ async function loadCatalog(){
 }
 
 let catalogEntries = [];
+let catalogSort = { key: "title", dir: "asc" };
+
+function sortCatalogEntries(){
+  const { key, dir } = catalogSort;
+  const mul = dir === "asc" ? 1 : -1;
+  catalogEntries.sort((a, b) => {
+    if (key === "year") {
+      const av = a.year || 0, bv = b.year || 0;
+      return (av - bv) * mul;
+    }
+    return (a[key] || "").localeCompare(b[key] || "", "hu") * mul;
+  });
+}
+
+function updateCatalogSortIndicators(){
+  ["title", "original_title", "year"].forEach(key => {
+    const el = $("sort-arrow-" + key);
+    if (!el) return;
+    el.textContent = catalogSort.key === key ? (catalogSort.dir === "asc" ? "▲" : "▼") : "";
+  });
+}
 
 function renderCatalogList(filter){
   const list = $("catalog-list");
   list.innerHTML = "";
   const q = filter.trim().toLowerCase();
-  const shown = q ? catalogEntries.filter(e => e.title.toLowerCase().includes(q)) : catalogEntries;
+  const shown = q ? catalogEntries.filter(e => (e.searchText || e.title.toLowerCase()).includes(q)) : catalogEntries;
   if (!shown.length) {
-    const p = document.createElement("p");
-    p.className = "sub";
-    p.style.margin = "0 auto";
-    p.textContent = catalogEntries.length ? "Nincs találat." : "Még nincs egyetlen dal sem a katalógusban.";
-    list.appendChild(p);
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 4;
+    td.style.textAlign = "center";
+    td.style.padding = "20px 12px";
+    td.style.color = "var(--dim)";
+    td.textContent = catalogEntries.length ? "Nincs találat." : "Még nincs egyetlen dal sem a katalógusban.";
+    tr.appendChild(td);
+    list.appendChild(tr);
     return;
   }
-  shown.forEach(entry => {
-    const b = document.createElement("button");
-    b.className = "dev";
-    b.textContent = entry.title;
-    b.onclick = async () => {
+  shown.forEach((entry, i) => {
+    const tr = document.createElement("tr");
+    const tdNum = document.createElement("td");
+    tdNum.className = "num";
+    tdNum.textContent = i + 1;
+    const tdTitle = document.createElement("td");
+    tdTitle.textContent = entry.title;
+    const tdOrig = document.createElement("td");
+    tdOrig.className = "orig";
+    tdOrig.textContent = entry.original_title || "—";
+    const tdYear = document.createElement("td");
+    tdYear.className = "year";
+    tdYear.textContent = entry.year || "—";
+    tr.append(tdNum, tdTitle, tdOrig, tdYear);
+    tr.onclick = async () => {
       const data = await loadLyrics(entry.id);
       if (!data) return;
       lyricsData = data;
@@ -852,8 +1011,14 @@ function renderCatalogList(filter){
       renderLyrics();
       openLyricsDrawer();
     };
-    list.appendChild(b);
+    list.appendChild(tr);
   });
+}
+
+function lyricsSearchText(data){
+  if (!data) return "";
+  const versions = Array.isArray(data.versions) ? data.versions : [data];
+  return versions.map(v => (v.sections || []).map(s => s.text).join(" ")).join(" ");
 }
 
 async function openCatalog(){
@@ -861,10 +1026,23 @@ async function openCatalog(){
   closeMenu();
   show("catalog");
   $("catalog-search").value = "";
-  catalogEntries = await loadCatalog();
-  if (MOCK) catalogEntries = catalogEntries.concat([{ id: "0".repeat(22), title: "Minta Magyar Cím" }]);
-  catalogEntries.sort((a, b) => a.title.localeCompare(b.title, "hu"));
+  const [entries, titles] = await Promise.all([loadCatalog(), loadTitles()]);
+  let all = entries;
+  if (MOCK && !all.some(e => e.id === "0".repeat(22))) {
+    all = all.concat([{ id: "0".repeat(22), title: "Minta Magyar Cím" }]);
+  }
+  catalogEntries = all.map(e => {
+    const t = titles[e.id] || {};
+    return { id: e.id, title: e.title, original_title: t.title || "", year: t.year || "" };
+  });
+  sortCatalogEntries();
+  updateCatalogSortIndicators();
   renderCatalogList("");
+  // a teljes dalszöveget is betöltjük kereséshez — a lista már látszik, ez csak utólag bővíti ki
+  const lyricsList = await Promise.all(catalogEntries.map(e => loadLyrics(e.id)));
+  catalogEntries.forEach((e, i) => {
+    e.searchText = (e.title + " " + e.original_title + " " + lyricsSearchText(lyricsList[i])).toLowerCase();
+  });
 }
 
 function metaLine(label, value){
@@ -1136,22 +1314,43 @@ function hit(text){
   return true;
 }
 
-/* QR nélküli mód: véletlen dal a dalkatalógusból, ismétlés nélkül,
-   amíg az összes dalon végig nem megy — utána (vagy a kapcsoló
-   átbillentésekor) újraindul a kör */
-let randomPool = [];
+/* Szabker dicsi mód: hányból hányat fedtünk már fel — ugyanez a lista
+   adja a "QR nélküli" véletlen módnak is, hogy melyik dal maradt még hátra */
+let revealedIds = new Set();
+let catalogSizeCache = null;
+async function getCatalogSize(){
+  if (catalogSizeCache === null) {
+    const entries = await loadCatalog();
+    catalogSizeCache = entries.length;
+  }
+  return catalogSizeCache;
+}
+async function updateRevealProgress(){
+  const box = $("head-progress");
+  if (mode !== "szabker" || !randomMode) { box.hidden = true; return; }
+  const total = await getCatalogSize();
+  box.hidden = total === 0;
+  $("reveal-counter").textContent = revealedIds.size + " / " + total + " kártya felfedve";
+}
+function clearRevealedIds(){
+  revealedIds.clear();
+  updateRevealProgress();
+}
+async function resetRevealProgress(){
+  clearRevealedIds();
+  await resetPlayback();
+}
+
+/* QR nélküli mód: véletlen dal a dalkatalógusból, ismétlés nélkül a már
+   felfedett dalok közül — amikor mind elfogy, újraindul a kör */
 async function playRandom(){
   const entries = await loadCatalog();
   if (!entries.length) { $("play-err").textContent = "Nincs dal a katalógusban."; return; }
-  const ids = entries.map(e => e.id);
-  randomPool = randomPool.filter(id => ids.includes(id));
-  if (!randomPool.length) {
-    randomPool = ids.length > 1 ? ids.filter(id => id !== trackId) : ids.slice();
-  }
-  const idx = Math.floor(Math.random() * randomPool.length);
-  const id = randomPool.splice(idx, 1)[0];
+  let pool = entries.filter(e => !revealedIds.has(e.id));
+  if (!pool.length) { clearRevealedIds(); pool = entries; }
+  const entry = pool[Math.floor(Math.random() * pool.length)];
   if (navigator.vibrate) navigator.vibrate(18);
-  play(id);
+  play(entry.id);
 }
 
 /* ══════════ 7. képernyő ébren ═════════════════════════════ */
@@ -1182,6 +1381,16 @@ $("lyrics-overlay").onclick = closeLyricsDrawerByUser;
 $("b-catalog").onclick = openCatalog;
 $("b-catalog-back").onclick = () => show(catalogReturnView);
 $("catalog-search").addEventListener("input", () => renderCatalogList($("catalog-search").value));
+document.querySelectorAll(".catalog-table th.sortable").forEach(th => {
+  th.onclick = () => {
+    const key = th.dataset.sort;
+    if (catalogSort.key === key) catalogSort.dir = catalogSort.dir === "asc" ? "desc" : "asc";
+    else catalogSort = { key, dir: "asc" };
+    sortCatalogEntries();
+    updateCatalogSortIndicators();
+    renderCatalogList($("catalog-search").value);
+  };
+});
 
 async function boot(){
   if (MOCK) {
@@ -1235,14 +1444,21 @@ async function boot(){
   else { show("play"); $("play-err").textContent = ""; scanReady(); }
 }
 
+let autoplayUnlocked = false;  // az első koppintás után igaz — utána a gomb ne sötétedjen el újra
 async function scanReady(){
   if (!MOCK && !(await getToken())) { try { authExpired(); } catch(e){} return; }
   // első koppintás egyben feloldja a mobil autoplay-tiltást is
   show("play");
   const useRandom = randomMode && mode === "szabker";
+  if (autoplayUnlocked) {
+    $("b-next").textContent = useRandom ? "Következő véletlen dal" : "Következő kártya";
+    $("b-toggle").style.opacity = 1;
+    return;
+  }
   $("b-next").textContent = useRandom ? "Véletlen dal indítása" : "Kártya beolvasása";
   $("b-toggle").style.opacity = .35;
   const once = () => {
+    autoplayUnlocked = true;
     $("b-next").textContent = useRandom ? "Következő véletlen dal" : "Következő kártya";
     $("b-toggle").style.opacity = 1;
     $("b-next").removeEventListener("click", once);
@@ -1253,11 +1469,13 @@ async function scanReady(){
 /* ══════════ 9. bal oldali menü / mód ═══════════════════════ */
 function applyMode(){
   document.body.dataset.mode = mode;
+  $("mode-label").textContent = mode === "szabker" ? "Szabker dicsi" : "Általános";
   $("blank-logo").hidden = mode !== "szabker";
   $("menu-catalog").classList.toggle("show", mode === "szabker");
   document.querySelectorAll(".menu-item").forEach(b => {
     b.setAttribute("aria-current", b.dataset.mode === mode ? "true" : "false");
   });
+  updateRevealProgress();
 }
 function applyRandomMode(){
   $("b-random-toggle").setAttribute("aria-checked", randomMode ? "true" : "false");
@@ -1265,8 +1483,8 @@ function applyRandomMode(){
 function toggleRandomMode(){
   randomMode = !randomMode;
   localStorage.setItem("randomMode", randomMode ? "1" : "0");
-  randomPool = [];
   applyRandomMode();
+  updateRevealProgress();
   if (!trackId && $("v-play").classList.contains("on")) scanReady();
 }
 function openMenu(){ $("menu").classList.add("open"); $("menu-overlay").classList.add("open"); }
@@ -1276,14 +1494,19 @@ $("b-menu").onclick = openMenu;
 $("menu-overlay").onclick = closeMenu;
 document.querySelectorAll(".menu-item[data-mode]").forEach(b => {
   b.onclick = async () => {
-    const changed = b.dataset.mode !== mode;
-    mode = b.dataset.mode;
+    const newMode = b.dataset.mode;
+    const changed = newMode !== mode;
+    if (!changed) return;
+    modeMemory[mode] = snapshotMode();
+    await pauseCurrentPlayback();
+    mode = newMode;
     localStorage.setItem("mode", mode);
     applyMode();
-    if (changed) await resetPlayback();
+    await restoreModeSnapshot(modeMemory[mode]);
   };
 });
 $("b-random-toggle").onclick = toggleRandomMode;
+$("b-reveal-reset").onclick = resetRevealProgress;
 applyMode();
 applyRandomMode();
 
