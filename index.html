@@ -85,7 +85,7 @@ header{
 .hamburger svg{width:20px;height:20px}
 .head-mode{display:flex;flex-direction:column;gap:3px}
 .head-progress{display:flex;flex-direction:column;align-items:flex-start;gap:4px;font-size:9px;margin-left:32px}
-body[data-mode="szabker"] #head-progress[hidden]{display:flex !important;visibility:hidden}
+#head-progress[hidden]{display:flex !important;visibility:hidden}
 .head-progress button{color:var(--hot);text-decoration:underline;text-underline-offset:2px;font-size:12px}
 #out{color:var(--dim);font-weight:600}
 #out[data-live="1"]{color:var(--hot)}
@@ -161,6 +161,7 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
 .vinyl{
   position:absolute;inset:14px;border-radius:50%;
   background:
+    conic-gradient(from 41deg, transparent 0deg 72deg, rgba(255,255,255,.11) 90deg, transparent 108deg 252deg, rgba(255,255,255,.11) 270deg, transparent 288deg 360deg),
     repeating-radial-gradient(circle at 50% 50%, var(--vinyl-a) 0 1px, var(--vinyl-b) 1px 3px),
     radial-gradient(circle at 34% 28%, var(--vinyl-c) 0%, var(--vinyl-d) 62%);
   box-shadow:inset 0 0 0 1px rgba(246,236,221,.07);
@@ -213,6 +214,7 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
 .hero-vinyl{
   position:absolute;inset:0;border-radius:50%;
   background:
+    conic-gradient(from 41deg, transparent 0deg 72deg, rgba(255,255,255,.11) 90deg, transparent 108deg 252deg, rgba(255,255,255,.11) 270deg, transparent 288deg 360deg),
     repeating-radial-gradient(circle at 50% 50%, var(--vinyl-a) 0 1px, var(--vinyl-b) 1px 3px),
     radial-gradient(circle at 34% 28%, var(--vinyl-c) 0%, var(--vinyl-d) 62%);
   box-shadow:inset 0 0 0 1px rgba(246,236,221,.07);
