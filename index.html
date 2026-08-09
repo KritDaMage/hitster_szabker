@@ -278,7 +278,7 @@ h1{font-size:clamp(26px,7.6vw,34px);font-weight:800;letter-spacing:-.035em;line-
 .note{color:var(--dim);font-size:13px;line-height:1.5;text-align:center;max-width:34ch}
 code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   background:var(--ink-lift);padding:3px 6px;border-radius:5px;word-break:break-all;color:var(--paper)}
-.err{color:var(--hot);font-size:14px;text-align:center;line-height:1.5;max-width:34ch;height:2.4em;overflow:hidden}
+.err{color:var(--hot);font-size:14px;text-align:center;line-height:1.5;max-width:34ch;min-height:2.4em}
 .devs{display:flex;flex-direction:column;gap:8px;width:100%;max-width:420px;margin:0 auto}
 .catalog-search{width:100%;max-width:420px;margin:0 auto;padding:14px 16px;border-radius:12px;
   background:var(--ink-lift);color:var(--paper);font:inherit;font-size:15px;border:none;outline:none;
@@ -386,6 +386,9 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
     <button class="menu-item" data-view="scan">Szkennelés</button>
     <button class="menu-item" data-view="play">Lejátszás</button>
     <button class="menu-item" data-view="dev">Eszközválasztó</button>
+    <button class="menu-item" data-view="catalog">Dalkatalógus</button>
+    <button class="menu-item" data-view="lyrics">Dalszöveg</button>
+    <button class="menu-item" data-err="auth">Hiba: lejárt belépés</button>
     <button class="menu-item" data-err="play">Hiba: lejátszás</button>
     <button class="menu-item" data-err="scan">Hiba: szkennelés</button>
     <button class="menu-item" data-err="dev">Hiba: eszközválasztó</button>
@@ -546,7 +549,8 @@ let wakeLock = null;
 let curDur = 0;
 let mode = localStorage.getItem("mode") || "general";
 let randomMode = localStorage.getItem("randomMode") === "1";
-let theme = localStorage.getItem("theme") || "dark";
+const systemPrefersLight = window.matchMedia && matchMedia("(prefers-color-scheme: light)").matches;
+let theme = localStorage.getItem("theme") || (systemPrefersLight ? "light" : "dark");
 let dragging = false;
 
 const $ = id => document.getElementById(id);
@@ -1621,10 +1625,17 @@ if (MOCK) {
   $("menu-dev").hidden = false;
   document.querySelectorAll(".menu-item[data-view]").forEach(b => {
     b.onclick = () => {
-      closeMenu();
       const v = b.dataset.view;
       if (v === "dev") {
         pickDevice();
+      } else if (v === "catalog") {
+        openCatalog();
+        openMenu();
+      } else if (v === "lyrics") {
+        trackId = "0".repeat(22);
+        lyricsPlayerTrackId = null;
+        renderLyrics();
+        openLyricsDrawer();
       } else {
         show(v);
       }
@@ -1632,9 +1643,9 @@ if (MOCK) {
   });
   document.querySelectorAll(".menu-item[data-err]").forEach(b => {
     b.onclick = () => {
-      closeMenu();
       const kind = b.dataset.err;
-      if (kind === "play") { show("play"); $("play-err").textContent = "Lejárt a belépés. Töltsd újra az oldalt."; }
+      if (kind === "auth") { show("auth"); $("auth-err").textContent = "Lejárt a bejelentkezés. Lépj be újra."; }
+      else if (kind === "play") { show("play"); $("play-err").textContent = "Lejárt a belépés. Töltsd újra az oldalt."; }
       else if (kind === "scan") { show("scan"); $("scan-err").textContent = "Ez nem ismerős kód. Tartsd rá egy másikra."; }
       else if (kind === "dev") { show("dev"); $("dev-err").textContent = "Nincs elérhető eszköz. Nyisd meg a Spotify appot és játssz le benne bármit egy pillanatra, aztán frissítsd a listát."; }
     };
