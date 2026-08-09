@@ -1,0 +1,11 @@
+{
+  "title": "Karjaid tartanak",
+  "original_title": "With All I Am",
+  "author": "Reuben Morgan",
+  "translator": "Pintér Béla",
+  "sections": [
+    { "type": "verse", "text": "Karjaid tartanak, tudom,\nBiztos oltalom szerelmed.\nTied vagyok, csak Benned hiszek,\nS ez nem változik meg, míg élek!" },
+    { "type": "chorus", "text": "Hozzád tartozom, Uram,\nÉrted éneklek, Uram,\nBárhová is mész, bármit is ígérsz, Benned bízom!" },
+    { "type": "bridge", "text": "Egész lényem keres Téged, Uram,\nEgész lényem követ Téged, Uram,\nEgész lényem szolgál Téged, Uram,\nEgész lényem szeret Téged, Uram!" }
+  ]
+}

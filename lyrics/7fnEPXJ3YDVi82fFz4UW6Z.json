@@ -1,0 +1,11 @@
+{
+  "title": "Jézus él bennem (Megtart utaimon)",
+  "original_title": "My Redeemer Lives",
+  "author": "Reuben Morgan",
+  "sections": [
+    { "type": "verse", "text": "Megtart utaimon, hordoz minden napon,\nElhiszem, elhiszem!\nBűntől megszabadít, formál s átalakít,\nElhiszem, elhiszem!" },
+    { "type": "pre-chorus", "text": "Kiáltsuk együtt: Óóó!\nEljött a Szabadító!" },
+    { "type": "chorus", "text": "Jézus él bennem, Jézus él bennem!" },
+    { "type": "bridge", "text": "Levetted rólam a gyászruhát,\nFelemeltél és a régi helyett új szívet adtál." }
+  ]
+}

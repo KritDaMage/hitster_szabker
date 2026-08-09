@@ -1,0 +1,12 @@
+{
+  "title": "Jézus jövök",
+  "original_title": "Jesus I Come",
+  "author": "Steven Furtick & Chris Brown",
+  "translator": "Tóth Máté Tamás",
+  "sections": [
+    { "type": "verse", "text": "Szükségem van most Rád,\nKegyelmed rám talált.\nJézus, jövök, Hozzád jövök!\nGyengén és sérülten,\nA Te erőd állít fel.\nJézus, jövök, Hozzád jövök!" },
+    { "type": "chorus", "text": "Megváltva felkelek,\nNyitott Menny van felettem,\nNevednek örökké\nDicsőséget zengek én!" },
+    { "type": "verse", "text": "Milyen nagy szeretet tisztítja népedet!\nJézus, jövök, Hozzád jövök!\nMinden megtört helyen igazságod vezet!\nJézus, jövök, Hozzád jövök!" },
+    { "type": "bridge", "text": "Drága Jézus,\nAhogy vagyok, jövök.\nHalleluja,\nSzereteted betölt!" }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "title": "Megváltott",
+  "original_title": "Salvation Is Here",
+  "author": "Joel Houston",
+  "translator": "Pintér Béla",
+  "sections": [
+    { "type": "verse", "text": "Őt látom minden pillanatban,\nCsak róla szól az életem.\nNem érdekel, hogy mit mond rám a világ,\nŐ él bennem!" },
+    { "type": "verse", "text": "Csak hallgasd az új nemzedéket,\nÉneklik győzelmünk dalát.\nNem számít már hogy mit mond rá a világ,\nŐ él bennem!" },
+    { "type": "chorus", "text": "Átformált, megszabadított,\nHalálból életre hívott,\nMegváltott, új vagyok, teljesen!\nMegváltott engem!" },
+    { "type": "bridge", "text": "Megváltott engem, megváltott engem,\nSzabad vagyok, Ő él bennem!" }
+  ]
+}

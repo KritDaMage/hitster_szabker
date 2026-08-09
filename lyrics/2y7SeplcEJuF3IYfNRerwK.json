@@ -1,0 +1,12 @@
+{
+  "title": "Megváltóm, szabadítóm",
+  "original_title": "For All You've Done",
+  "author": "Reuben Morgan",
+  "translator": "Pintér Béla",
+  "sections": [
+    { "type": "verse", "text": "Megváltóm, Szabadítóm,\nA porból felemeltél,\nSoha többé nem leszek már\nAz az ember, aki régen voltam én." },
+    { "type": "pre-chorus", "text": "Nyitva áll az ajtó, elkészült az út\nA mennyország felé!" },
+    { "type": "chorus", "text": "Értem jöttél, legyőzted a halált,\nMegnyílt már az út, Te új reményt hoztál.\nHalleluja – az életért!" },
+    { "type": "bridge", "text": "Látom már, nyitva áll az ajtó, elkészült az út\nA mennyország felé!\nÉrtem jöttél, legyőzted a halált,\nMegnyílt már az út, Te új reményt hoztál.\nHalleluja – az életért!" }
+  ]
+}

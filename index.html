@@ -143,8 +143,29 @@ main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;paddin
   transform:translateX(100%);transition:transform .25s ease;
 }
 #v-lyrics.open{transform:translateX(0)}
-.lyrics-close-row{flex:0 0 auto;display:flex;justify-content:flex-end}
+.lyrics-close-row{flex:0 0 auto;display:flex;justify-content:space-between}
 .lyrics-pager-row{flex:0 0 auto}
+
+/* ─── fejlesztői dalszöveg-szerkesztő ────────────────────── */
+.edit-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:30;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;transition:opacity .2s ease;
+}
+.edit-overlay.open{opacity:1;pointer-events:auto}
+.edit-panel{
+  width:1400px;max-width:95vw;height:80vh;max-height:90vh;min-width:320px;min-height:200px;
+  background:var(--ink-lift);border-radius:16px;padding:16px;
+  display:flex;flex-direction:column;gap:10px;
+  resize:both;overflow:auto;
+}
+.edit-textarea{
+  flex:1 1 auto;min-height:0;resize:none;
+  background:var(--ink);color:var(--paper);border:none;outline:none;border-radius:10px;
+  padding:14px;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;
+  white-space:pre;overflow:auto;
+}
+.edit-actions{flex:0 0 auto;display:flex;justify-content:flex-end;gap:10px}
 
 footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:14px}
 
@@ -307,9 +328,9 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .lyrics-player-btn svg{width:18px;height:18px;fill:currentColor}
 .lyrics-player-bar{flex:1 1 auto;height:6px;border-radius:999px;background:var(--ink-lift);overflow:hidden;
   touch-action:none;cursor:grab}
-.lyrics-player-fill{height:100%;width:0%;background:var(--hot);pointer-events:none}
+.lyrics-player-fill{height:100%;width:0%;background:var(--hot);pointer-events:none;border-radius:999px}
 .lyrics-title{font-size:clamp(22px,6vw,28px);font-weight:800;letter-spacing:-.03em;line-height:1.15;color:var(--paper)}
-.lyrics-meta{display:flex;flex-direction:column;gap:2px;margin-top:4px}
+.lyrics-meta{display:flex;flex-direction:column;gap:2px;margin-top:14px}
 .lyrics-meta-line{font-size:13px;color:var(--dim);line-height:1.5}
 .lyrics-meta-line b{font-weight:600}
 .lyrics-pager{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px}
@@ -319,7 +340,9 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .lyrics-pager-label{color:var(--dim);font-size:13px;font-weight:600;min-width:3.5ch;text-align:center}
 .lyrics-section{display:flex;flex-direction:column;gap:4px}
 .lyrics-label{color:var(--dim);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600}
-.lyrics-text{color:var(--paper);font-size:16px;line-height:1.5;white-space:pre;overflow-x:auto}
+.lyrics-text{color:var(--paper);font-size:16px;line-height:1.5;overflow-wrap:break-word}
+.lyrics-line{display:block;margin-bottom:5px}
+.lyrics-line:last-child{margin-bottom:0}
 
 /* ─── dalkatalógus táblázat ──────────────────────────────── */
 .catalog-table{width:100%;margin:0 auto;border-collapse:collapse;table-layout:fixed;
@@ -334,7 +357,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .catalog-table tbody tr:active{background:rgba(var(--line-rgb),.1)}
 .catalog-table .num{color:var(--dim);font-variant-numeric:tabular-nums}
 .catalog-table .orig{color:var(--dim)}
-.catalog-table .year{text-align:right;color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap}
+.catalog-table .year{text-align:right;color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap;padding-right:20px}
 .catalog-table col.col-num{width:48px}
 .catalog-table col.col-year{width:64px}
 .catalog-table th.sortable{cursor:pointer;user-select:none}
@@ -364,6 +387,16 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 
 <div class="menu-overlay" id="menu-overlay"></div>
 <div class="lyrics-overlay" id="lyrics-overlay"></div>
+<div class="edit-overlay" id="edit-overlay">
+  <div class="edit-panel">
+    <textarea class="edit-textarea" id="edit-textarea" spellcheck="false"></textarea>
+    <p class="err" id="edit-err"></p>
+    <div class="edit-actions">
+      <button type="button" class="pill ghost" id="b-edit-cancel">Mégse</button>
+      <button type="button" class="pill key" id="b-edit-save">Mentés a lemezre</button>
+    </div>
+  </div>
+</div>
 <nav class="menu" id="menu">
   <h2>Mód</h2>
   <button class="menu-item" data-mode="general">Általános</button>
@@ -457,6 +490,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   <!-- 5. dalszöveg (Szabker dicsi mód) — jobb oldali fiók, próba -->
   <section class="view" id="v-lyrics">
     <div class="lyrics-close-row">
+      <button type="button" class="pill ghost" id="b-lyrics-edit" hidden>Szerkesztés</button>
       <button class="pill ghost" id="b-lyrics-back">Vissza</button>
     </div>
     <div class="lyrics-scroll" id="lyrics-scroll"></div>
@@ -1027,6 +1061,55 @@ async function loadLyrics(id){
   } catch(e){ return null; }
 }
 
+/* ══════════ fejlesztői dalszöveg-szerkesztő (?mock=1) ═════ */
+let lyricsDirHandle = null;
+let editFileHandle = null;
+async function getLyricsDirHandle(){
+  if (lyricsDirHandle) return lyricsDirHandle;
+  if (!window.showDirectoryPicker) { alert("A böngésződ nem támogatja a Fájlrendszer API-t (Chrome/Edge kell hozzá)."); return null; }
+  try {
+    lyricsDirHandle = await window.showDirectoryPicker({ id: "hitster-lyrics", mode: "readwrite" });
+    return lyricsDirHandle;
+  } catch(e) { return null; }
+}
+async function openLyricsEditor(){
+  const id = lyricsPlayerTrackId || trackId;
+  if (!id) return;
+  const dir = await getLyricsDirHandle();
+  if (!dir) return;
+  try {
+    editFileHandle = await dir.getFileHandle(id + ".json");
+  } catch(e) {
+    alert("Nem található a " + id + ".json a kiválasztott mappában. Ügyelj rá, hogy a lyrics/ mappát válaszd ki.");
+    return;
+  }
+  const file = await editFileHandle.getFile();
+  $("edit-textarea").value = await file.text();
+  $("edit-err").textContent = "";
+  $("edit-overlay").classList.add("open");
+}
+function closeLyricsEditor(){
+  $("edit-overlay").classList.remove("open");
+  editFileHandle = null;
+}
+async function saveLyricsEdit(){
+  const text = $("edit-textarea").value;
+  try {
+    JSON.parse(text);
+  } catch(e) {
+    $("edit-err").textContent = "Hibás JSON: " + e.message;
+    return;
+  }
+  if (lyricsPlayerTrackId) sessionStorage.setItem("resumeCatalogLyrics", lyricsPlayerTrackId);
+  const writable = await editFileHandle.createWritable();
+  await writable.write(text);
+  await writable.close();
+  const id = lyricsPlayerTrackId || trackId;
+  closeLyricsEditor();
+  lyricsData = await loadLyrics(id);
+  renderLyrics();
+}
+
 /* eredeti cím + évszám + magyar cím a Spotify helyett, lásd titles.json */
 let titlesCache = null;
 async function loadTitles(){
@@ -1117,7 +1200,7 @@ function renderCatalogList(filter){
 function lyricsSearchText(data){
   if (!data) return "";
   const versions = Array.isArray(data.versions) ? data.versions : [data];
-  return versions.map(v => (v.sections || []).map(s => s.text).join(" ")).join(" ");
+  return versions.map(v => (v.author || "") + " " + (v.translator || "") + " " + (v.sections || []).map(s => s.text).join(" ")).join(" ");
 }
 
 async function openCatalog(){
@@ -1222,7 +1305,7 @@ function renderLyrics(){
   const meta = document.createElement("div");
   meta.className = "lyrics-meta";
   if (huTitle && originalTitle) meta.appendChild(metaLine("Eredeti cím", originalTitle));
-  if (author) meta.appendChild(metaLine("Előadó", author));
+  if (author) meta.appendChild(metaLine("Szerző", author));
   if (active && active.translator) meta.appendChild(metaLine("Fordította", active.translator));
   if (meta.childNodes.length) head.appendChild(meta);
 
@@ -1262,7 +1345,12 @@ function renderLyrics(){
     label.textContent = sec.type;
     const text = document.createElement("p");
     text.className = "lyrics-text";
-    text.textContent = sec.text;
+    sec.text.split("\n").forEach(line => {
+      const lineEl = document.createElement("span");
+      lineEl.className = "lyrics-line";
+      lineEl.textContent = line;
+      text.appendChild(lineEl);
+    });
     block.appendChild(label);
     block.appendChild(text);
     wrap.appendChild(block);
@@ -1495,6 +1583,19 @@ async function boot(){
   if (MOCK) {
     status("fejlesztői mód", true);
     scanReady();
+    const resumeId = sessionStorage.getItem("resumeCatalogLyrics");
+    if (resumeId) {
+      sessionStorage.removeItem("resumeCatalogLyrics");
+      await openCatalog();
+      const data = await loadLyrics(resumeId);
+      if (data) {
+        lyricsData = data;
+        lyricsVersionIndex = 0;
+        lyricsPlayerTrackId = resumeId;
+        renderLyrics();
+        openLyricsDrawer();
+      }
+    }
     return;
   }
 
@@ -1653,6 +1754,10 @@ if (MOCK) {
   $("b-mock-toggle").hidden = false;
   $("b-mock-toggle").textContent = "Kilépés a fejlesztői módból";
   $("b-mock-toggle").onclick = () => { location.search = ""; };
+  $("b-lyrics-edit").hidden = false;
+  $("b-lyrics-edit").onclick = openLyricsEditor;
+  $("b-edit-cancel").onclick = closeLyricsEditor;
+  $("b-edit-save").onclick = saveLyricsEdit;
 } else if (location.hostname !== "kritdamage.github.io") {
   $("b-mock-toggle").hidden = false;
   $("b-mock-toggle").textContent = "Fejlesztői mód";

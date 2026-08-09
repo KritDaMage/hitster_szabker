@@ -4,9 +4,9 @@
   "author": "Paul Iannuzelli / Hillsong",
   "translator": "Németh S. Judit",
   "sections": [
-    { "type": "verse", "text": "Amikor körülvesz fenséged,\náthatol szívemen szentséged,\ndicsőséged súlyos csendjében\nmegszólítasz engem,\nszelíden suttogsz hozzám.\nOly jó vagy!" },
-    { "type": "chorus", "text": "Vágyom meglátni Téged,\nszemlélni örök dicsőséged,\neléd állok, s imádlak én, Istenem,\nkezem feléd emelem,\nszívem keres szüntelen,\nszólíts újra engem!\nOly jó vagy!" },
-    { "type": "verse", "text": "Amikor árad Szent Szellemed,\ns meglátom mennyei szépséged,\nHatalmad, ó Uram, végtelen,\ns megszólítasz engem,\nszelíden suttogsz hozzám.\nOly jó vagy!" },
-    { "type": "coda", "text": "Suttogj hozzám szelíden,\nszólíts újra engem!" }
+    { "type": "verse", "text": "Amikor körülvesz fenséged,\nÁthatol szívemen szentséged,\nDicsőséged súlyos csendjében\nMegszólítasz engem,\nSzelíden suttogsz hozzám.\nOly jó vagy!" },
+    { "type": "chorus", "text": "Vágyom meglátni Téged,\nSzemlélni örök dicsőséged,\nEléd állok, s imádlak én, Istenem,\nKezem feléd emelem,\nSzívem keres szüntelen,\nSzólíts újra engem!\nOly jó vagy!" },
+    { "type": "verse", "text": "Amikor árad Szent Szellemed,\nS meglátom mennyei szépséged,\nHatalmad, ó Uram, végtelen,\nS megszólítasz engem,\nSzelíden suttogsz hozzám.\nOly jó vagy!" },
+    { "type": "coda", "text": "Suttogj hozzám szelíden,\nSzólíts újra engem!" }
   ]
 }

@@ -4,7 +4,7 @@
   "author": "Matt Redman",
   "translator": "Debreceni István, Bágyi Péter",
   "sections": [
-    { "type": "verse", "text": "Táncolva éneklek, ujjongok Jézusért,\nszívemben a szent örömnek nincsen gátja már.\nÉs nem zavar, hogyha ezért bolondnak néznek majd!" },
+    { "type": "verse", "text": "Táncolva éneklek, ujjongok Jézusért,\nSzívemben a szent örömnek nincsen gátja már.\nÉs nem zavar, hogyha ezért bolondnak néznek majd!" },
     { "type": "chorus", "text": "Na-na-na-na-na-na, hej! Na-na-na-na-na-na, hej!" }
   ]
 }

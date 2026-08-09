@@ -1,0 +1,27 @@
+{
+  "versions": [
+    {
+      "title": "Romjaimba élet száll",
+      "original_title": "Glorious Ruins",
+      "author": "Matt Crocker & Joel Houston",
+      "sections": [
+        { "type": "verse", "text": "Viharos szél dúl, ez a Föld széthull, de velem vagy!\nA világ elmúlik, de kegyelmeden lelkem szárnyal!" },
+        { "type": "pre-chorus", "text": "Ha Te vagy velem, tűz sem árthat nekem.\nLelkem életre kel, ha Rád nézek.\nKereszted alatt elhagy minden kudarc,\nA Te szent kegyelmed fényében." },
+        { "type": "chorus", "text": "Romjaimba élet száll, a Te Neved hallatán,\nHamvaimból felkelve megállok trónodnál.\nMenedékre a lelkem a Te kezed közt talál,\nÉn örökké szeretlek, dalom szóljon Hozzád!" },
+        { "type": "verse", "text": "Minden porrá hull, de ígéreted a reményem.\nElhagy a bátorság, de erőt Belőled merítek." }
+      ]
+    },
+    {
+      "title": "Romokból életet",
+      "original_title": "Glorious Ruins",
+      "author": "Matt Crocker & Joel Houston",
+      "translator": "Szekeres Marcell",
+      "sections": [
+        { "type": "verse", "text": "Ha hegyek zúgnak, viharok dúlnak, itt vagy velem!\nA test elmúlhat, a te irgalmad őrzi lelkem!" },
+        { "type": "pre-chorus", "text": "Ha tűzön viszel át, szívem csak Téged áld.\nLelkem részévé válik tervednek.\nNézlek a keresztfán, ahogy minden hibám\nEltűnik kegyelmed fényében." },
+        { "type": "chorus", "text": "A romokból életet fakaszt dicsőséged,\nKiemel a mélységből, ezért áldlak Téged.\nTe vagy lelkem menedéke, betakarnak szárnyaid,\nUram, szeretlek Téged, dicsérlek örökké!" },
+        { "type": "verse", "text": "Bármi történjen, ígéretedben bízzon lelkem.\nHa elgyengülnék, benned új reményt talál szívem." }
+      ]
+    }
+  ]
+}

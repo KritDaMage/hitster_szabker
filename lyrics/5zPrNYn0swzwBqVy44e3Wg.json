@@ -1,0 +1,11 @@
+{
+  "title": "Ő az Úr",
+  "original_title": "God He Reigns",
+  "author": "Marty Sampson",
+  "translator": "Pintér Béla",
+  "sections": [
+    { "type": "verse", "text": "Szent az Úr, szent az Úr, minden élő Őt dicsérje!\nHalleluja, halleluja, zengjen most új ének!" },
+    { "type": "pre-chorus", "text": "És szívünkből, mondjunk hálát!\nMéltó, mert vére értünk folyt!" },
+    { "type": "chorus", "text": "Ő az Úr, Ő az Úr, élő Isten mennyen, földön.\nŐ az Úr, Ő az Úr, mindörökké!" }
+  ]
+}

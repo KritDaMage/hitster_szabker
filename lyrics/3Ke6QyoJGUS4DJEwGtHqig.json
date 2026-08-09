@@ -1,0 +1,10 @@
+{
+  "title": "Kegyelmed éltet",
+  "original_title": "Evermore",
+  "translator": "Pintér Béla",
+  "sections": [
+    { "type": "verse", "text": "Szívemből éneklem, hogy hiszek nevedben,\nTéged követlek, az egész életem rólad szól!" },
+    { "type": "chorus", "text": "Elfogy minden szó a számból, kifogytam a gondolatokból,\nNincsen kép, mely leírhatná, mennyire szent vagy!\nNevedet mikor kimondom, túljutok minden gondon,\nTátott szájjal csodállak, annyira szent vagy!\nOlyan szent vagy, szent vagy, Uram!\nSzívem, lelkem, minden porcikám énekel,\nMert kegyelmed éltet!\nHa meg is szűnik majd ez a nagy világ,\nMég akkor is csak kegyelmed él!" },
+    { "type": "coda", "text": "Halleluja, halleluja, kegyelmed éltet!" }
+  ]
+}
