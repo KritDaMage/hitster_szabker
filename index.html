@@ -15,10 +15,35 @@
   --ink-lift:#221C55;
   --paper:#F6ECDD;
   --hot:#FF3E5B;
+  --hot-rgb:255,62,91;
   --gold:#F0B429;
   --dim:#8B84C0;
+  --line-rgb:246,236,221;
+  --label-bg:#F6ECDD;
+  --label-ink:#16123A;
+  --fill:#F6ECDD;
+  --fill-ink:#16123A;
+  --vinyl-a:#0d0b22;
+  --vinyl-b:#14112c;
+  --vinyl-c:#2b2555;
+  --vinyl-d:#0b0919;
   --disc: 78vw;
   --font: "Bricolage Grotesque", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+:root[data-theme="light"]{
+  --ink:#FDFBF6;
+  --ink-lift:#E7E4DD;
+  --paper:#221F26;
+  --dim:#726E78;
+  --line-rgb:34,31,38;
+  --hot:var(--gold);
+  --hot-rgb:240,180,41;
+  --fill:#E7E4DD;
+  --fill-ink:#221F26;
+  --vinyl-a:#161616;
+  --vinyl-b:#232323;
+  --vinyl-c:#3c3c3c;
+  --vinyl-d:#0a0a0a;
 }
 @media (min-height:800px){ :root{ --disc: 72vw; } }
 
@@ -52,12 +77,13 @@ header{
   font-size:11px;letter-spacing:.18em;text-transform:uppercase;
   color:var(--dim);min-height:20px;flex:0 0 auto;
 }
-.head-left{display:flex;align-items:center;gap:10px}
+.head-left{display:flex}
+.head-mode-row{display:flex;align-items:center;gap:10px}
 .hamburger{width:22px;height:22px;display:grid;place-items:center;color:var(--paper)}
 .hamburger svg{width:20px;height:20px}
 .head-mode{display:flex;flex-direction:column;gap:3px}
-.head-progress{display:flex;align-items:center;gap:8px;font-size:9px}
-.head-progress button{color:var(--hot);text-decoration:underline;text-underline-offset:2px}
+.head-progress{display:flex;flex-direction:column;align-items:flex-start;gap:4px;font-size:9px;margin-left:32px}
+.head-progress button{color:var(--hot);text-decoration:underline;text-underline-offset:2px;font-size:12px}
 #out{color:var(--dim);font-weight:600}
 #out[data-live="1"]{color:var(--hot)}
 
@@ -76,8 +102,8 @@ header{
 }
 .menu.open{transform:translateX(0)}
 .menu h2{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
-.menu-dev{display:flex;flex-direction:column;gap:8px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(246,236,221,.12)}
-.menu-divider{border-top:1px solid rgba(246,236,221,.12);margin-top:18px}
+.menu-dev{display:flex;flex-direction:column;gap:8px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(var(--line-rgb),.12)}
+.menu-divider{border-top:1px solid rgba(var(--line-rgb),.12);margin-top:18px}
 .menu-catalog{
   display:flex;flex-direction:column;gap:8px;
   margin-top:0;
@@ -90,9 +116,10 @@ header{
   max-height:260px;opacity:1;transform:translateY(0);
   pointer-events:auto;
 }
-.menu-link{margin-top:auto;padding:10px 16px;font-size:13px;color:var(--dim);text-align:left;text-decoration:underline;text-underline-offset:3px}
+.menu-bottom{margin-top:auto;display:flex;flex-direction:column;gap:14px}
+.menu-link{padding:10px 16px;font-size:13px;color:var(--dim);text-align:left;text-decoration:underline;text-underline-offset:3px}
 .menu-item{padding:14px 16px;border-radius:12px;text-align:left;font-size:16px;font-weight:600;color:var(--paper)}
-.menu-item[aria-current="true"]{background:var(--paper);color:var(--ink)}
+.menu-item[aria-current="true"]{background:var(--fill);color:var(--fill-ink)}
 
 main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;padding:20px 0}
 .view{display:none;width:100%;flex-direction:column;align-items:center;gap:26px}
@@ -130,8 +157,8 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
 .vinyl{
   position:absolute;inset:14px;border-radius:50%;
   background:
-    repeating-radial-gradient(circle at 50% 50%, #0d0b22 0 1px, #14112c 1px 3px),
-    radial-gradient(circle at 34% 28%, #2b2555 0%, #0b0919 62%);
+    repeating-radial-gradient(circle at 50% 50%, var(--vinyl-a) 0 1px, var(--vinyl-b) 1px 3px),
+    radial-gradient(circle at 34% 28%, var(--vinyl-c) 0%, var(--vinyl-d) 62%);
   box-shadow:0 18px 44px rgba(0,0,0,.55), inset 0 0 0 1px rgba(246,236,221,.07);
   display:grid;place-items:center;
 }
@@ -139,7 +166,7 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
 /* the blank label — the whole point of the screen */
 .label{
   width:47%;aspect-ratio:1;border-radius:50%;
-  background:var(--paper);
+  background:var(--label-bg);
   display:grid;place-items:center;text-align:center;padding:6%;
   box-shadow:inset 0 0 0 1px rgba(0,0,0,.14);
   position:relative;
@@ -147,11 +174,11 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
 }
 .label::after{
   content:"";position:absolute;width:7%;aspect-ratio:1;border-radius:50%;
-  background:var(--ink);box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);
+  background:var(--label-ink);box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);
 }
 #blank-logo{position:absolute;inset:8%;width:84%;height:84%;object-fit:cover;border-radius:50%}
 .printed{
-  display:none;color:var(--ink);line-height:1.15;animation:print .5s ease-out both;
+  display:none;color:var(--label-ink);line-height:1.15;animation:print .5s ease-out both;
   position:absolute;inset:16%;
   flex-direction:column;justify-content:center;align-items:center;
 }
@@ -165,12 +192,49 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
 .printed .ar{font-size:clamp(9px,3vw,12px);opacity:.62;display:block;margin-top:2px;width:100%;
   overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 
+/* ─── kezdőoldali dísz-bakelit ───────────────────────────── */
+.hero-disc{position:relative;width:var(--disc);height:var(--disc);max-width:340px;max-height:340px}
+.hero-pulse{
+  position:absolute;inset:-15%;border-radius:50%;
+  background:radial-gradient(circle at 50% 50%, var(--hot) 0%, rgba(var(--hot-rgb),.4) 45%, rgba(var(--hot-rgb),0) 72%);
+  filter:blur(16px);
+  animation:hero-pulse-glow 2.6s ease-in-out infinite;
+}
+@keyframes hero-pulse-glow{
+  0%,100%{ opacity:.5; }
+  50%{ opacity:1; }
+}
+@media (prefers-reduced-motion: reduce){ .hero-pulse{animation:none} }
+.hero-vinyl{
+  position:absolute;inset:0;border-radius:50%;
+  background:
+    repeating-radial-gradient(circle at 50% 50%, var(--vinyl-a) 0 1px, var(--vinyl-b) 1px 3px),
+    radial-gradient(circle at 34% 28%, var(--vinyl-c) 0%, var(--vinyl-d) 62%);
+  box-shadow:0 18px 44px rgba(0,0,0,.55), inset 0 0 0 1px rgba(246,236,221,.07);
+  display:grid;place-items:center;
+  animation:hero-spin 12s linear infinite;
+}
+@media (prefers-reduced-motion: reduce){ .hero-vinyl{animation:none} }
+@keyframes hero-spin{to{transform:rotate(360deg)}}
+.hero-label{
+  width:47%;aspect-ratio:1;border-radius:50%;
+  background:var(--label-bg);
+  display:grid;place-items:center;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.14);
+  position:relative;overflow:hidden;
+}
+.hero-label::after{
+  content:"";position:absolute;width:7%;aspect-ratio:1;border-radius:50%;
+  background:var(--label-ink);box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);
+}
+.hero-label img{position:absolute;inset:8%;width:84%;height:84%;object-fit:cover;border-radius:50%}
+
 /* ─── controls ───────────────────────────────────────────── */
 .big{
   width:78px;height:78px;border-radius:50%;
   background:var(--hot);color:#fff;
   display:grid;place-items:center;
-  box-shadow:0 10px 26px rgba(255,62,91,.34);
+  box-shadow:0 10px 26px rgba(var(--hot-rgb),.34);
   transition:transform .12s ease;
 }
 .big:active{transform:scale(.93)}
@@ -182,7 +246,7 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
   font-size:15px;font-weight:600;transition:border-color .15s, background .15s;
 }
 .pill:active{background:var(--ink-lift)}
-.pill.key{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.pill.key{background:var(--fill);color:var(--fill-ink);border-color:var(--fill)}
 .pill.ghost{border-color:transparent;color:var(--dim);font-weight:400;font-size:14px}
 
 /* ─── scanner ────────────────────────────────────────────── */
@@ -197,7 +261,11 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
 
 /* ─── copy ───────────────────────────────────────────────── */
 h1{font-size:clamp(26px,7.6vw,34px);font-weight:800;letter-spacing:-.035em;line-height:1.05;text-align:center}
+#v-auth h1{position:relative;z-index:1;margin-top:-90px;
+  font-size:clamp(36px,11vw,50px);line-height:1.25;
+  text-shadow:0 0 14px var(--ink), 0 0 14px var(--ink), 0 0 6px var(--ink);}
 .sub{color:var(--dim);font-size:15px;line-height:1.5;text-align:center;max-width:30ch}
+.sub-ref{display:block;text-align:right;margin-right:-40px;margin-top:8px}
 .scan-sub{height:44px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .note{color:var(--dim);font-size:13px;line-height:1.5;text-align:center;max-width:34ch}
 code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
@@ -221,7 +289,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 #v-catalog .lyrics-scroll{max-width:900px;scrollbar-gutter:stable}
 .lyrics-scroll{width:100%;max-width:640px;margin:0 auto;flex:1 1 auto;min-height:0;overflow-y:auto;
   display:flex;flex-direction:column;gap:20px;padding:4px 4px 20px}
-.lyrics-head{display:flex;flex-direction:column;gap:6px;padding-bottom:16px;border-bottom:1px solid rgba(246,236,221,.12);
+.lyrics-head{display:flex;flex-direction:column;gap:6px;padding-bottom:16px;border-bottom:1px solid rgba(var(--line-rgb),.12);
   position:sticky;top:0;background:var(--ink);z-index:1}
 .catalog-top{position:sticky;top:0;background:var(--ink);z-index:1;display:flex;flex-direction:column;gap:20px;padding-bottom:4px}
 .lyrics-player{display:flex;align-items:center;gap:12px;margin-bottom:4px}
@@ -249,13 +317,13 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .catalog-table{width:100%;margin:0 auto;border-collapse:collapse;table-layout:fixed;
   background:var(--ink-lift);border-radius:12px;overflow:hidden}
 .catalog-table th{text-align:left;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--dim);font-weight:700;padding:10px 12px;border-bottom:1px solid rgba(246,236,221,.14);
+  color:var(--dim);font-weight:700;padding:10px 12px;border-bottom:1px solid rgba(var(--line-rgb),.14);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .catalog-table td{padding:12px;font-size:14px;line-height:1.35;color:var(--paper);
-  border-bottom:1px solid rgba(246,236,221,.08);overflow-wrap:break-word}
+  border-bottom:1px solid rgba(var(--line-rgb),.08);overflow-wrap:break-word}
 .catalog-table tbody tr:last-child td{border-bottom:none}
 .catalog-table tbody tr{cursor:pointer}
-.catalog-table tbody tr:active{background:rgba(255,255,255,.06)}
+.catalog-table tbody tr:active{background:rgba(var(--line-rgb),.1)}
 .catalog-table .num{color:var(--dim);font-variant-numeric:tabular-nums}
 .catalog-table .orig{color:var(--dim)}
 .catalog-table .year{text-align:right;color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -270,11 +338,13 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 
 <header>
   <div class="head-left">
-    <button class="hamburger" id="b-menu" aria-label="Menü">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    </button>
     <div class="head-mode">
-      <span id="mode-label">Kártyák</span>
+      <div class="head-mode-row">
+        <button class="hamburger" id="b-menu" aria-label="Menü">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <span id="mode-label">Kártyák</span>
+      </div>
       <div class="head-progress" id="head-progress" hidden>
         <span id="reveal-counter">0 / 0</span>
         <button type="button" id="b-reveal-reset">Újrakezdés</button>
@@ -313,15 +383,29 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
     <button class="menu-item" data-err="dev">Hiba: eszközválasztó</button>
   </div>
 
-  <button class="menu-link" id="b-mock-toggle" hidden></button>
+  <div class="menu-bottom">
+    <button class="menu-link" id="b-mock-toggle" hidden></button>
+    <label class="switch-row">
+      <span>Világos mód</span>
+      <button type="button" class="switch" id="b-theme-toggle" role="switch" aria-checked="false"><span class="switch-knob"></span></button>
+    </label>
+  </div>
 </nav>
 
 <main>
 
   <!-- 1. belépés / beállítás -->
   <section class="view on" id="v-auth">
-    <h1>Egy kártya, egy dal,<br>semmi más.</h1>
-    <p class="sub">A telefon nem mutatja meg a címet, amíg meg nem nyomod a Felfedést.</p>
+    <div class="hero-disc" aria-hidden="true">
+      <div class="hero-pulse"></div>
+      <div class="hero-vinyl">
+        <div class="hero-label">
+          <img src="szabker_budapest_ifi.svg" alt="">
+        </div>
+      </div>
+    </div>
+    <h1>Hitster<br>Szabker módra</h1>
+    <p class="sub">„Minden lélek dícsérje az URat!”<br><span class="sub-ref">Zsoltárok 150:6</span></p>
     <p class="err" id="auth-err"></p>
   </section>
 
@@ -454,6 +538,7 @@ let wakeLock = null;
 let curDur = 0;
 let mode = localStorage.getItem("mode") || "general";
 let randomMode = localStorage.getItem("randomMode") === "1";
+let theme = localStorage.getItem("theme") || "dark";
 let dragging = false;
 
 const $ = id => document.getElementById(id);
@@ -464,6 +549,8 @@ function show(name){
     $("v-"+v).classList.toggle("on", v === name);
     $("f-"+v).hidden = v !== name;
   });
+  if (name === "catalog") $("head-progress").hidden = true;
+  else updateRevealProgress();
 }
 function status(text, live){
   $("out").textContent = text;
@@ -1487,6 +1574,16 @@ function toggleRandomMode(){
   updateRevealProgress();
   if (!trackId && $("v-play").classList.contains("on")) scanReady();
 }
+function applyTheme(){
+  document.documentElement.dataset.theme = theme;
+  $("b-theme-toggle").setAttribute("aria-checked", theme === "light" ? "true" : "false");
+  document.querySelector('meta[name="theme-color"]').setAttribute("content", theme === "light" ? "#FDFBF6" : "#16123A");
+}
+function toggleTheme(){
+  theme = theme === "light" ? "dark" : "light";
+  localStorage.setItem("theme", theme);
+  applyTheme();
+}
 function openMenu(){ $("menu").classList.add("open"); $("menu-overlay").classList.add("open"); }
 function closeMenu(){ $("menu").classList.remove("open"); $("menu-overlay").classList.remove("open"); }
 
@@ -1506,9 +1603,11 @@ document.querySelectorAll(".menu-item[data-mode]").forEach(b => {
   };
 });
 $("b-random-toggle").onclick = toggleRandomMode;
+$("b-theme-toggle").onclick = toggleTheme;
 $("b-reveal-reset").onclick = resetRevealProgress;
 applyMode();
 applyRandomMode();
+applyTheme();
 
 if (MOCK) {
   $("menu-dev").hidden = false;
