@@ -47,7 +47,7 @@ listában — ott, ahol a dalban ténylegesen elhangzik.
     harmóniában/dallamban eltérő rész — **ne keverd össze az előkórussal**:
     a bridge egyedi és kontrasztos, az előkórus ismétlődik és a refrénhez vezet
   - `"outro"` — záró rész, ami nem ismétlődő refrén és nem is önálló bridge
-  - `"coda"` — ha van egy külön, formailag elváló zárókód a végén
+  - `"tag"` — ha van egy külön, formailag elváló, rövid záró/ismétlő rész a végén
 
   Ha egyik sem illik pontosan, bármi más rövid angol szó is használható —
   a lényeg, hogy a címke a szakasz valódi szerepét tükrözze, ne a legutóbb

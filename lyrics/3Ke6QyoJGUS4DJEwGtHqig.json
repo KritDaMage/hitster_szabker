@@ -1,10 +1,13 @@
 {
   "title": "Kegyelmed éltet",
   "original_title": "Evermore",
+  "author":  "Joel Houston",
   "translator": "Pintér Béla",
   "sections": [
-    { "type": "verse", "text": "Szívemből éneklem, hogy hiszek nevedben,\nTéged követlek, az egész életem rólad szól!" },
-    { "type": "chorus", "text": "Elfogy minden szó a számból, kifogytam a gondolatokból,\nNincsen kép, mely leírhatná, mennyire szent vagy!\nNevedet mikor kimondom, túljutok minden gondon,\nTátott szájjal csodállak, annyira szent vagy!\nOlyan szent vagy, szent vagy, Uram!\nSzívem, lelkem, minden porcikám énekel,\nMert kegyelmed éltet!\nHa meg is szűnik majd ez a nagy világ,\nMég akkor is csak kegyelmed él!" },
-    { "type": "coda", "text": "Halleluja, halleluja, kegyelmed éltet!" }
+    { "type": "intro", "text": "Szívemből éneklem, hogy hiszek nevedben,\nTéged követlek, az egész életem rólad szól!\nCsak Rólad szól!" },
+    { "type": "verse", "text": "Elfogy minden szó a számból,\nKifogytam a gondolatokból,\nNincsen kép, mely leírhatná,\nMennyire szent vagy!" },
+    { "type": "verse", "text": "Nevedet mikor kimondom,\nTúljutok minden gondon,\nTátott szájjal csodállak,\nAnnyira szent vagy!\nOlyan szent vagy, szent vagy, Uram!" },
+    { "type": "chorus", "text": "Szívem, lelkem, minden porcikám énekel,\nMert kegyelmed éltet!\nHa meg is szűnik majd ez a nagy világ,\nMég akkor is csak kegyelmed éltet!" },
+    { "type": "tag", "text": "Olyan Szent vagy! Szent vagy, Szent vagy Uram!" }
   ]
 }

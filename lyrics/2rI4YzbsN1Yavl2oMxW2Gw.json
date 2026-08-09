@@ -6,6 +6,6 @@
   "sections": [
     { "type": "verse", "text": "Szent vagy, szent vagy, ó Uram, a Menny és a Föld Rólad énekel.\nEljön minden nép, dicsér, hódolnak mind a nemzetek.\nMinden térd meghajol, minden nyelv megvallja, hogy Te élsz!" },
     { "type": "chorus", "text": "Fenn a Mennyben új dal szól:\n„Imádjátok Jézust, Övé lett a trón! Halleluja, Övé lett a trón!”" },
-    { "type": "coda", "text": "Fenn a Mennyben új dal szól:\n„Imádjátok Jézust, Övé lett a trón! Halleluja, Övé lett a trón!”\nHalleluja, Övé lett a trón! Halleluja, Övé lett a trón!\nHalleluja, Övé lett a trón!" }
+    { "type": "tag", "text": "Fenn a Mennyben új dal szól:\n„Imádjátok Jézust, Övé lett a trón! Halleluja, Övé lett a trón!”\nHalleluja, Övé lett a trón! Halleluja, Övé lett a trón!\nHalleluja, Övé lett a trón!" }
   ]
 }

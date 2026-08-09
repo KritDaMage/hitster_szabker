@@ -7,6 +7,6 @@
     { "type": "verse", "text": "Amikor körülvesz fenséged,\nÁthatol szívemen szentséged,\nDicsőséged súlyos csendjében\nMegszólítasz engem,\nSzelíden suttogsz hozzám.\nOly jó vagy!" },
     { "type": "chorus", "text": "Vágyom meglátni Téged,\nSzemlélni örök dicsőséged,\nEléd állok, s imádlak én, Istenem,\nKezem feléd emelem,\nSzívem keres szüntelen,\nSzólíts újra engem!\nOly jó vagy!" },
     { "type": "verse", "text": "Amikor árad Szent Szellemed,\nS meglátom mennyei szépséged,\nHatalmad, ó Uram, végtelen,\nS megszólítasz engem,\nSzelíden suttogsz hozzám.\nOly jó vagy!" },
-    { "type": "coda", "text": "Suttogj hozzám szelíden,\nSzólíts újra engem!" }
+    { "type": "tag", "text": "Suttogj hozzám szelíden,\nSzólíts újra engem!" }
   ]
 }

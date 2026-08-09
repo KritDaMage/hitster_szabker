@@ -8,6 +8,6 @@
     { "type": "verse", "text": "Hűséged megújul minden reggel,\nElárasztasz békességeddel.\nKörbevesz mindennap szerelmed." },
     { "type": "pre-chorus", "text": "Arcod fénye rám ragyog, teljesen Tiéd vagyok!" },
     { "type": "chorus", "text": "Felkelek és hirdetem dicsőséged!\nAzért élek, hogy áldjalak, nagy Király, Élő Isten Fia!\nAngyalaid a trón körül zengik: Szent Vagy!\nEgyetlen hatalmas Úr, éneklik: Halleluja!" },
-    { "type": "coda", "text": "Halleluja! Halleluja! Halleluja!" }
+    { "type": "tag", "text": "Halleluja! Halleluja! Halleluja!" }
   ]
 }

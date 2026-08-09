@@ -7,6 +7,6 @@
     { "type": "verse", "text": "Mindennel, ami vagyok, követlek, szolgállak Téged,\nTe vagy az egyetlen út.\nMinden álmom a Tiéd, énekem és a zeném\nEgyedül Téged dicsér!" },
     { "type": "pre-chorus", "text": "A bűnből kihoztál, teljesen újjáformáltál." },
     { "type": "chorus", "text": "Megváltoztattad már az életemet.\nIgen, szívemben élsz, tudom, hogy szívemben élsz!\nA legjobb dolog, ami történt velem,\nAz, hogy ismerlek Téged, és semmi nem választ minket el!" },
-    { "type": "coda", "text": "Nem, nem, semmi nem választ minket el!\nNem, nem, semmi nem választ minket el!" }
+    { "type": "tag", "text": "Nem, nem, semmi nem választ minket el!\nNem, nem, semmi nem választ minket el!" }
 ]
 }
