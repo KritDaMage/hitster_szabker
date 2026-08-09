@@ -355,13 +355,21 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .catalog-table tbody tr:last-child td{border-bottom:none}
 .catalog-table tbody tr{cursor:pointer}
 .catalog-table tbody tr:active{background:rgba(var(--line-rgb),.1)}
+.catalog-table tbody tr.no-lyrics{cursor:default;background:rgba(0,0,0,.18)}
+.catalog-table tbody tr.no-lyrics:active{background:rgba(0,0,0,.18)}
 .catalog-table .num{color:var(--dim);font-variant-numeric:tabular-nums}
 .catalog-table .orig{color:var(--dim)}
 .catalog-table .year{text-align:right;color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap;padding-right:20px}
 .catalog-table col.col-num{width:48px}
 .catalog-table col.col-year{width:64px}
+.catalog-table col.col-play{width:46px}
+.catalog-table td.play-cell{padding:8px}
 .catalog-table th.sortable{cursor:pointer;user-select:none}
 .catalog-table th.sortable:active{color:var(--paper)}
+.catalog-play-btn{width:28px;height:28px;border-radius:50%;border:none;display:flex;align-items:center;
+  justify-content:center;background:var(--hot);color:var(--hot-ink);cursor:pointer;flex-shrink:0}
+.catalog-play-btn svg{width:13px;height:13px;fill:currentColor;margin-left:1px}
+.catalog-play-btn:active{opacity:.8}
 .sort-arrow{display:inline-block;margin-left:4px;width:0.8em;color:inherit}
 </style>
 </head>
@@ -506,7 +514,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
       </div>
       <table class="catalog-table">
         <colgroup>
-          <col class="col-num"><col class="col-title"><col class="col-orig"><col class="col-year">
+          <col class="col-num"><col class="col-title"><col class="col-orig"><col class="col-year"><col class="col-play">
         </colgroup>
         <thead>
           <tr>
@@ -514,6 +522,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
             <th class="sortable" data-sort="title">Cím<span class="sort-arrow" id="sort-arrow-title"></span></th>
             <th class="sortable" data-sort="original_title">Eredeti cím<span class="sort-arrow" id="sort-arrow-original_title"></span></th>
             <th class="sortable year" data-sort="year">Év<span class="sort-arrow" id="sort-arrow-year"></span></th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="catalog-list"></tbody>
@@ -792,12 +801,12 @@ async function startPlayback(id){
     $("play-err").textContent = e.message;
   }
 }
-async function play(id){
+async function play(id, switchView = true){
   if (!MOCK && !(await getToken())) { try { authExpired(); } catch(e){} return; }
   pendingRestoreId = null;
   trackId = id;
   reset();
-  show("play");
+  if (switchView) show("play");
   $("play-err").textContent = "";
   if (mode === "szabker") {
     revealedIds.add(id);
@@ -1130,6 +1139,26 @@ async function loadCatalog(){
   } catch(e){ return []; }
 }
 
+/* a teljes dalválaszték: minden csillagos (titles.json-beli) dal, függetlenül attól,
+   hogy van-e hozzá dalszöveg-fájl — ez az egyetlen forrás a katalógusnak,
+   a véletlen dal adogatónak és a felfedés-számlálónak is */
+let allSongsCache = null;
+async function loadAllSongs(){
+  if (allSongsCache) return allSongsCache;
+  const [entries, titles] = await Promise.all([loadCatalog(), loadTitles()]);
+  const all = entries.map(e => ({ id: e.id, title: e.title, hasLyrics: true }));
+  if (MOCK && !all.some(e => e.id === "0".repeat(22))) {
+    all.push({ id: "0".repeat(22), title: "Minta Magyar Cím", hasLyrics: true });
+  }
+  const withLyrics = new Set(all.map(e => e.id));
+  Object.keys(titles).forEach(id => {
+    if (withLyrics.has(id) || !titles[id].hu) return;
+    all.push({ id, title: titles[id].hu, hasLyrics: false });
+  });
+  allSongsCache = all;
+  return all;
+}
+
 let catalogEntries = [];
 let catalogSort = { key: "title", dir: "asc" };
 
@@ -1161,7 +1190,7 @@ function renderCatalogList(filter){
   if (!shown.length) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 4;
+    td.colSpan = 5;
     td.style.textAlign = "center";
     td.style.padding = "20px 12px";
     td.style.color = "var(--dim)";
@@ -1183,16 +1212,31 @@ function renderCatalogList(filter){
     const tdYear = document.createElement("td");
     tdYear.className = "year";
     tdYear.textContent = entry.year || "—";
-    tr.append(tdNum, tdTitle, tdOrig, tdYear);
-    tr.onclick = async () => {
-      const data = await loadLyrics(entry.id);
-      if (!data) return;
-      lyricsData = data;
-      lyricsVersionIndex = 0;
-      lyricsPlayerTrackId = entry.id;
-      renderLyrics();
-      openLyricsDrawer();
+    const tdPlay = document.createElement("td");
+    tdPlay.className = "play-cell";
+    const playBtn = document.createElement("button");
+    playBtn.className = "catalog-play-btn";
+    playBtn.setAttribute("aria-label", "Lejátszás");
+    playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+    playBtn.onclick = (ev) => {
+      ev.stopPropagation();
+      play(entry.id, false);
     };
+    tdPlay.appendChild(playBtn);
+    tr.append(tdNum, tdTitle, tdOrig, tdYear, tdPlay);
+    if (entry.hasLyrics) {
+      tr.onclick = async () => {
+        const data = await loadLyrics(entry.id);
+        if (!data) return;
+        lyricsData = data;
+        lyricsVersionIndex = 0;
+        lyricsPlayerTrackId = entry.id;
+        renderLyrics();
+        openLyricsDrawer();
+      };
+    } else {
+      tr.classList.add("no-lyrics");
+    }
     list.appendChild(tr);
   });
 }
@@ -1208,20 +1252,16 @@ async function openCatalog(){
   closeMenu();
   show("catalog");
   $("catalog-search").value = "";
-  const [entries, titles] = await Promise.all([loadCatalog(), loadTitles()]);
-  let all = entries;
-  if (MOCK && !all.some(e => e.id === "0".repeat(22))) {
-    all = all.concat([{ id: "0".repeat(22), title: "Minta Magyar Cím" }]);
-  }
+  const [all, titles] = await Promise.all([loadAllSongs(), loadTitles()]);
   catalogEntries = all.map(e => {
     const t = titles[e.id] || {};
-    return { id: e.id, title: e.title, original_title: t.title || "", year: t.year || "" };
+    return { id: e.id, title: e.title, original_title: t.title || "", year: t.year || "", hasLyrics: e.hasLyrics };
   });
   sortCatalogEntries();
   updateCatalogSortIndicators();
   renderCatalogList("");
   // a teljes dalszöveget is betöltjük kereséshez — a lista már látszik, ez csak utólag bővíti ki
-  const lyricsList = await Promise.all(catalogEntries.map(e => loadLyrics(e.id)));
+  const lyricsList = await Promise.all(catalogEntries.map(e => e.hasLyrics ? loadLyrics(e.id) : null));
   catalogEntries.forEach((e, i) => {
     e.searchText = (e.title + " " + e.original_title + " " + lyricsSearchText(lyricsList[i])).toLowerCase();
   });
@@ -1507,7 +1547,7 @@ let revealedIds = new Set();
 let catalogSizeCache = null;
 async function getCatalogSize(){
   if (catalogSizeCache === null) {
-    const entries = await loadCatalog();
+    const entries = await loadAllSongs();
     catalogSizeCache = entries.length;
   }
   return catalogSizeCache;
@@ -1531,7 +1571,7 @@ async function resetRevealProgress(){
 /* QR nélküli mód: véletlen dal a dalkatalógusból, ismétlés nélkül a már
    felfedett dalok közül — amikor mind elfogy, újraindul a kör */
 async function playRandom(){
-  const entries = await loadCatalog();
+  const entries = await loadAllSongs();
   if (!entries.length) { $("play-err").textContent = "Nincs dal a katalógusban."; return; }
   let pool = entries.filter(e => !revealedIds.has(e.id));
   if (!pool.length) { clearRevealedIds(); pool = entries; }

@@ -1,0 +1,9 @@
+{
+  "title": "Ez az a dal",
+  "original_title": "Song from Heaven",
+  "author": "Cris Falson",
+  "sections": [
+    { "type": "verse", "text": "Ez az a dal, mit a mennyben angyali kórus zeng:\n„A dicsőség a Bárányé!”" },
+    { "type": "chorus", "text": "Halleluja, halleluja, halleluja,\nImádatunk Tiéd örökké!" }
+  ]
+}
