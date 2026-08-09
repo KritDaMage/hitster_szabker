@@ -16,6 +16,7 @@
   --paper:#F6ECDD;
   --hot:#FF3E5B;
   --hot-rgb:255,62,91;
+  --hot-ink:#fff;
   --gold:#F0B429;
   --dim:#8B84C0;
   --line-rgb:246,236,221;
@@ -36,8 +37,9 @@
   --paper:#221F26;
   --dim:#726E78;
   --line-rgb:34,31,38;
-  --hot:var(--gold);
-  --hot-rgb:240,180,41;
+  --hot:#4169E1;
+  --hot-rgb:65,105,225;
+  --hot-ink:#fff;
   --fill:#E7E4DD;
   --fill-ink:#221F26;
   --vinyl-a:#161616;
@@ -83,6 +85,7 @@ header{
 .hamburger svg{width:20px;height:20px}
 .head-mode{display:flex;flex-direction:column;gap:3px}
 .head-progress{display:flex;flex-direction:column;align-items:flex-start;gap:4px;font-size:9px;margin-left:32px}
+body[data-mode="szabker"] #head-progress[hidden]{display:flex !important;visibility:hidden}
 .head-progress button{color:var(--hot);text-decoration:underline;text-underline-offset:2px;font-size:12px}
 #out{color:var(--dim);font-weight:600}
 #out[data-live="1"]{color:var(--hot)}
@@ -146,7 +149,8 @@ main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;paddin
 footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:14px}
 
 /* ─── the disc: signature element ────────────────────────── */
-.deck{position:relative;width:var(--disc);height:var(--disc);max-width:340px;max-height:340px;cursor:pointer}
+.deck{position:relative;width:var(--disc);height:var(--disc);max-width:340px;max-height:340px;cursor:pointer;
+  border-radius:50%;box-shadow:10px 18px 44px rgba(0,0,0,.55);}
 .ring{position:absolute;inset:0;transform:rotate(-90deg);touch-action:none}
 .ring circle{fill:none;stroke-width:3;stroke-linecap:round}
 .ring .track{stroke:var(--ink-lift)}
@@ -159,7 +163,7 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
   background:
     repeating-radial-gradient(circle at 50% 50%, var(--vinyl-a) 0 1px, var(--vinyl-b) 1px 3px),
     radial-gradient(circle at 34% 28%, var(--vinyl-c) 0%, var(--vinyl-d) 62%);
-  box-shadow:0 18px 44px rgba(0,0,0,.55), inset 0 0 0 1px rgba(246,236,221,.07);
+  box-shadow:inset 0 0 0 1px rgba(246,236,221,.07);
   display:grid;place-items:center;
 }
 
@@ -193,7 +197,8 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
   overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 
 /* ─── kezdőoldali dísz-bakelit ───────────────────────────── */
-.hero-disc{position:relative;width:var(--disc);height:var(--disc);max-width:340px;max-height:340px}
+.hero-disc{position:relative;width:var(--disc);height:var(--disc);max-width:340px;max-height:340px;
+  border-radius:50%;box-shadow:10px 18px 44px rgba(0,0,0,.55);}
 .hero-pulse{
   position:absolute;inset:-15%;border-radius:50%;
   background:radial-gradient(circle at 50% 50%, var(--hot) 0%, rgba(var(--hot-rgb),.4) 45%, rgba(var(--hot-rgb),0) 72%);
@@ -210,7 +215,7 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
   background:
     repeating-radial-gradient(circle at 50% 50%, var(--vinyl-a) 0 1px, var(--vinyl-b) 1px 3px),
     radial-gradient(circle at 34% 28%, var(--vinyl-c) 0%, var(--vinyl-d) 62%);
-  box-shadow:0 18px 44px rgba(0,0,0,.55), inset 0 0 0 1px rgba(246,236,221,.07);
+  box-shadow:inset 0 0 0 1px rgba(246,236,221,.07);
   display:grid;place-items:center;
   animation:hero-spin 12s linear infinite;
 }
@@ -232,7 +237,7 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
 /* ─── controls ───────────────────────────────────────────── */
 .big{
   width:78px;height:78px;border-radius:50%;
-  background:var(--hot);color:#fff;
+  background:var(--hot);color:var(--hot-ink);
   display:grid;place-items:center;
   box-shadow:0 10px 26px rgba(var(--hot-rgb),.34);
   transition:transform .12s ease;
@@ -261,11 +266,12 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
 
 /* ─── copy ───────────────────────────────────────────────── */
 h1{font-size:clamp(26px,7.6vw,34px);font-weight:800;letter-spacing:-.035em;line-height:1.05;text-align:center}
-#v-auth h1{position:relative;z-index:1;margin-top:-90px;
-  font-size:clamp(36px,11vw,50px);line-height:1.25;
-  text-shadow:0 0 14px var(--ink), 0 0 14px var(--ink), 0 0 6px var(--ink);}
+#v-auth h1{position:relative;z-index:1;margin-top:-100px;color:var(--paper);
+  font-size:clamp(42px,13vw,58px);line-height:1.05;paint-order:stroke fill;}
+:root[data-theme="light"] #v-auth h1{
+  text-shadow:0 0 20px #fff, 0 0 20px #fff, 0 0 20px #fff;}
 .sub{color:var(--dim);font-size:15px;line-height:1.5;text-align:center;max-width:30ch}
-.sub-ref{display:block;text-align:right;margin-right:-40px;margin-top:8px}
+.sub-ref{display:block;text-align:right;margin-right:-40px}
 .scan-sub{height:44px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .note{color:var(--dim);font-size:13px;line-height:1.5;text-align:center;max-width:34ch}
 code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
@@ -293,7 +299,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   position:sticky;top:0;background:var(--ink);z-index:1}
 .catalog-top{position:sticky;top:0;background:var(--ink);z-index:1;display:flex;flex-direction:column;gap:20px;padding-bottom:4px}
 .lyrics-player{display:flex;align-items:center;gap:12px;margin-bottom:4px}
-.lyrics-player-btn{width:40px;height:40px;border-radius:50%;background:var(--hot);color:#fff;
+.lyrics-player-btn{width:40px;height:40px;border-radius:50%;background:var(--hot);color:var(--hot-ink);
   display:grid;place-items:center;flex:0 0 auto}
 .lyrics-player-btn:active{transform:scale(.93)}
 .lyrics-player-btn svg{width:18px;height:18px;fill:currentColor}
