@@ -1,0 +1,11 @@
+{
+  "title": "Üdv a Királynak",
+  "original_title": "Hail To The King",
+  "author": "Gio Galanti, Jay Cook",
+  "translator": "Pintér Béla",
+  "sections": [
+    { "type": "verse", "text": "Üdv a Királynak, üdv a Királynak!\nŐ az ki szeretetével reményt ad a világnak,\nÜdv a Királynak, üdv a Királynak!\nEljött és meghalt értünk, de harmadnapon feltámadt." },
+    { "type": "pre-chorus", "text" : "Uralmának soha nem lesz vége.\nŐ az Úr! Ő az Úr.\nÉletemet a trón előtt élem\nÉs hirdetem az egész világnak:\nÜdv a Királynak!" },
+    { "type": "chorus", "text": "Ő a fény, Ő a fény, aki mindent beragyog, o-oé-o, o-oé-o,\nŐ az egyetlen egy, aki mindent odaadott, o-oé-o, o-oé-o,\nAki volt, aki van, aki lesz, övé mindenem, o-oé-o, o-oé-o,\nÉs hirdetem az egész világnak:\nÜdv a Királynak, üdv a Királynak!" }
+  ]
+}

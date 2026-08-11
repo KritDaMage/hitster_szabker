@@ -1,0 +1,15 @@
+{
+  "title": "Istenünk, szent vagy",
+  "original_title": "Our God Is Holy",
+  "author": "Don Potter",
+  "translator": "Debreceni István",
+  "sections": [
+    { "type": "chorus", "text": "Istenünk, szent vagy, szent és hatalmas,\nIstenünk, szent vagy!" },
+    { "type": "verse", "text": "Nyújtsd hát a kezed felénk, érints meg a mennyekből!\nKüldd el szent seregedet, hozz a földre ébredést!" },
+    { "type": "chorus", "text": "Igaz és szent vagy, szent és hatalmas,\nIgaz és szent vagy!" },
+    { "type": "verse", "text": "Ítéljen igazságoddal hatalmas jobb kezed.\nTörd meg az ellenség hatalmát, erődet szabadítsd fel!" },
+    { "type": "chorus", "text": "Erős Urunk vagy, szent és hatalmas,\nErős Urunk vagy!" },
+    { "type": "verse", "text": "Minden bálvány porba hull előtte, hirdessük hát hatalmát!\nBátran vallja minden nyelv, méltó, méltó a Bárány!" },
+    { "type": "chorus", "text": "Istenünk méltó, hatalmas és jó,\nIstenünk méltó!" }
+  ]
+}

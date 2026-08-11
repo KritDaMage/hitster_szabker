@@ -1,0 +1,11 @@
+{
+  "title": "Minden nap",
+  "original_title": "Everyday",
+  "author": "Joel Houston",
+  "translator": "Pintér Béla",
+  "sections": [
+    { "type": "verse", "text": "Mit is mondhatnék? Te vagy ki megváltottál,\nDrága véreddel hófehérre mostál,\nMindenem lettél, Tiéd az egész lényem,\nÉg a tűz bennem, csak érted élek már." },
+    { "type": "verse", "text": "Minden nap Uram, ráállok Igédre.\nTéged hívlak, légy a segítségem,\nVezess hát engem tovább a keskeny úton,\nAdd, hogy életem a világba tüzet gyújtson!" },
+    { "type": "chorus", "text": "Minden nap csak érted élek,\nMinden nap követlek Téged,\nMinden nap veled járok Uram.\nÉrted élek minden nap, Uram!" }
+  ]
+}

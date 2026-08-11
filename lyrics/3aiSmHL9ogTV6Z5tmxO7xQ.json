@@ -1,0 +1,11 @@
+{
+  "title": "Mennyei folyó",
+  "original_title": "The River Is Here",
+  "author": "Andy Park",
+  "sections": [
+    { "type": "verse", "text": "A magas hegyről jön a folyó,\nVize frissítően túláradó,\nA völgyeken és a mezőkön át\nA folyó rohanva elér hozzád." },
+    { "type": "chorus", "text": "A mennyei folyó most táncra perdít,\nA mennyei folyó most felvidít,\nA mennyei folyó most megtölti szívünk,\nÉs örvendezünk, mert az Úr van itt!" },
+    { "type": "verse", "text": "Isten folyója az élő víz,\nHogyha megérinted, életre hív.\nÉs a partjára hogyha sokszor lejársz,\nEgyre jobban szomjazol az Úr után." },
+    { "type": "verse", "text": "Az Úr hegyére felmenni jó,\nMert a jelenléte békét adó.\nÉs a folyó mentén ha futkározunk,\nVígan táncolva áldjuk ott a Fiút!" }
+  ]
+}

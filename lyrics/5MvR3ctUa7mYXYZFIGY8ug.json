@@ -4,9 +4,9 @@
   "author": "Michael W. Smith",
   "translator": "Kerekes Ernő, Horváth Balázs",
   "sections": [
-    { "type": "verse", "text": "Lábaid előtt hadd töltsek még időt; azt érzem, itt az otthonom.\nJóságoddal lenyűgözöl, Uram, és vonzol ellenállhatatlanul." },
-    { "type": "chorus", "text": "Szerelmem felhevít s hozzád láncol; szerelmem nyújtom át, Uram.\nA szívem érted dobban, drága Jézus; szerelmem nyújtom át, Uram." },
-    { "type": "verse", "text": "Ámulatba ejt, hogy név szerint ismersz, lelkem végre rád talált.\nÉg a vágy bennem, hogy kitárjam szívem, és szólj hozzám, mint jóbarát." },
+    { "type": "verse", "text": "Lábaid előtt hadd töltsek még időt\nAzt érzem, itt az otthonom.\nJóságoddal lenyűgözöl, Uram,\nÉs vonzol ellenállhatatlanul." },
+    { "type": "chorus", "text": "Szerelmem felhevít s hozzád láncol;\nSzerelmem nyújtom át, Uram.\nA szívem érted dobban, drága Jézus;\nSzerelmem nyújtom át, Uram." },
+    { "type": "verse", "text": "Ámulatba ejt, hogy név szerint ismersz,\nLelkem végre rád talált.\nÉg a vágy bennem, hogy kitárjam szívem,\nÉs szólj hozzám, mint jóbarát." },
     { "type": "bridge", "text": "A lényed árad belém, a Szellemed ha fúj.\nMár bátran lépek eléd, kereszted lett az Út.\nSosincs belőled elég, legyen naponta új.\nÓ, szerelmed hulljon rám!" }
   ]
 }

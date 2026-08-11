@@ -5,7 +5,7 @@
   "translator": "Pintér Béla",
   "sections": [
     { "type": "verse", "text": "Dicsérem Őt szentélyében,\nDicsérem Őt reggel délben este,\nSzent nevét zengem!\nDicsérem Őt erejéért, hatalmáért,\nKegyelméért áldom Ő a királyom!" },
-    { "type": "bridge", "text": "A napfelkeltétől hadd szóljon a dicséret!\nKeleten, nyugaton, északon, délen." },
+    { "type": "pre-chorus", "text": "A napfelkeltétől hadd szóljon a dicséret!\nKeleten, nyugaton, északon, délen." },
     { "type": "chorus", "text": "Minden lélegzetemmel a Nagy Királyt dicsérem,\nGyerünk most trónja elé, Áldjuk Őt!\nÁldjuk Őt, áldjuk Őt!" }
   ]
 }

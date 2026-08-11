@@ -1,0 +1,12 @@
+{
+  "title": "Ragadj magaddal",
+  "original_title": "Dwell In Your House",
+  "author": "Paul Ewing",
+  "translator": "Veress Z. és Hegedűs P.",
+  "sections": [
+    { "type": "verse", "text": "Kiválasztottál, új szívet adtál,\nIsmertesd meg velem útjaidat,\nVezess engem Szellemed által,\n-Hogy hirdethessem a Te nagy nevedet." },
+    { "type": "chorus", "text": "Ragadj magaddal\nMinden nap, úgy kérlek,\nEmelj fel szent trónod elé,\nHadd lakhassam házadban!" },
+    { "type": "verse", "text": "Oltalmam vagy,pajzsom és váram,\nTe tartasz meg, tudom, közel vagy,\nMinden utam két kezedben van,\nMaradj velem, légy mindig enyém." },
+    { "type": "bridge", "text": "Vezess drága Szent Szellem,\nAz igazság ösvényére,\nHadd legyek fény!" }
+  ]
+}

@@ -1,11 +1,11 @@
 {
   "title": "A gyenge szól: Erős vagyok!",
   "original_title": "Saviour King",
-  "author": "Mia Fieldes & Marty Sampson",
+  "author": "Mia Fieldes, Marty Sampson",
   "translator": "Pintér Béla",
   "sections": [
     { "type": "verse", "text": "A gyenge szól: „Erős vagyok!”,\nMert az Úr Szelleme megerősített engem.\nÉs a szegény felkel, így szól:\n„Örökségem az Úr, Benne gazdaggá lettem!”" },
-    { "type": "bridge", "text": "Égjen most újra az a láng,\nA tűz, mely mindent eléget Jézusért.\nA mennyel együtt hirdetem: „Te vagy a Szent!”." },
+    { "type": "pre-chorus", "text": "Égjen most újra az a láng,\nA tűz, mely mindent eléget Jézusért.\nA mennyel együtt hirdetem: „Te vagy a Szent!”." },
     { "type": "chorus", "text": "Szeretünk Téged, imádunk Urunk,\nTe vagy Istenünk, napunk és pajzsunk!\nHadd ragyogjon szent néped,\nMint fényes menyasszony, ahogyan megálmodtad.\nHogy nemzetünk megismerjen,\nTékozló fiúként Hozzád visszaérkezzen." },
     { "type": "bridge", "text": "Elküldted fiad, hogy vigye keresztjét,\nŐ bűnhődött minden bűnünkért.\nSzeretlek Uram, imádlak Jézus,\nA remény tüze ég, hitem szárnyat bont.\nFogadd el tőlem egész életem,\nTéged magasztal minden bennem." }
   ]

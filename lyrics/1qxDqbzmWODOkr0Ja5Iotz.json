@@ -6,7 +6,7 @@
       "author": "Michael W. Smith",
       "sections": [
         { "type": "verse", "text": "Halleluja, Halleluja! Az Úr uralkodik!\nHalleluja, Halleluja! Az Úr uralkodik!" },
-        { "type": "chorus", "text": "Halleluja! Szent vagy! Szent vagy! Örök Isten, Mindenható!\nMéltó egyedül! Méltó egyedül!\nSzent vagy! Szent vagy! Örök Isten, Mindenható!\nMéltó egyedül! Méltó egyedül! Ámen!" }
+        { "type": "chorus", "text": "Halleluja! Szent vagy! Szent vagy!\nÖrök Isten, Mindenható!\nMéltó egyedül! Méltó egyedül!\nSzent vagy! Szent vagy!\nÖrök Isten, Mindenható!\nMéltó egyedül! Méltó egyedül!\nÁmen!" }
       ]
     },
     {
@@ -16,7 +16,7 @@
       "translator": "Debreceni István",
       "sections": [
         { "type": "verse", "text": "Halleluja, Halleluja! Mert Úr vagy és Mindenható!\nHalleluja, Halleluja! Mert Úr vagy és Mindenható!" },
-        { "type": "chorus", "text": "Halleluja! Szent vagy! Szent vagy! Szent vagy Istenünk Mindenható!\nTe vagy méltó! Te vagy méltó! Isten Báránya!\nSzent vagy! Szent vagy Istenünk, Mindenható!\nTe vagy méltó! Te vagy méltó! Ámen!" }
+        { "type": "chorus", "text": "Halleluja! Szent vagy! Szent vagy!\nSzent vagy Istenünk Mindenható!\nTe vagy méltó! Te vagy méltó!\nIsten Báránya! Szent vagy!\nSzent vagy Istenünk, Mindenható!\nTe vagy méltó! Te vagy méltó!\nÁmen!" }
       ]
     }
   ]

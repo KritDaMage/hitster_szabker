@@ -1,0 +1,10 @@
+{
+  "title": "Oly jó veled",
+  "original_title": "I Need You More",
+  "author": "Kim Walker-Smith",
+  "sections": [
+    { "type": "chorus", "text": "Oly jó veled élni ó Uram,\nOly jó veled járni egy úton,\nOly jó veled, közel vagy minden nap,\nAmíg élek, imádlak." },
+    { "type": "verse", "text": "Több ez, mint érzelem;\nTöbb mint a legszebb dal,\nTöbb, mint a nagy világ,\nMindent jelent nekem,\nAhogy múlik az idő,\nA szeretet csak mélyül,\nMindaddig, amíg meglátlak a mennyben." },
+    { "type": "bridge", "text": "Jelenléted boldoggá tesz,\nHozzád tartozom,\nSok vándorlás után megtaláltam otthonom,\nNem leszek többé egyedül." }
+  ]
+}

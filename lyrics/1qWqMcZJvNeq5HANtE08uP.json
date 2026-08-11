@@ -6,8 +6,6 @@
     { "type": "verse", "text": "Fénye megtörte az éjt és öröm áradt rám,\nVére megmosta szívem, azóta élek már!" },
     { "type": "chorus", "text": "Átformált, és megváltozott minden,\nÁtformált, és véget ért a gyász!" },
     { "type": "verse", "text": "Megtart erős keze, lábam sziklán áll.\nSzívem új dalba kezd, győzelem vár rám!" },
-    { "type": "chorus", "text": "Átformált, és megváltozott minden,\nÁtformált, és véget ért a gyász!" },
-    { "type": "bridge", "text": "Jézusban van győzelmünk!" },
-    { "type": "chorus", "text": "Átformált, és megváltozott minden,\nÁtformált, és véget ért a gyász!" }
+    { "type": "bridge", "text": "Jézusban van győzelmünk!" }
   ]
 }

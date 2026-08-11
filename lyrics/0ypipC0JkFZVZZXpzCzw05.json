@@ -1,0 +1,11 @@
+{
+  "title": "Mindig csak rólad énekelnék (Hegyek és tengerek felett)",
+  "original_title": "I Could Sing of Your Love Forever",
+  "author": "Martin Smith",
+  "translator": "Németh S. Judit",
+  "sections": [
+    { "type": "verse", "text": "Hegyek és tengerek felett, folyóid zúgják, hogy szeretsz,\nÉn megnyitom szívem, hogy gyógyításod szabaddá tegyen.\nÖrvendek igazságodon, magasztallak minden napon,\nÖrökké éneklek és szereteted áldom." },
+    { "type": "chorus", "text": "Mindig csak rólad énekelnék, mindig csak rólad énekelnék,\nMindig csak rólad énekelnék, mindig csak rólad énekelnék!" },
+    { "type": "bridge", "text": "A szívem ujjong, s táncol, nem érti a világ,\nDe amikor meglátnak, nagy öröm lesz majd, és minden ember táncol!" }
+  ]
+}

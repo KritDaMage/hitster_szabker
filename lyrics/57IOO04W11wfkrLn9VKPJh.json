@@ -1,0 +1,14 @@
+{
+  "title": "Nincs más Isten (Nálad lett borrá)",
+  "original_title": "Our God",
+  "author": "Chris Tomlin, Jesse Reeves, Jonas Myrin, Matt Redman",
+  "translator": "Váradi Attila",
+  "sections": [
+    { "type": "verse", "text": "Nálad lett borrá a víz,\nHoltakat életre hívsz:\nNincs más Isten! Nincsen más!" },
+    { "type": "verse", "text": "Te ragyogod be az éjt,\nTe hozod el a reményt:\nNincs más Isten! Nincsen más!" },
+    { "type": "chorus", "text": "Te vagy az Isten, aki nevére leborul minden a földön, az égen!\nHegyeket mozdít, beteget gyógyít az Úr ma is!" },
+    { "type": "chorus", "text": "Te vagy az Isten, aki nevére leborul minden a földön, az égen!\nSzíveket hódít, sebeket gyógyít az Úr ma is!" },
+    { "type": "bridge", "text": "És hogyha Isten velünk,\nEmber mit árthat nekünk?\nMert hogyha Te vagy velünk,\nKi lehet ellenünk?" },
+    { "type": "tag", "text": "Mi állhat ellenünk?" }
+  ]
+}

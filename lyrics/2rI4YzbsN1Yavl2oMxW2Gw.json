@@ -4,7 +4,8 @@
   "author": "Reuben Morgan",
   "translator": "Pintér Béla",
   "sections": [
-    { "type": "verse", "text": "Szent vagy, szent vagy, ó Uram,\nA Menny és a Föld Rólad énekel.\nEljön minden nép, dicsér,\nHódolnak mind a nemzetek.\nMinden térd meghajol,\nMinden nyelv megvallja, hogy Te élsz!" },
+    { "type": "verse", "text": "Szent vagy, szent vagy, ó Uram,\nA Menny és a Föld Rólad énekel.\nEljön minden nép, dicsér,\nHódolnak mind a nemzetek." },
+    { "type": "pre-chorus", "text": "Minden térd meghajol,\nMinden nyelv megvallja, hogy Te élsz!" },
     { "type": "chorus", "text": "Fenn a Mennyben új dal szól:\n„Imádjátok Jézust, Övé lett a trón!\nHalleluja, Övé lett a trón!”" },
     { "type": "tag", "text": "Halleluja, Övé lett a trón!" }
   ]

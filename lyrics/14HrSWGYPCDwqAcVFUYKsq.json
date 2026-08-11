@@ -1,0 +1,11 @@
+{
+  "title": "Áldom szent neved",
+  "original_title": "Blessed Be Your Name",
+  "author": "Matt Redman",
+  "sections": [
+    { "type": "verse", "text": "Áldom szent neved, a mézzel folyó földeken,\nHol nincs hiányom semmiben, áldom nevedet!\nÁldom szent neved, ha az út a pusztába vezet,\nA száraz, kietlen helyen áldom nevedet!" },
+    { "type": "chorus", "text": "Minden áldást dicséretté formál szívem,\nS ha körülzár a sötétség, azt mondom én:\nHogy áldott legyen az Úr neve, áldom nevedet!\nÁldott legyen az Úr neve, áldott legyen hatalmas neved!" },
+    { "type": "verse", "text": "Áldom szent neved, ha éppen minden rendben megy,\nHa napfényes az életem, áldom nevedet!\nÁldom szent neved a szenvedések útján is,\nBár könnyek között áldozom, áldom nevedet!" },
+    { "type": "bridge", "text": "Te adsz és elveszel, Te adsz és elveszel,\nA szívem így felel, hogy áldott szent neved!" }
+  ]
+}

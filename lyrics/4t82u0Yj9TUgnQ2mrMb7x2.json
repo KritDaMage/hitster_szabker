@@ -1,0 +1,27 @@
+{
+  "versions": [
+    {
+      "title": "Tündöklő fény",
+      "original_title": "Here I Am To Worship",
+      "author": "Tim Hughes",
+      "sections": [
+        { "type": "verse", "text": "Tündöklő fény sötét éjbe lejöttél,\nNyisd meg szemem világát,\nAlkotó kéz magadnak teremtettél,\nHogy éljünk örök léten át." },
+        { "type": "chorus", "text": "Én ünnepelni jöttem, meghajtom a térdem,\nItt vagyok hogy valljam te vagy az Úr.\nTe mindenestől vonzó, szeretetre méltó,\nMindenestől szépnek látlak én." },
+        { "type": "verse", "text": "Fényes király, aki fönn ülsz a Mennyben,\nTág mindenség trónusán,\nSemmid se lett, így jöttél el a földre,\nHogy minket tégy gazdaggá." },
+        { "type": "bridge", "text": "Nem érthetem, milyen nagy ár,\nHogy bűnöm mind az Úrra szállt." }
+      ]
+    },
+    {
+      "title": "Tündöklő fény",
+      "original_title": "Here I Am To Worship",
+      "author": "Tim Hughes",
+      "translator": "Pintér Béla",
+      "sections": [
+        { "type": "verse", "text": "Eljött hozzám, mikor még bűnben éltem,\nFelnyitotta a szemem.\nSzolgává lett, önmagát megalázva,\nBűneimért szenvedett." },
+        { "type": "chorus", "text": "Eljöttem, hogy áldjam, csodáljam, imádjam\nŐt, ki értem adta önmagát!\nCsodálatos Isten, dicsőséges Bárány,\nFogadd el szívem imádatát!" },
+        { "type": "bridge", "text": "Nem tudom felfogni azt,\nMilyen nagy volt az áldozat!" },
+        { "type": "tag", "text": "Hívd segítségül nevét, és megmenekülsz!" }
+      ]
+    }
+  ]
+}

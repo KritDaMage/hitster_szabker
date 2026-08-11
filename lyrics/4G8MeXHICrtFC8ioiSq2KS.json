@@ -5,8 +5,7 @@
   "translator": "Pintér Béla",
   "sections": [
     { "type": "verse", "text": "Én Uram, erősségem, Hozzád tartozom.\nKét kezem kinyújtom most az ég felé,\nHálával áldozom!" },
-    { "type": "chorus", "text": "Jézus, mit adjak Néked,\nHogy köszönhetném meg mindazt, amit tettél?\nÚr Jézus, nincs szó a számban, hogy megháláljam,\nHogy otthagytál mindent értem!" },
-    { "type": "verse", "text": "Bűnömért a büntetést Te kaptad, Uram.\nMeghaltál, és véreddel lemostál minden szégyent rólam!" },
-    { "type": "tag", "text": "Hogy otthagytál mindent értem!" }
+    { "type": "chorus", "text": "Jézus, mit adjak Néked,\nHogy köszönhetném meg\nMindazt, amit tettél?\nÚr Jézus, nincs szó a számban,\nHogy megháláljam,\nHogy otthagytál mindent értem!" },
+    { "type": "verse", "text": "Bűnömért a büntetést Te kaptad, Uram.\nMeghaltál, és véreddel lemostál minden szégyent rólam!" }
   ]
 }

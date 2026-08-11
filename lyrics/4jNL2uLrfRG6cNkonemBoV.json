@@ -1,0 +1,12 @@
+{
+  "title": "Isten harcol",
+  "original_title": "God Is Moving",
+  "author": "Marty Sampson",
+  "translator": "Pintér Béla",
+  "sections": [
+    { "type": "verse", "text": "Szent Szellem érintsd meg néped,\nTanítsd meg nekünk útjaidat.\nJöjj hozzánk, szívünk vár,\nMutasd meg Isten akaratát." },
+    { "type": "pre-chorus", "text": "Megmozdul a Szent Szellem,\nValami történt a szívemben.\nOlyan leszek, mint egy kisgyerek,\nElhiszem, amit mondasz nekem." },
+    { "type": "chorus", "text": "Isten harcol, Isten harcol,\nÉrtünk emeli fel erős karját!" },
+    { "type": "verse", "text": "Dicsérjük szent nevedet,\nUram jöjj hozzánk még közelebb!\nKiáltunk a nemzetünkért,\nÁraszd ránk Szellemed!" }
+  ]
+}

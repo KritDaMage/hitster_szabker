@@ -1,0 +1,11 @@
+{
+  "title": "Mutasd meg dicsőséged",
+  "original_title": "Let Your Glory Be Known",
+  "author": "Leonard Jones",
+  "translator": "Prazsák Csilla, Prazsák László",
+  "sections": [
+    { "type": "verse", "text": "Tisztíts meg Urunk,\nHogy láthassuk szent lényed,\nTrónodnál csodálunk téged,\nMegperzsel jelenléted." },
+    { "type": "verse", "text": "Áraszd ránk Szellemed,\nHogy megtörjön a szívünk,\nRád szomjazunk erődre éhezünk,\nHogy tűzzel telve dicsérjünk." },
+    { "type": "chorus", "text": "Mutasd meg dicsőséged,\nTe választottál és váltottál meg,\nMutasd meg dicsőséged,\nHogy a kereszt erejét hirdesse e nép.\nÓ Urunk, mutasd meg dicsőséged!" }
+  ]
+}

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#16123A">
-<title>Kártyák</title>
+<title>HITSTER Szabker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap&subset=latin,latin-ext" rel="stylesheet">
@@ -355,15 +355,18 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .catalog-table tbody tr:last-child td{border-bottom:none}
 .catalog-table tbody tr{cursor:pointer}
 .catalog-table tbody tr:active{background:rgba(var(--line-rgb),.1)}
-.catalog-table tbody tr.no-lyrics{cursor:default;background:rgba(0,0,0,.18)}
-.catalog-table tbody tr.no-lyrics:active{background:rgba(0,0,0,.18)}
+.catalog-table tbody tr.no-lyrics{background:rgba(0,0,0,.18)}
+.catalog-table tbody tr.no-lyrics:active{background:rgba(0,0,0,.28)}
 .catalog-table .num{color:var(--dim);font-variant-numeric:tabular-nums}
 .catalog-table .orig{color:var(--dim)}
 .catalog-table .year{text-align:right;color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap;padding-right:20px}
 .catalog-table col.col-num{width:48px}
+.catalog-table col.col-check{width:32px}
 .catalog-table col.col-year{width:64px}
 .catalog-table col.col-play{width:46px}
 .catalog-table td.play-cell{padding:8px}
+.catalog-table td.check-cell{padding:8px;text-align:center}
+.catalog-table td.check-cell input{width:16px;height:16px;cursor:pointer}
 .catalog-table th.sortable{cursor:pointer;user-select:none}
 .catalog-table th.sortable:active{color:var(--paper)}
 .catalog-play-btn{width:28px;height:28px;border-radius:50%;border:none;display:flex;align-items:center;
@@ -456,8 +459,8 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
         </div>
       </div>
     </div>
-    <h1>Hitster<br>Szabker módra</h1>
-    <p class="sub">„Minden lélek dícsérje az URat!”<br><span class="sub-ref">Zsoltárok 150:6</span></p>
+    <h1>HITSTER<br>Szabker módra</h1>
+    <p class="sub">„Minden lélek dícsérje az Urat!”<br><span class="sub-ref">Zsoltárok 150:6</span></p>
     <p class="err" id="auth-err"></p>
   </section>
 
@@ -514,15 +517,17 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
       </div>
       <table class="catalog-table">
         <colgroup>
-          <col class="col-num"><col class="col-title"><col class="col-orig"><col class="col-year"><col class="col-play">
+          <col class="col-num"><col class="col-check" id="col-catalog-check" style="visibility:collapse"><col class="col-title"><col class="col-orig"><col class="col-year"><col class="col-play"><col class="col-play" id="col-catalog-lastcol" style="visibility:collapse">
         </colgroup>
         <thead>
           <tr>
             <th class="num">#</th>
+            <th id="th-catalog-check"></th>
             <th class="sortable" data-sort="title">Cím<span class="sort-arrow" id="sort-arrow-title"></span></th>
             <th class="sortable" data-sort="original_title">Eredeti cím<span class="sort-arrow" id="sort-arrow-original_title"></span></th>
             <th class="sortable year" data-sort="year">Év<span class="sort-arrow" id="sort-arrow-year"></span></th>
             <th></th>
+            <th id="th-catalog-lastcol"></th>
           </tr>
         </thead>
         <tbody id="catalog-list"></tbody>
@@ -586,6 +591,7 @@ let deviceId = null;      // ahol szól: SDK-lejátszó vagy távoli eszköz
 let usingSdk = false;
 let player = null;
 let trackId = null;
+let realSpotify = false;  // fejlesztői módban (?mock=1): ha igaz, api() a valódi Spotify API-t hívja a mock helyett
 let playing = false;
 let poller = null;
 let wakeLock = null;
@@ -707,7 +713,7 @@ function authExpired(){
 }
 
 async function api(path, opts = {}){
-  if (MOCK) return mockApi(path, opts);
+  if (MOCK && !realSpotify) return mockApi(path, opts);
   const token = await getToken();
   if (!token) return authExpired();
   const r = await fetch("https://api.spotify.com/v1/" + path, {
@@ -739,7 +745,7 @@ function loadSdk(){
 async function startSdk(){
   await loadSdk();
   player = new Spotify.Player({
-    name: "Kártyák",
+    name: "HITSTER Szabker",
     getOAuthToken: cb => getToken().then(t => cb(t)),
     volume: 0.9
   });
@@ -801,18 +807,50 @@ async function startPlayback(id){
     $("play-err").textContent = e.message;
   }
 }
-async function play(id, switchView = true){
+async function play(id, switchView = true, countProgress = true){
   if (!MOCK && !(await getToken())) { try { authExpired(); } catch(e){} return; }
   pendingRestoreId = null;
   trackId = id;
   reset();
   if (switchView) show("play");
   $("play-err").textContent = "";
-  if (mode === "szabker") {
+  if (countProgress && mode === "szabker") {
     revealedIds.add(id);
     updateRevealProgress();
   }
   await startPlayback(id);
+}
+
+/* fejlesztői módban (?mock=1) a katalógusból és a dalszöveg-nézet lejátszó
+   gombjából indított lejátszás nem a szimulált mock-számot, hanem ténylegesen
+   a Spotify-t szólaltatja meg — ehhez valódi bejelentkezés és (első alkalommal)
+   SDK/eszköz-inicializálás kell. Nem-fejlesztői módban ez csak a szokásos
+   token-ellenőrzés, nincs más hatása. */
+async function ensureRealSpotifyReady(id){
+  if (!(await getToken())) {
+    if (MOCK) alert("Nincs érvényes Spotify-bejelentkezés. Lépj be egyszer nem fejlesztői módban, utána a token itt is működik.");
+    else { try { authExpired(); } catch(e){} }
+    return false;
+  }
+  if (MOCK) {
+    realSpotify = true;
+    if (!usingSdk && !deviceId) {
+      trackId = id;
+      try { await startSdk(); }
+      catch(e) { await pickDevice(); return false; }
+    }
+    if (player) player.activateElement && player.activateElement();
+  }
+  return true;
+}
+async function catalogPlay(id){
+  if (trackId === id && playing) {
+    await pauseCurrentPlayback();
+    icon();
+    return;
+  }
+  if (!(await ensureRealSpotifyReady(id))) return;
+  play(id, false, false);
 }
 
 async function toggle(){
@@ -945,6 +983,11 @@ function icon(){
     lp.innerHTML = '<svg viewBox="0 0 24 24"><path d="' + (lpPlaying ? PAUSE_ICON_PATH : PLAY_ICON_PATH) + '"/></svg>';
     lp.setAttribute("aria-label", lpPlaying ? "Szünet" : "Lejátszás");
   }
+  document.querySelectorAll(".catalog-play-btn").forEach(btn => {
+    const btnPlaying = playing && trackId === btn.dataset.id;
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="' + (btnPlaying ? PAUSE_ICON_PATH : PLAY_ICON_PATH) + '"/></svg>';
+    btn.setAttribute("aria-label", btnPlaying ? "Szünet" : "Lejátszás");
+  });
 }
 function reset(){
   $("label").dataset.revealed = "0";
@@ -970,6 +1013,7 @@ async function resetPlayback(){
   }
   trackId = null;
   playing = false;
+  if (MOCK) realSpotify = false;
   reset();
   icon();
   scanReady();
@@ -1053,7 +1097,7 @@ async function toggleLyricsPlayer(){
     await toggle();
     return;
   }
-  if (!MOCK && !(await getToken())) { try { authExpired(); } catch(e){} return; }
+  if (!(await ensureRealSpotifyReady(id))) return;
   pendingRestoreId = null;
   trackId = id;
   await startPlayback(id);
@@ -1070,14 +1114,56 @@ async function loadLyrics(id){
   } catch(e){ return null; }
 }
 
-/* ══════════ fejlesztői dalszöveg-szerkesztő (?mock=1) ═════ */
+/* ══════════ fejlesztői dalszöveg-szerkesztő (?mock=1) ═════
+   a kiválasztott mappa handle-jét IndexedDB-ben tároljuk, hogy újratöltés
+   után ne kelljen mindig újra kiválasztani — a File System Access API
+   maga csak memóriában tartja, localStorage pedig nem tud handle-t tárolni */
+function idbOpenDevDb(){
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open("hitster-dev", 1);
+    req.onupgradeneeded = () => req.result.createObjectStore("handles");
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function idbGetHandle(key){
+  try {
+    const db = await idbOpenDevDb();
+    return await new Promise((resolve, reject) => {
+      const req = db.transaction("handles", "readonly").objectStore("handles").get(key);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
+    });
+  } catch(e){ return null; }
+}
+async function idbSetHandle(key, handle){
+  try {
+    const db = await idbOpenDevDb();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction("handles", "readwrite");
+      tx.objectStore("handles").put(handle, key);
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+  } catch(e){}
+}
+
 let lyricsDirHandle = null;
 let editFileHandle = null;
 async function getLyricsDirHandle(){
   if (lyricsDirHandle) return lyricsDirHandle;
   if (!window.showDirectoryPicker) { alert("A böngésződ nem támogatja a Fájlrendszer API-t (Chrome/Edge kell hozzá)."); return null; }
+  const saved = await idbGetHandle("lyricsDir");
+  if (saved) {
+    try {
+      let perm = await saved.queryPermission({ mode: "readwrite" });
+      if (perm !== "granted") perm = await saved.requestPermission({ mode: "readwrite" });
+      if (perm === "granted") { lyricsDirHandle = saved; return lyricsDirHandle; }
+    } catch(e){}
+  }
   try {
     lyricsDirHandle = await window.showDirectoryPicker({ id: "hitster-lyrics", mode: "readwrite" });
+    idbSetHandle("lyricsDir", lyricsDirHandle);
     return lyricsDirHandle;
   } catch(e) { return null; }
 }
@@ -1109,7 +1195,6 @@ async function saveLyricsEdit(){
     $("edit-err").textContent = "Hibás JSON: " + e.message;
     return;
   }
-  if (lyricsPlayerTrackId) sessionStorage.setItem("resumeCatalogLyrics", lyricsPlayerTrackId);
   const writable = await editFileHandle.createWritable();
   await writable.write(text);
   await writable.close();
@@ -1159,6 +1244,37 @@ async function loadAllSongs(){
   return all;
 }
 
+/* fejlesztői mód: a katalógusban kézzel bejelölhető, mely dalok vannak kész
+   ellenőrizve — localStorage-ban marad meg, böngészőnként/eszközönként */
+const CATALOG_CHECKED_KEY = "catalogChecked";
+function loadCatalogChecked(){
+  try { return new Set(JSON.parse(localStorage.getItem(CATALOG_CHECKED_KEY) || "[]")); }
+  catch(e){ return new Set(); }
+}
+const catalogChecked = loadCatalogChecked();
+function saveCatalogChecked(){
+  localStorage.setItem(CATALOG_CHECKED_KEY, JSON.stringify([...catalogChecked]));
+}
+
+/* fejlesztői mód: a katalógus "Létrehozva" oszlopa a fájl utolsó módosítási
+   dátumát mutatja (a File System Access API nem ad valódi létrehozási dátumot) */
+const catalogFileDates = new Map();
+async function ensureCatalogDatesLoaded(){
+  const dir = await getLyricsDirHandle();
+  if (!dir) return;
+  await Promise.all(catalogEntries.filter(e => e.hasLyrics && !catalogFileDates.has(e.id)).map(async e => {
+    let ts = 0;
+    try {
+      const fh = await dir.getFileHandle(e.id + ".json");
+      const file = await fh.getFile();
+      ts = file.lastModified;
+    } catch(err){}
+    catalogFileDates.set(e.id, ts);
+    e.created = ts;
+  }));
+  catalogEntries.forEach(e => { if (e.created === undefined) e.created = catalogFileDates.get(e.id) || 0; });
+}
+
 let catalogEntries = [];
 let catalogSort = { key: "title", dir: "asc" };
 
@@ -1166,8 +1282,8 @@ function sortCatalogEntries(){
   const { key, dir } = catalogSort;
   const mul = dir === "asc" ? 1 : -1;
   catalogEntries.sort((a, b) => {
-    if (key === "year") {
-      const av = a.year || 0, bv = b.year || 0;
+    if (key === "year" || key === "created") {
+      const av = a[key] || 0, bv = b[key] || 0;
       return (av - bv) * mul;
     }
     return (a[key] || "").localeCompare(b[key] || "", "hu") * mul;
@@ -1175,7 +1291,7 @@ function sortCatalogEntries(){
 }
 
 function updateCatalogSortIndicators(){
-  ["title", "original_title", "year"].forEach(key => {
+  ["title", "original_title", "year", "created"].forEach(key => {
     const el = $("sort-arrow-" + key);
     if (!el) return;
     el.textContent = catalogSort.key === key ? (catalogSort.dir === "asc" ? "▲" : "▼") : "";
@@ -1190,7 +1306,7 @@ function renderCatalogList(filter){
   if (!shown.length) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 5;
+    td.colSpan = 7;
     td.style.textAlign = "center";
     td.style.padding = "20px 12px";
     td.style.color = "var(--dim)";
@@ -1204,6 +1320,19 @@ function renderCatalogList(filter){
     const tdNum = document.createElement("td");
     tdNum.className = "num";
     tdNum.textContent = i + 1;
+    const tdCheck = document.createElement("td");
+    if (MOCK) {
+      tdCheck.className = "check-cell";
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.checked = catalogChecked.has(entry.id);
+      cb.onclick = (ev) => {
+        ev.stopPropagation();
+        if (cb.checked) catalogChecked.add(entry.id); else catalogChecked.delete(entry.id);
+        saveCatalogChecked();
+      };
+      tdCheck.appendChild(cb);
+    }
     const tdTitle = document.createElement("td");
     tdTitle.textContent = entry.title;
     const tdOrig = document.createElement("td");
@@ -1216,27 +1345,32 @@ function renderCatalogList(filter){
     tdPlay.className = "play-cell";
     const playBtn = document.createElement("button");
     playBtn.className = "catalog-play-btn";
-    playBtn.setAttribute("aria-label", "Lejátszás");
-    playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+    playBtn.dataset.id = entry.id;
+    const isPlaying = playing && trackId === entry.id;
+    playBtn.setAttribute("aria-label", isPlaying ? "Szünet" : "Lejátszás");
+    playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="' + (isPlaying ? PAUSE_ICON_PATH : PLAY_ICON_PATH) + '"/></svg>';
     playBtn.onclick = (ev) => {
       ev.stopPropagation();
-      play(entry.id, false);
+      catalogPlay(entry.id);
     };
     tdPlay.appendChild(playBtn);
-    tr.append(tdNum, tdTitle, tdOrig, tdYear, tdPlay);
-    if (entry.hasLyrics) {
-      tr.onclick = async () => {
-        const data = await loadLyrics(entry.id);
-        if (!data) return;
-        lyricsData = data;
-        lyricsVersionIndex = 0;
-        lyricsPlayerTrackId = entry.id;
-        renderLyrics();
-        openLyricsDrawer();
-      };
-    } else {
-      tr.classList.add("no-lyrics");
+    const tdLast = document.createElement("td");
+    if (MOCK) {
+      tdLast.className = "year";
+      tdLast.textContent = entry.created ? new Date(entry.created).toISOString().slice(0, 10) : "—";
     }
+    tr.append(tdNum, tdCheck, tdTitle, tdOrig, tdYear, tdPlay, tdLast);
+    if (!entry.hasLyrics) tr.classList.add("no-lyrics");
+    tr.onclick = async () => {
+      lyricsData = entry.hasLyrics
+        ? await loadLyrics(entry.id)
+        : { title: entry.title, original_title: entry.original_title };
+      if (!lyricsData) return;
+      lyricsVersionIndex = 0;
+      lyricsPlayerTrackId = entry.id;
+      renderLyrics();
+      openLyricsDrawer();
+    };
     list.appendChild(tr);
   });
 }
@@ -1396,6 +1530,13 @@ function renderLyrics(){
     wrap.appendChild(block);
     texts.push(text);
   });
+  if (!sections.length) {
+    const empty = document.createElement("p");
+    empty.className = "lyrics-text";
+    empty.style.color = "var(--dim)";
+    empty.textContent = "Nincs dalszöveg.";
+    wrap.appendChild(empty);
+  }
 
   requestAnimationFrame(() => texts.forEach(fitText));
 }
@@ -1605,6 +1746,16 @@ function closeLyricsDrawerByUser(){
 }
 $("b-lyrics-back").onclick = closeLyricsDrawerByUser;
 $("lyrics-overlay").onclick = closeLyricsDrawerByUser;
+if (MOCK) {
+  // a fejlesztői élő szerver bármelyik lyrics/*.json fájl mentésekor újratölti az oldalt —
+  // nem csak a beépített szerkesztőn keresztüli mentésnél, hanem az IDE-ből közvetlenül
+  // mentett fájloknál is. Ezért minden újratöltés előtt elmentjük, hol jártunk.
+  window.addEventListener("beforeunload", () => {
+    if (lyricsPlayerTrackId && $("lyrics-overlay").classList.contains("open")) {
+      sessionStorage.setItem("resumeCatalogLyrics", lyricsPlayerTrackId);
+    }
+  });
+}
 $("b-catalog").onclick = openCatalog;
 $("b-catalog-back").onclick = () => show(catalogReturnView);
 $("catalog-search").addEventListener("input", () => renderCatalogList($("catalog-search").value));
@@ -1764,6 +1915,20 @@ applyTheme();
 
 if (MOCK) {
   $("menu-dev").hidden = false;
+  $("col-catalog-lastcol").style.visibility = "visible";
+  $("col-catalog-lastcol").style.width = "92px";
+  $("col-catalog-check").style.visibility = "visible";
+  const thLastCol = $("th-catalog-lastcol");
+  thLastCol.classList.add("sortable", "year");
+  thLastCol.innerHTML = 'Létrehozva<span class="sort-arrow" id="sort-arrow-created"></span>';
+  thLastCol.onclick = async () => {
+    if (catalogSort.key === "created") catalogSort.dir = catalogSort.dir === "asc" ? "desc" : "asc";
+    else catalogSort = { key: "created", dir: "asc" };
+    await ensureCatalogDatesLoaded();
+    sortCatalogEntries();
+    updateCatalogSortIndicators();
+    renderCatalogList($("catalog-search").value);
+  };
   document.querySelectorAll(".menu-item[data-view]").forEach(b => {
     b.onclick = () => {
       const v = b.dataset.view;

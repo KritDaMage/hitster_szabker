@@ -1,0 +1,11 @@
+{
+  "title": "Végy áldást",
+  "original_title": "All Honour",
+  "author": "Chris Falson",
+  "translator": "Németh S. Judit",
+  "sections": [
+    { "type": "verse", "text": "Végy áldást, imádást,\nVégy erőt, Urunk,\nVégy áldást, imádást,\nVégy erőt, Urunk!" },
+    { "type": "chorus", "text": "Mennyei Atyánk, dicsőítünk,\nDrága Bárány, Tiéd életünk,\nSzent Szellem, töltsd be szívünk,\nSzent Szellem, töltsd be szívünk,\nSzent Szellem, töltsd be szívünk!" },
+    { "type": "tag", "text": "Friss tűzzel, friss tűzzel!" }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "title": "Fejet hajt a mindenség",
+  "original_title": "I Adore",
+  "author": "Reuben Morgan",
+  "translator": "Pintér Béla",
+  "sections": [
+    { "type": "verse", "text": "Fejet hajt a mindenség, lábaid előtt.\nNeked hódol föld és ég, minden Rólad beszél.\nMondjuk hát: Szent vagy Urunk! Szent vagy Urunk!" },
+    { "type": "chorus", "text": "Téged áldunk, és imádunk.\nKegyelmed rám talált,\nNincsen hasonló Hozzád.\nTéged áldunk, és imádunk.\nNincs más, Szerelmed oly csodás." },
+    { "type": "verse", "text": "Élő Jézus, hű Megváltóm.\nDrága Főpap az egyetlen Pásztor.\nMennyen, földön minden meghajol.\nMinden élő csak Néked hódol." },
+    { "type": "bridge", "text": "Szent vagy, Szent vagy és Fenséges,\nÖrök Isten, a Felkent a győztes.\nAngyalkórus zengi himnuszát:\nMéltó, Méltó, Méltó a Bárány." }
+  ]
+}
