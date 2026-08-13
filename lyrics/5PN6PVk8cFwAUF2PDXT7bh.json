@@ -1,0 +1,10 @@
+{
+  "title": "Jó vagy",
+  "original_title": "Good Grace",
+  "sections": [
+    { "type": "verse", "text": "Gyertek, gyűljünk össze\nMinden ember, a vérünk egy\nIfjú, vén és gyermek\nMinden nemzet vár a Mennyre\nÓvd meg a szíved a bajtól\nNézz az ég felé, ne félj a gonosztól" },
+    { "type": "pre-chorus", "text": "Kérlek őszintén hidd el\nIsten őrülten szeret\nTarts ki hittel, nézz föl,\na segítség onnan jön" },
+    { "type": "chorus", "text": "Jézus, vére által\nmegtaláltam szabadságom\nJézus, fényed árad hű barát vagy\ncsak rád várok" },
+    { "type": "bridge", "text": "Nyisd meg a Mennyet, a falak törnek át\nÍgy hozzád száll a dicséret\nMinden lélegzet téged áld,\nGyermekként tisztán,\nártatlan szívvel látsz, mert te jó vagy" }
+  ]
+}

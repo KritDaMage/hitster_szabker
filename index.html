@@ -139,10 +139,9 @@ main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;paddin
   position:fixed;top:0;right:0;bottom:0;width:100%;max-width:640px;
   background:var(--ink);z-index:21;
   padding:max(24px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));
-  box-shadow:-12px 0 40px rgba(0,0,0,.4);
   transform:translateX(100%);transition:transform .25s ease;
 }
-#v-lyrics.open{transform:translateX(0)}
+#v-lyrics.open{transform:translateX(0);box-shadow:-12px 0 40px rgba(0,0,0,.4)}
 .lyrics-close-row{flex:0 0 auto;display:flex;justify-content:space-between}
 .lyrics-pager-row{flex:0 0 auto}
 
@@ -305,6 +304,15 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   background:var(--ink-lift);color:var(--paper);font:inherit;font-size:15px;border:none;outline:none;
   -webkit-appearance:none;appearance:none}
 .catalog-search::placeholder{color:var(--dim)}
+.catalog-scrolltop{
+  position:fixed;right:max(20px,env(safe-area-inset-right));bottom:max(20px,env(safe-area-inset-bottom));
+  width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:var(--ink-lift);color:var(--paper);box-shadow:0 10px 26px rgba(0,0,0,.34);
+  opacity:0;transform:translateY(10px);pointer-events:none;
+  transition:opacity .2s ease, transform .2s ease;z-index:15;
+}
+.catalog-scrolltop.show{opacity:1;transform:translateY(0);pointer-events:auto}
+.catalog-scrolltop svg{width:20px;height:20px;fill:currentColor}
 .switch-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%}
 .switch-row span{font-size:14px;font-weight:600;color:var(--dim)}
 .switch{position:relative;width:42px;height:24px;border-radius:999px;background:var(--ink-lift);flex:0 0 auto;transition:background .2s ease}
@@ -345,6 +353,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .lyrics-line:last-child{margin-bottom:0}
 
 /* ─── dalkatalógus táblázat ──────────────────────────────── */
+.catalog-body{width:100%}
 .catalog-table{width:100%;margin:0 auto;border-collapse:collapse;table-layout:fixed;
   background:var(--ink-lift);border-radius:12px;overflow:hidden}
 .catalog-table th{text-align:left;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
@@ -357,10 +366,10 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .catalog-table tbody tr:active{background:rgba(var(--line-rgb),.1)}
 .catalog-table tbody tr.no-lyrics{background:rgba(0,0,0,.18)}
 .catalog-table tbody tr.no-lyrics:active{background:rgba(0,0,0,.28)}
-.catalog-table .num{color:var(--dim);font-variant-numeric:tabular-nums}
+.catalog-table .num{color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap;padding-left:8px;padding-right:4px}
 .catalog-table .orig{color:var(--dim)}
 .catalog-table .year{text-align:right;color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap;padding-right:20px}
-.catalog-table col.col-num{width:48px}
+.catalog-table col.col-num{width:40px}
 .catalog-table col.col-check{width:32px}
 .catalog-table col.col-year{width:64px}
 .catalog-table col.col-play{width:46px}
@@ -369,6 +378,15 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .catalog-table td.check-cell input{width:16px;height:16px;cursor:pointer}
 .catalog-table th.sortable{cursor:pointer;user-select:none}
 .catalog-table th.sortable:active{color:var(--paper)}
+.catalog-histogram{width:100%;margin:20px auto 0;border-radius:12px;background:var(--ink-lift);overflow:hidden}
+.catalog-histogram-inner{padding:16px 16px 8px}
+.catalog-histogram-title{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:8px}
+.catalog-histogram-chart{width:100%;overflow-x:auto;cursor:grab;touch-action:pan-y}
+.catalog-histogram-chart.dragging{cursor:grabbing;user-select:none}
+.catalog-histogram-svg{height:auto;display:block}
+.catalog-histogram-bar{fill:var(--hot)}
+.catalog-histogram-tick{font-size:13px;fill:var(--dim)}
+.catalog-histogram-tickline{stroke:rgba(var(--line-rgb),.3);stroke-width:1}
 .catalog-play-btn{width:28px;height:28px;border-radius:50%;border:none;display:flex;align-items:center;
   justify-content:center;background:var(--hot);color:var(--hot-ink);cursor:pointer;flex-shrink:0}
 .catalog-play-btn svg{width:13px;height:13px;fill:currentColor;margin-left:1px}
@@ -515,24 +533,35 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
         <h1 class="lyrics-title">Dalkatalógus</h1>
         <input type="search" class="catalog-search" id="catalog-search" placeholder="Keresés…">
       </div>
-      <table class="catalog-table">
-        <colgroup>
-          <col class="col-num"><col class="col-check" id="col-catalog-check" style="visibility:collapse"><col class="col-title"><col class="col-orig"><col class="col-year"><col class="col-play"><col class="col-play" id="col-catalog-lastcol" style="visibility:collapse">
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="num">#</th>
-            <th id="th-catalog-check"></th>
-            <th class="sortable" data-sort="title">Cím<span class="sort-arrow" id="sort-arrow-title"></span></th>
-            <th class="sortable" data-sort="original_title">Eredeti cím<span class="sort-arrow" id="sort-arrow-original_title"></span></th>
-            <th class="sortable year" data-sort="year">Év<span class="sort-arrow" id="sort-arrow-year"></span></th>
-            <th></th>
-            <th id="th-catalog-lastcol"></th>
-          </tr>
-        </thead>
-        <tbody id="catalog-list"></tbody>
-      </table>
+      <div class="catalog-body">
+        <table class="catalog-table">
+          <colgroup>
+            <col class="col-num"><col class="col-check" id="col-catalog-check" style="visibility:collapse"><col class="col-title"><col class="col-orig"><col class="col-year"><col class="col-play"><col class="col-play" id="col-catalog-lastcol" style="visibility:collapse">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="num">#</th>
+              <th id="th-catalog-check"></th>
+              <th class="sortable" data-sort="title">Cím<span class="sort-arrow" id="sort-arrow-title"></span></th>
+              <th class="sortable" data-sort="original_title">Eredeti cím<span class="sort-arrow" id="sort-arrow-original_title"></span></th>
+              <th class="sortable year" data-sort="year">Év<span class="sort-arrow" id="sort-arrow-year"></span></th>
+              <th></th>
+              <th id="th-catalog-lastcol"></th>
+            </tr>
+          </thead>
+          <tbody id="catalog-list"></tbody>
+        </table>
+        <div class="catalog-histogram" id="catalog-histogram" hidden>
+          <div class="catalog-histogram-inner">
+            <h2 class="catalog-histogram-title">Dalok évenként</h2>
+            <div id="catalog-histogram-chart" class="catalog-histogram-chart"></div>
+          </div>
+        </div>
+      </div>
     </div>
+    <button type="button" class="catalog-scrolltop" id="b-catalog-top" aria-label="Vissza a tetejére">
+      <svg viewBox="0 0 24 24"><path d="M12 5l-7 7h4v7h6v-7h4z"/></svg>
+    </button>
   </section>
 
 </main>
@@ -1360,7 +1389,7 @@ function renderCatalogList(filter){
       tdLast.textContent = entry.created ? new Date(entry.created).toISOString().slice(0, 10) : "—";
     }
     tr.append(tdNum, tdCheck, tdTitle, tdOrig, tdYear, tdPlay, tdLast);
-    if (!entry.hasLyrics) tr.classList.add("no-lyrics");
+    if (MOCK && !entry.hasLyrics) tr.classList.add("no-lyrics");
     tr.onclick = async () => {
       lyricsData = entry.hasLyrics
         ? await loadLyrics(entry.id)
@@ -1373,6 +1402,71 @@ function renderCatalogList(filter){
     };
     list.appendChild(tr);
   });
+}
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs){
+  const el = document.createElementNS(SVG_NS, tag);
+  for (const k in attrs) el.setAttribute(k, attrs[k]);
+  return el;
+}
+function renderCatalogHistogram(entries){
+  const box = $("catalog-histogram");
+  const chart = $("catalog-histogram-chart");
+  chart.innerHTML = "";
+  const counts = new Map();
+  entries.forEach(e => {
+    const year = Number(e.year);
+    if (!year) return;
+    counts.set(year, (counts.get(year) || 0) + 1);
+  });
+  const dataYears = [...counts.keys()].sort((a, b) => a - b);
+  if (!dataYears.length) { box.hidden = true; return; }
+  box.hidden = false;
+  const minYear = dataYears[0], maxYear = dataYears[dataYears.length - 1];
+  const years = [];
+  for (let y = minYear; y <= maxYear; y++) years.push(y);
+  const max = Math.max(...counts.values());
+  const n = years.length;
+  const slot = 22, gap = 5, barW = slot - gap;
+  const H = 170, padTop = 24, padBottom = 26;
+  const chartH = H - padTop - padBottom;
+  const W = n * slot;
+  const svg = svgEl("svg", {
+    viewBox: "0 0 " + W + " " + H, width: W, height: H, class: "catalog-histogram-svg",
+    role: "img", "aria-label": "Dalok évszám szerinti eloszlása évenként"
+  });
+  years.forEach((year, i) => {
+    const count = counts.get(year) || 0;
+    const x = i * slot + gap / 2;
+    if (count > 0) {
+      const barH = Math.max(4, (count / max) * chartH);
+      const y = padTop + chartH - barH;
+      const r = Math.min(3, barH / 2, barW / 2);
+      const bar = svgEl("rect", { x, y, width: barW, height: barH, rx: r, class: "catalog-histogram-bar" });
+      bar.appendChild(svgEl("title", {}));
+      bar.lastChild.textContent = year + ": " + count + " dal";
+      svg.appendChild(bar);
+      if (r > 0) {
+        svg.appendChild(svgEl("rect", {
+          x, y: y + barH - r, width: barW, height: r,
+          class: "catalog-histogram-bar", "aria-hidden": "true"
+        }));
+      }
+    }
+    if (year % 5 === 0) {
+      svg.appendChild(svgEl("line", {
+        x1: x + barW / 2, x2: x + barW / 2, y1: padTop + chartH, y2: padTop + chartH + 5,
+        class: "catalog-histogram-tickline"
+      }));
+      const tick = svgEl("text", {
+        x: x + barW / 2, y: H - 7, "text-anchor": "middle", class: "catalog-histogram-tick"
+      });
+      tick.textContent = year;
+      svg.appendChild(tick);
+    }
+  });
+  chart.appendChild(svg);
 }
 
 function lyricsSearchText(data){
@@ -1394,6 +1488,9 @@ async function openCatalog(){
   sortCatalogEntries();
   updateCatalogSortIndicators();
   renderCatalogList("");
+  renderCatalogHistogram(catalogEntries);
+  syncCatalogHistogramWidth();
+  updateCatalogScrollTop();
   // a teljes dalszöveget is betöltjük kereséshez — a lista már látszik, ez csak utólag bővíti ki
   const lyricsList = await Promise.all(catalogEntries.map(e => e.hasLyrics ? loadLyrics(e.id) : null));
   catalogEntries.forEach((e, i) => {
@@ -1759,6 +1856,35 @@ if (MOCK) {
 $("b-catalog").onclick = openCatalog;
 $("b-catalog-back").onclick = () => show(catalogReturnView);
 $("catalog-search").addEventListener("input", () => renderCatalogList($("catalog-search").value));
+function updateCatalogScrollTop(){
+  $("b-catalog-top").classList.toggle("show", window.scrollY > 400);
+}
+window.addEventListener("scroll", updateCatalogScrollTop);
+$("b-catalog-top").onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
+function syncCatalogHistogramWidth(){
+  const table = document.querySelector("#v-catalog .catalog-table");
+  const hist = $("catalog-histogram");
+  if (table && !hist.hidden) hist.style.width = table.offsetWidth + "px";
+}
+window.addEventListener("resize", syncCatalogHistogramWidth);
+{
+  const dragEl = $("catalog-histogram-chart");
+  let dragging = false, startX = 0, startScroll = 0;
+  dragEl.addEventListener("pointerdown", e => {
+    dragging = true;
+    startX = e.clientX;
+    startScroll = dragEl.scrollLeft;
+    dragEl.setPointerCapture(e.pointerId);
+    dragEl.classList.add("dragging");
+  });
+  dragEl.addEventListener("pointermove", e => {
+    if (!dragging) return;
+    dragEl.scrollLeft = startScroll - (e.clientX - startX);
+  });
+  const stopDrag = () => { dragging = false; dragEl.classList.remove("dragging"); };
+  dragEl.addEventListener("pointerup", stopDrag);
+  dragEl.addEventListener("pointercancel", stopDrag);
+}
 document.querySelectorAll(".catalog-table th.sortable").forEach(th => {
   th.onclick = () => {
     const key = th.dataset.sort;

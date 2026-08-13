@@ -1,0 +1,13 @@
+{
+  "title": "Ígéretek",
+  "original_title": "Promises",
+  "author": "Maverick City Music",
+  "translator": "Bordás Ráhel",
+  "sections": [
+    { "type": "verse", "text": "Ábrahámnak Istene,\nSzövetségesem,\nHűséged követ.\nAz ég nem lát olyat,\nHogy porba hull szavad.\nMegáll ígéreted." },
+    { "type": "pre-chorus", "text": "Ha vihar támad,\nA szél nem fárad,\nNem remeg szívem.\nSzavad hozzám szól,\nLelkem tudja jól,\nAbból élet lesz." },
+    { "type": "chorus", "text": "Nagy a Te hűséged hozzám.\nSzól a dicséret,\nHa a nap ébred\nMíg az éj leszáll.\nNagy a Te hűséged hozzám." },
+    { "type": "verse", "text": "Örök időkön át\nHa szertehull is a világ,\nSzavad ugyanaz.\nA múlt tanúskodik,\nHatalmad nem változik,\nKi voltál az maradsz." },
+    { "type": "bridge", "text": "Csak Benned bízom, Jézus.\nTe nem hagysz el soha.\nSzívemnek biztos horgony\nA Menny minden szava." }
+  ]
+}

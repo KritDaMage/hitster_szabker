@@ -1,0 +1,15 @@
+{
+  "title": "Hadd szóljon",
+  "original_title": "Might Get Loud",
+  "sections": [
+    { "type": "verse", "text": "Bocsánatot kérek,\nDe hangos lesz az énekem\nTalán nincs hangnemben,\nDe szívemből zeng\nNem tudja más senki,\nAmit az Úr értem tett\nKell, hogy egész nap szóljon,\nÍgy jobb, ha most elkezdem" },
+    { "type": "chorus", "text": "Igen, hadd szóljon\nCsak hadd zengjen\nA Menny hatalma száll most ránk\nIgen, hadd szóljon\nCsak hadd zengjen\nA Menny hatalma száll most ránk\nIgen, hadd szóljon" },
+    { "type": "verse", "text": "Nincsen rajtam dicsfény\nNem vagyok egy angyal sem\nDe a nevem fel van írva a mennyben\nCsak arra gondolok,\nhogy hol lennék, miért lennék,\nKi lennék,\nHa nem az Övé lennék" },
+    { "type": "bridge", "text": "Indul a dicséret bennem és nem nyomom el\nHadd zengjen fel a szívemből\n(Mikor dicsérünk Téged)\nCsak hadd zengjen\n(Akkor láncok törnek)\nA Menny hatalma száll most ránk\nIgen, hadd szóljon" },
+    { "type": "tag", "text": "Miért ne dicsérhetném hangosan őt?\nMiért ne dicsérhetném hangosan őt?\n(A menny szálljon ránk most)\nMiért ne dicsérhetném hangosan őt?" },
+    { "type": "chorus", "text": "Igen, hadd szóljon\n(Bocsánatot kérek)\nCsak hadd zengjen\n(Mert hangos lesz az énekem)\nA Menny hatalma száll most ránk" },
+    { "type": "chorus", "text": "Igen, hadd szóljon\n(Nincsen rajtam dicsfény)\nCsak hadd zengjen\n(Nevem fel van írva nálad)\nA Menny hatalma száll most ránk" },
+    { "type": "chorus", "text": "Igen, hadd szóljon\n(Minden erőmmel dicsérlek)\nCsak hadd zengjen\n(Csak rólad szól az énekem)\nA Menny hatalma száll most ránk\nIgen, hadd szóljon" },
+    { "type": "tag", "text": "Miért ne dicsérhetném hangosan őt?" }
+  ]
+}

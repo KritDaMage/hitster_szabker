@@ -1,0 +1,11 @@
+{
+  "title": "Bemegyek a Szentek Szentjébe",
+  "original_title": "For Your Name Is Holy",
+  "author": "Jim Cowan",
+  "translator": "Flach Ferenc",
+  "sections": [
+    { "type": "verse", "text": "Bemegyek a Szentek Szentjébe,\nbemegyek a Bárány vérén át.\nBemegyek, csak Téged dicsérlek,\nbemegyek, hogy hódoljak Neked." },
+    { "type": "pre-chorus", "text": "Uram, dicsérlek, dicsérlek,\nUram, dicsérlek, dicsérlek!" },
+    { "type": "chorus", "text": "Neved áldom, szent, szent Uram,\nNeved áldom, szent, szent Uram!" }
+  ]
+}

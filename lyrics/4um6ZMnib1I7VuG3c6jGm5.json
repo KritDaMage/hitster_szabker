@@ -1,11 +1,25 @@
 {
-  "title": "Add, hogy a szívemmel lássak",
-  "original_title": " Open the Eyes of My Heart",
-  "author": "Paul Baloche",
-  "translator": "István Judit ",
-  "sections": [
-    { "type": "verse", "text": "Add, hogy a Szívemmel lássak,\nAdd, nekem látásodat!\nUram, hadd lássak!\nUram, hadd lássak!" },
-    { "type": "chorus", "text": "Kérlek, nyisd meg most szemem,\nEgy pillantást, hadd vessek a mennyre,\nHogy valóban lássalak,\nMiközben énekeljük: „Szent vagy!”." },
-    { "type": "bridge", "text": "Szent vagy, szent vagy, szent vagy!\nSzent vagy, szent vagy, szent vagy!\nSzent vagy, szent vagy, szent vagy!\nUram, Te szent vagy!" }
+  "versions": [
+    {
+      "title": "Add, hogy a szívemmel lássak",
+      "original_title": "Open the Eyes of My Heart",
+      "author": "Paul Baloche",
+      "translator": "István Judit",
+      "sections": [
+        { "type": "verse", "text": "Add, hogy a Szívemmel lássak,\nAdd, nekem látásodat!\nUram, hadd lássak!\nUram, hadd lássak!" },
+        { "type": "chorus", "text": "Kérlek, nyisd meg most szemem,\nEgy pillantást, hadd vessek a mennyre,\nHogy valóban lássalak,\nMiközben énekeljük: „Szent vagy!”." },
+        { "type": "bridge", "text": "Szent vagy, szent vagy, szent vagy!\nSzent vagy, szent vagy, szent vagy!\nSzent vagy, szent vagy, szent vagy!\nUram, Te szent vagy!" }
+      ]
+    },
+    {
+      "title": "Nyisd meg a szívem",
+      "original_title": "Open the Eyes of My Heart",
+      "author": "Paul Baloche",
+      "sections": [
+        { "type": "verse", "text": "Nyisd meg a szívem, Ó Jézus,\nNyisd meg a szívem, Uram,\nLátnom kell Téged,\nLátnom kell Téged." },
+        { "type": "chorus", "text": "Dicsőség Ura,\nRagyog fel, mint hold az éjben,\nLelkemnek Pásztora,\nTeremts tiszta szívet bennem." },
+        { "type": "bridge", "text": "Szent vagy, szent vagy, szent vagy!\nSzent vagy, szent vagy, szent vagy!\nSzent vagy, szent vagy, szent vagy!\nLátnom kell Téged." }
+      ]
+    }
   ]
 }

@@ -1,0 +1,10 @@
+{
+  "title": "Az Úrért mi indulunk",
+  "original_title": "For The Lord Is Marching On",
+  "author": "Bonnie Low",
+  "sections": [
+    { "type": "verse", "text": "Az Úrért mi indulunk,\naz Ő serege mindig készen áll,\naz Ő dicsőségét meglátja majd a föld!\nZengd a himnuszt a győztesért,\náldd az Istent a harcokért,\nnincs fegyver, amely legyőzhet minket!" },
+    { "type": "chorus", "text": "Mert a sereg kapitánya Jézus,\ngyőzelemre vezet minket,\naz ellenség nem árthat már nekünk!" },
+    { "type": "verse", "text": "Az Úrért mi indulunk,\na gonosz ellen harcolunk;\ngyere, induljunk az ígéret felé!\nAz Úrért mi indulunk,\naz Ő serege mindig készen áll,\naz Ő dicsőségét meglátja majd a föld!" }
+  ]
+}

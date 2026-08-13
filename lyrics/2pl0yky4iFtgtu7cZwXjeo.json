@@ -1,0 +1,12 @@
+{
+  "title": "Isten jó",
+  "original_title": "You Are Good",
+  "author": "Jonathan „Joth” Hunt",
+  "translator": "Fercsik Viktor és Veronika",
+  "sections": [
+    { "type": "verse", "text": "Te Isten vagy, de én nem, Te uralkodj szívemben!\nÁtadom, mindenem! Szolgállak tervedben!" },
+    { "type": "bridge", "text": "Te vagy a Megváltó! Te vezess Megtartó! Te vagy a legfőbb jó!" },
+    { "type": "chorus", "text": "Isten jó, mindenkor, szerelme minden nap megtart!\nIsten jó mindenkor! Isten jó! (Isten jó!)" },
+    { "type": "tag", "text": "Nincs más név, nincs olyan név, mint Jézus! (Jézus!)\nNincs más név, nincs olyan név, mint Jézus! (Jézus!)" }
+  ]
+}

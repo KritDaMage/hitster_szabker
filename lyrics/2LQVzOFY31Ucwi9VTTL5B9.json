@@ -1,0 +1,12 @@
+{
+  "title": "Mennyei hullám",
+  "original_title": "Another Wave",
+  "author": "Lindy Conant & Circuit Rider",
+  "translator": "Kerekes Ernő",
+  "sections": [
+    { "type": "verse", "text": "Hallod a hírét, itt jön már\nNépeket ébreszt, rád is vár\nVárta sok-sok szív, ki ment meg minket" },
+    { "type": "pre-chorus", "text": "A föld is reszket, a hangja terjed\nA lelkünk ébred, légy készen, légy készen" },
+    { "type": "chorus", "text": "Megrengeti a földet, és árad\nA mennyei hullám\nAz óra eljött hát" },
+    { "type": "bridge", "text": "Az ébredés szökőárja a parton ömlik szét\nA Szellem újra mozdul,\nahogy sosem láttuk még\nÉs minden szem meglátja Őt,\nmeglátja majd az Úr dicsőségét" }
+  ]
+}

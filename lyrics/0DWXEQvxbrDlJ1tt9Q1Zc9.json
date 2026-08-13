@@ -1,0 +1,10 @@
+{
+  "title": "Vakmerő szeretet",
+  "original_title": "Reckless Love",
+  "sections": [
+    { "type": "verse", "text": "Teremtő tervedben engem is akartál.\nHozzám annyira hű voltál.\nHangot sem adtam még felettem daloltál.\nHozzám annyira jó voltál." },
+    { "type": "chorus", "text": "Ó, az el nem múló, túláradó, vakmerő szeretet!\nIsten felkutatott, nem nyugodott, amíg meg nem lelt.\nNem érdemeltem, ki sem fizettem, mégis ingyen enyém lett.\nÓ, az el nem múló, túláradó, vakmerő szeretet!" },
+    { "type": "verse", "text": "Ellened küzdöttem s Te értem harcoltál.\nHozzám annyira hű voltál.\nMegromlott lelkemért mindent feláldoztál.\nHozzám annyira jó voltál." },
+    { "type": "bridge", "text": "Hegységeken átkelsz, sötétségen áttörsz, míg utánam eredsz.\nKőfalakat döntesz, hazugságot rombolsz, míg utánam eredsz." }
+  ]
+}

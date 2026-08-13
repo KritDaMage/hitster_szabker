@@ -1,0 +1,10 @@
+{
+  "title": "Az Ő neve Bástya",
+  "original_title": "The Name Of The Lord",
+  "author": "Clinton Utterbach",
+  "sections": [
+    { "type": "verse", "text": "Az Ő neve bástya, erős vár,\naz igaz Hozzá fut, és megmenekül." },
+    { "type": "chorus", "text": "Áldott legyen az Ő neve, áldott legyen az Ő neve,\náldott legyen az Ő neve, örökké, örökké!\nÁldott legyen az Ő neve, áldott legyen az Ő neve,\náldott legyen az Ő neve, örökké!" },
+    { "type": "verse", "text": "Az Ő neve bástya, erős vár,\naki ma Hozzá fut, az megmenekül." }
+  ]
+}

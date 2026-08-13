@@ -1,0 +1,11 @@
+{
+  "title": "Csodállak, imádlak (Itt a menny)",
+  "original_title": "You Are Near",
+  "author": "Reuben Morgan",
+  "translator": "Németh S. Judit",
+  "sections": [
+    { "type": "verse", "text": "Csodállak, imádlak,\ns nem értem, hogy miért szeretsz.\nBeszéded élet szívemnek,\nelváltoztat szelíd kezed." },
+    { "type": "chorus", "text": "Jelenléted átitat,\nszívem, lelkem áld, Uram!\nAhogy Szentlelked betölt, itt a menny." },
+    { "type": "bridge", "text": "Áldás és tisztesség, dicsőség, erő az Úré örökké!" }
+  ]
+}

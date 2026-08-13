@@ -1,0 +1,12 @@
+{
+  "title": "Legyen most Tiéd",
+  "original_title": "Yours",
+  "sections": [
+    { "type": "verse", "text": "A mindenség trónod előtt\nKi ér fel, Uram, hozzád?\nMenny királya, megölettél\nSenki más nem méltó" },
+    { "type": "chorus", "text": "Legyen most tiéd minden dicsőség\nTérdet hajtunk trónodnál\nÚr vagy felettünk, és mi dicsérünk\nTrónod örökké megáll" },
+    { "type": "verse", "text": "Ki volt és van, és eljön majd\nÚr vagy minden időben\nTiéd a trón minden felett\nNeved szent és méltó" },
+    { "type": "tag", "text": "Örökké megáll" },
+    { "type": "bridge", "text": "Minden áldás, erő, dicsőség,\nGyőztes Bárány, csak tiéd, Halleluja" },
+    { "type": "outro", "text": "A mindenség trónod előtt\nKi ér fel, Uram, hozzád?" }
+  ]
+}

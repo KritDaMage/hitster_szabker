@@ -1,0 +1,12 @@
+{
+  "title": "Bennem ég egy tűz",
+  "original_title": "Spirit and the Bride",
+  "author": "Tom Dickson",
+  "translator": "Bagyinszky Judit",
+  "sections": [
+    { "type": "verse", "text": "Bennem ég egy tűz, mely nem hal el,\nÉrted ég itt benn a mélységben.\nHalld, Uram, szívünk vágyódását,\nhadd lehessünk ott, ahol Te vársz!" },
+    { "type": "bridge", "text": "Itt vagy közel, jelenléted körülvesz,\nhadd lássuk végre arcodat! Ragadj magaddal!" },
+    { "type": "chorus", "text": "Lelkünk úgy kiált, Hozzád kiált,\nJézus, Hozzád kiált, jöjj gyorsan!\nEljön a nap, mikor látjuk arcodat,\nszínről-színre arcodat, jöjj gyorsan!" },
+    { "type": "outro", "text": "Amíg eljössz, Te tarts meg!" }
+  ]
+}

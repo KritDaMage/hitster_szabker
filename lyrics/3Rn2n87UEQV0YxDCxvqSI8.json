@@ -1,0 +1,12 @@
+{
+  "title": "Áldjátok Istent",
+  "original_title": "You Are Good",
+  "author": "Israel Houghton",
+  "translator": "Hunyadi Tamás",
+  "sections": [
+    { "type": "verse", "text": "Áldjátok Isten mindörökké tartó kegyelmét.\nKik házában álltok, dicsérjétek örök hűségét." },
+    { "type": "pre-chorus", "text": "Hirdesse minden nemzet és nép\njóságát irgalmát szeretetét!" },
+    { "type": "chorus", "text": "Mi áldjuk Őt hallelujah, hallelujah!\nMi áldjuk Őt örökké!\nMi áldjuk Őt hallelujah, hallelujah!\nMi áldjuk Őt örökké!\nŐ az Úr!" },
+    { "type": "bridge", "text": "Jó az Úr, örökké hirdetjük kegyelmét!" }
+  ]
+}

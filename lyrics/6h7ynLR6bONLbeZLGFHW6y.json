@@ -1,0 +1,12 @@
+{
+  "title": "A fény királya Ő",
+  "original_title": "How Great Is Our God",
+  "author": "Chris Tomlin, Ed Cash, Jesse Reeves",
+  "translator": "Lakatos Péter (Csiszér László szövegvariánsa)",
+  "sections": [
+    { "type": "verse", "text": "A fény királya Ő, fenségbe öltözött,\nörüljön a Föld,\nörüljön a Föld!\nMert fény veszi körül, a sötétség menekül,\ns megremeg, ha szól,\nmegremeg, ha szól." },
+    { "type": "chorus", "text": "Mily nagy Istenünk, énekeld,\nmily nagy Istenünk! Lásd meg,\nmily nagy, mily nagy Istenünk!" },
+    { "type": "verse", "text": "Örökkévaló, időn uralkodó,\na kezdet és a vég,\na kezdet és a vég.\nŐ Atya szent Isten, a Fiú, s Szentlélek,\na győztes oroszlán,\na megölt Bárány." },
+    { "type": "bridge", "text": "Minden név felett való,\ndicséretre méltó,\nszívem énekel:\nmily nagy Istenünk!" }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Felállok, hogy dicsérjelek (Gyújts tüzet a lelkemben)",
+  "original_title": "Light The Fire",
+  "author": "Bil Maxwell",
+  "translator": "Simonfalvi Krisztián, Kontor Angéla, Terecsekei Pál",
+  "sections": [
+    { "type": "verse", "text": "Felállok, hogy dicsérjelek,\nde térdre hullok előtted.\nA szellemem Rád éhezik,\nmert gyenge a testem." },
+    { "type": "chorus", "text": "Gyújts tüzet a lelkemben,\nformáljon, égjen bennem!\nTe ismered az életem,\nhát gyújts tüzet még egyszer (örökre) a szívemben!" },
+    { "type": "verse", "text": "Karjaiddal átölelsz,\namint gyógyításod árad felém,\núj életet lehelsz belém,\nmint egy forró, süvítő szél." }
+  ]
+}

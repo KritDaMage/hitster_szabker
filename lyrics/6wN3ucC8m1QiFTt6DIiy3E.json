@@ -1,0 +1,10 @@
+{
+  "title": "Dicséret, áldás",
+  "original_title": "Ancient of Days",
+  "author": "Gary Sadler, Jamie Harvill",
+  "sections": [
+    { "type": "verse", "text": "Dicséret, áldás, örök imádás,\nNéked, Mindenható!\nItt áll a néped, új hitre ébred,\nés várja leheleted." },
+    { "type": "chorus", "text": "Minden nyelv most ezt kiáltja: Dicsőség!\nÉs imádva áldja Neved, mind együtt,\nés a néped újra zengi: Hatalmas,\náldott Úr vagy mindörökké, ó, Mindenható!" },
+    { "type": "bridge", "text": "A földről az ég felé kiáltjuk, hogy\nJézus az egyetlen Úr!\nNincs, nem is lesz soha senki más,\nki Hozzá hasonlítható!" }
+  ]
+}
