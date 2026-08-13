@@ -378,7 +378,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .catalog-table td.check-cell input{width:16px;height:16px;cursor:pointer}
 .catalog-table th.sortable{cursor:pointer;user-select:none}
 .catalog-table th.sortable:active{color:var(--paper)}
-.catalog-histogram{width:100%;margin:20px auto 0;border-radius:12px;background:var(--ink-lift);overflow:hidden}
+.catalog-histogram{width:100%;margin-top:20px;border-radius:12px;background:var(--ink-lift);overflow:hidden}
 .catalog-histogram-inner{padding:16px 16px 8px}
 .catalog-histogram-title{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:8px}
 .catalog-histogram-chart{width:100%;overflow-x:auto;cursor:grab;touch-action:pan-y}
@@ -387,6 +387,8 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .catalog-histogram-bar{fill:var(--hot)}
 .catalog-histogram-tick{font-size:13px;fill:var(--dim)}
 .catalog-histogram-tickline{stroke:rgba(var(--line-rgb),.3);stroke-width:1}
+.catalog-histogram-gridline{stroke:rgba(var(--line-rgb),.14);stroke-width:1}
+.catalog-histogram-gridlabel{font-size:10px;fill:var(--dim)}
 .catalog-play-btn{width:28px;height:28px;border-radius:50%;border:none;display:flex;align-items:center;
   justify-content:center;background:var(--hot);color:var(--hot-ink);cursor:pointer;flex-shrink:0}
 .catalog-play-btn svg{width:13px;height:13px;fill:currentColor;margin-left:1px}
@@ -1410,6 +1412,13 @@ function svgEl(tag, attrs){
   for (const k in attrs) el.setAttribute(k, attrs[k]);
   return el;
 }
+function niceStep(max, targetLines){
+  const raw = max / targetLines;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const norm = raw / mag;
+  const step = norm < 1.5 ? 1 : norm < 3 ? 2 : norm < 7 ? 5 : 10;
+  return Math.max(1, step * mag);
+}
 function renderCatalogHistogram(entries){
   const box = $("catalog-histogram");
   const chart = $("catalog-histogram-chart");
@@ -1436,6 +1445,18 @@ function renderCatalogHistogram(entries){
     viewBox: "0 0 " + W + " " + H, width: W, height: H, class: "catalog-histogram-svg",
     role: "img", "aria-label": "Dalok évszám szerinti eloszlása évenként"
   });
+  const step = niceStep(max, 3);
+  for (let v = step; v <= max + step * 0.001; v += step){
+    const gy = padTop + chartH - (v / max) * chartH;
+    svg.appendChild(svgEl("line", {
+      x1: 0, x2: W, y1: gy, y2: gy, class: "catalog-histogram-gridline"
+    }));
+    const gridLabel = svgEl("text", {
+      x: 4, y: gy - 3, class: "catalog-histogram-gridlabel"
+    });
+    gridLabel.textContent = Math.round(v);
+    svg.appendChild(gridLabel);
+  }
   years.forEach((year, i) => {
     const count = counts.get(year) || 0;
     const x = i * slot + gap / 2;
@@ -1489,7 +1510,6 @@ async function openCatalog(){
   updateCatalogSortIndicators();
   renderCatalogList("");
   renderCatalogHistogram(catalogEntries);
-  syncCatalogHistogramWidth();
   updateCatalogScrollTop();
   // a teljes dalszöveget is betöltjük kereséshez — a lista már látszik, ez csak utólag bővíti ki
   const lyricsList = await Promise.all(catalogEntries.map(e => e.hasLyrics ? loadLyrics(e.id) : null));
@@ -1861,12 +1881,6 @@ function updateCatalogScrollTop(){
 }
 window.addEventListener("scroll", updateCatalogScrollTop);
 $("b-catalog-top").onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
-function syncCatalogHistogramWidth(){
-  const table = document.querySelector("#v-catalog .catalog-table");
-  const hist = $("catalog-histogram");
-  if (table && !hist.hidden) hist.style.width = table.offsetWidth + "px";
-}
-window.addEventListener("resize", syncCatalogHistogramWidth);
 {
   const dragEl = $("catalog-histogram-chart");
   let dragging = false, startX = 0, startScroll = 0;
