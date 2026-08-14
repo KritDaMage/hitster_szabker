@@ -1,0 +1,13 @@
+{
+  "title": "Isten jó (Minden nép Hozzád kiált)",
+  "original_title": "God Is Great",
+  "author": "Marty Sampson",
+  "translator": "Pintér Béla",
+  "sections": [
+    { "type": "verse", "text": "Minden nép Hozzád kiált,\nSzellemben és igazságban áld,\nDicsőség a Királynak, az Isten Fiának!" },
+    { "type": "verse", "text": "Minden nemzet meghajol,\nHozzád jön, Eléd borul,\nNincsen Rajtad kívül más, Te vagy a nagy Király!" },
+    { "type": "chorus", "text": "Isten jó, megtartó, hűséges, erős harcos,\nNagyszerű, mindenben tökéletes,\nAz Úr tökéletes!" },
+    { "type": "verse", "text": "Felmagasztaljuk Neved,\nItt ég bennünk szent tüzed,\nJézus, tanítsd népedet,\nHogy halljunk, lássunk mindnyájan!" },
+    { "type": "bridge", "text": "Szent vagy, Istenünk, a szívem így énekel!\nSzent vagy, Istenünk, a házam népe így énekel!\nSzent vagy, Istenünk, a városunk így énekel!\nSzent vagy, Istenünk, az egész Föld így énekel!" }
+  ]
+}

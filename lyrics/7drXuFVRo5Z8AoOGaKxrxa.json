@@ -1,10 +1,20 @@
 {
-  "title": "Hozzád száll az énekem",
-  "original_title": "Lord, I Lift Your Name On High",
-  "author": "Rick Founds",
-  "sections": [
-    { "type": "verse", "text": "Felmagasztaljuk neved,\nzengjük dicséretedet,\nmert Te vagy a Megváltó,\njelenléted gyógyító." },
-    { "type": "chorus", "text": "Az égből jöttél közénk, hogy megmutasd az utat,\nvállaltad a keresztet, és így értünk szenvedtél,\na kereszttől egész a sírig, a sírtól a dicsőségig.\nFelmagasztalunk, Uram!" },
-    { "type": "verse", "text": "A halálból az életre hívtál minket, Jézus,\nmegmutattad ezt az utat, és így értünk szenvedtél,\na kereszttől egész a sírig, a sírtól a dicsőségig.\nFeltámadtál, ó, Uram!" }
+  "versions": [
+    {
+      "author": "Rick Founds",
+      "sections": [
+        { "type": "verse", "text": "Felmagasztaljuk neved,\nZengjük dicséretedet,\nMert Te vagy a Megváltó,\nJelenléted gyógyító." },
+        { "type": "chorus", "text": "Az égből jöttél közénk, hogy megmutasd az utat,\nVállaltad a keresztet, és így értünk szenvedtél,\nA kereszttől egész a sírig, a sírtól a dicsőségig.\nFelmagasztalunk, Uram!" },
+        { "type": "verse", "text": "A halálból az életre hívtál minket, Jézus,\nMegmutattad ezt az utat, és így értünk szenvedtél,\nA kereszttől egész a sírig, a sírtól a dicsőségig.\nFeltámadtál, ó, Uram!" }
+      ]
+    },
+    {
+      "translator": "Prazsák László",
+      "author": "Rick Founds",
+      "sections": [
+        { "type": "verse", "text": "Hozzád száll az énekem,\nOlyan jó Téged dicsérni.\nBűnös volt az életem,\nTe eljöttél, hogy megments engem." },
+        { "type": "chorus", "text": "A mennyből jöttél közénk, hogy út legyél,\nFeláldoztad magad a bűnömért,\nGolgotán meghaltál,\nHarmadnap feltámadtál, uralkodsz mindörökké!" }
+      ]
+    }
   ]
 }

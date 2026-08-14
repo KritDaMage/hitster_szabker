@@ -1,0 +1,14 @@
+{
+  "title": "Uram, Te ismersz (Keresztednél)",
+  "original_title": "At The Cross",
+  "author": "Darlene Zschech, Reuben Morgan",
+  "translator": "Hunyadi Tamás",
+  "sections": [
+    { "type": "verse", "text": "Uram, Te ismersz, látod szívem.\nEzerszer elbuktam, mégis szerettél." },
+    { "type": "verse", "text": "Jelenléteddel körülveszel, minden időben,\nMégis szerettél, mindig szerettél." },
+    { "type": "chorus", "text": "Meghajlok keresztednél, itt folyt ki a drága vér,\nNincs mi ennél többet ér.\nÉrtem győzted le a sírt, megnyitottad a Szentélyt,\nSemmi el nem választ már!" },
+    { "type": "verse", "text": "Te jársz előttem, Oltalmazó!\nKezedben őrzöl, szeretsz, tudom jól!" },
+    { "type": "bridge", "text": "Megnyílt a menny, elvégeztetett,\nA kárpit szétrepedt!" },
+    { "type": "verse", "text": "És ha majd egyszer lezárul szemem,\nOtt állsz előttem, mert úgy szerettél, mindig szerettél." }
+  ]
+}

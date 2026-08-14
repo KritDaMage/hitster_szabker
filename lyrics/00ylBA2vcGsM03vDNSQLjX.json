@@ -1,0 +1,11 @@
+{
+  "title": "Ma csak álmodom arról",
+  "original_title": "I Can Only Imagine",
+  "author": "Bart Millard",
+  "translator": "Kerekes Ernő",
+  "sections": [
+    { "type": "verse", "text": "Ma csak álmodom arról, gyönyörű lehet,\nHa ott állok végre Előtted.\nMa csak álmodom arról, hogy lesz majd egy nap,\nMikor színről-színre látlak.\nMa csak álmodom arról…" },
+    { "type": "chorus", "text": "Mit érzek majd akkor, mikor dicsőséged vár?\nTalán csendben csodállak, vagy a lábam táncot jár,\nVajon térdemre hullok, vagy állva nézek rád,\nHalleluját kiáltok, vagy elnémul a szám?\nMa csak álmodom arról, ma csak álmodom arról…" },
+    { "type": "verse", "text": "Ma csak álmodom arról, bár ott lennék már,\nAhol a Fiú menyegzőre vár.\nMa csak álmodom arról, mikor nem lesz más,\nCsupán boldog, örök imádás.\nMa csak álmodom arról, ma csak álmodom arról…" }
+  ]
+}

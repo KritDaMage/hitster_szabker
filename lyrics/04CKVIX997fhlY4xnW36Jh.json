@@ -1,0 +1,12 @@
+{
+  "title": "A te hangod szól",
+  "original_title": "No Mountain Too High",
+  "author": "477",
+  "translator": "Révész Tünde",
+  "sections": [
+    { "type": "verse", "text": "Ó, Mindenség Ura,\nSzárnyad árnyéka szívem oltalma,\nKegyelmed védelem,\nKarjaidban szívem megpihen." },
+    { "type": "chorus", "text": "Lehet száraz a puszta,\nLehet magas a hegy,\nNeked nincs lehetetlen,\nMinden térdre borul,\nHa a Te hangod szól." },
+    { "type": "verse", "text": "Viharban béke vagy,\nMég a csillagok is térdet hajtanak,\nErődet bíztad rám,\nHogy több lehessek minden álmomnál." },
+    { "type": "bridge", "text": "Bármi történjék velem,\nMindig ott állsz mellettem,\nSemmi nem túl nagy akadály Nálad.\nÉs ha minden csődöt mond,\nSorsom újra formálod,\nSemmi nem túl nagy akadály Nálad." }
+  ]
+}

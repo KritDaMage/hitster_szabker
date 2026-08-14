@@ -1,0 +1,12 @@
+{
+  "title": "Lelkem áldd az Urat",
+  "original_title": "10,000 Reasons",
+  "author": "Jonas Myrin, Matt Redman",
+  "translator": "Dobrocsi Gábor",
+  "sections": [
+    { "type": "chorus", "text": "Lelkem, áldd az Urat, áldd az Urat,\nEgyedül Őt imádd!\nZengj úgy, mint soha még, Őt dicsérd!\nLelkem csak Téged áld!" },
+    { "type": "verse", "text": "Egy új nap kél, és már ébred minden,\nItt az idő, hogy áldjalak,\nÉs bármi ér, bármit rejt az út előttem,\nHadd zengjek este is majd hálával." },
+    { "type": "verse", "text": "Kegyelmed nagy, és türelmed hosszú,\nSzerelmed mély, és az égig ér,\nNem szűnök énekelni jóságodról,\nTízezer okom van, hogy zengjek még." },
+    { "type": "verse", "text": "És egy nap majd ez a test elgyengül,\nErőm elhagy, s utam véget ér,\nA lelkem mégis téged áld vég nélkül:\nTízezer évig és mindörökké!" }
+  ]
+}

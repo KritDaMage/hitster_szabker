@@ -1,0 +1,12 @@
+{
+  "title": "Hozsánna, Dávid fiának",
+  "original_title": "Hosanna",
+  "sections": [
+    { "type": "verse", "text": "Hozsánna, hozsánna,\nHozsánna Dávid Fiának,\nHozsánna, hozsánna,\nHozsánna Dávid Fiának!" },
+    { "type": "chorus", "text": "Hozzád száll énekünk,\nSzívünkből szeretünk,\nNincs kőszikla senki más,\nCsak Te vagy a mi Istenünk!" },
+    { "type": "verse", "text": "Dicsőség, dicsőség,\nA feltámadott Úrnak,\nDicsőség, dicsőség,\nA feltámadott Úrnak!" },
+    { "type": "chorus", "text": "Hozzád száll énekünk,\nSzívünkből szeretünk,\nNincs kőszikla senki más,\nCsak Te vagy a mi Istenünk!" },
+    { "type": "verse", "text": "Jézus, Jézus,\nIsten báránya,\nJézus, Jézus,\nIsten báránya!" },
+    { "type": "chorus", "text": "Hozzád száll énekünk,\nSzívünkből szeretünk,\nNincs kőszikla senki más,\nCsak Te vagy a mi Istenünk!" }
+  ]
+}

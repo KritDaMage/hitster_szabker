@@ -1,0 +1,11 @@
+{
+  "title": "Isten szeret, örvendj hát",
+  "original_title": "Be Free In The Love Of God",
+  "author": "Dave Bilbrough",
+  "translator": "Debreceni István",
+  "sections": [
+    { "type": "chorus", "text": "Isten szeret, örvendj hát, szabadulj fel Szellemében,\nIsten szeret, örvendj hát, szíved járja át!\nIsten szeret, örvendj hát, ünnepeljed Nevét tánccal!\nIsten szeret, örvendj hát, Ő tesz teljessé!" },
+    { "type": "verse", "text": "Elhívásunk Tőle kaptuk, két kezével őriz minket,\nÉs ha megtart, el is hordoz szeretetében." },
+    { "type": "verse", "text": "Istenünk jó, vezet minket, ereje formál bennünket,\nEggyé tesz majd Lelke által szeretetében." }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Fúj a szél a mennyből",
+  "original_title": "Sweet Wind",
+  "author": "David Ruis",
+  "translator": "Horváth Balázs",
+  "sections": [
+    { "type": "verse", "text": "Fúj a szél a mennyből át a földeken,\nFriss, üdítő szellő újra fújni kezd.\nNem tudom, honnan jön, és hogy merre tart,\nCsak fújjon rajtam át!\nÓ, friss szél, fújj most rajtam át!" },
+    { "type": "verse", "text": "Áldott felhők gyűlnek a száraz föld felett,\nDrága égi zápor újra hullni kezd.\nFordítsd arcod a mennybe, tárd ki két kezed,\nHadd áztasson el!\nÓ, lágy eső, jöjj, és áztass el!" },
+    { "type": "verse", "text": "Tűz száll ránk az égből, az Úrnak Szelleme,\nÚjra lángra gyújtja az első szeretetet.\nTartsd a szíved készen, mint egy égő áldozat,\nEngedd, hogy égjen a láng!\nÓ, drága tűz, forrósíts ma át!" }
+  ]
+}

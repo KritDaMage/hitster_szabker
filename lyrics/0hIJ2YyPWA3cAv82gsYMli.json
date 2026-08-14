@@ -1,0 +1,12 @@
+{
+  "title": "Jöjj Szent Szellem",
+  "original_title": "Come Holy Spirit",
+  "author": "Martin Smith",
+  "translator": "Nemes Dávid",
+  "sections": [
+    { "type": "chorus", "text": "Jöjj Szent Szellem,\nSzállj most ránk,\nTüzed gyúljon bennem,\nSzereteted lángja járjon át!" },
+    { "type": "verse", "text": "Leborulok eléd, Istenem,\nMutasd meg nagy dicsőségedet,\nLeborulok, a Mennyért imádkozom a földön." },
+    { "type": "bridge", "text": "Ígéreted beteljesül,\nKirályságod közénk eljön,\nTe egyesíted népedet,\nTüzelje fel Szent Szellemed!" },
+    { "type": "tag", "text": "Szereteted lángja járjon át,\nSzereteted lángja járjon át,\nSzereteted lángja járjon át!" }
+  ]
+}
