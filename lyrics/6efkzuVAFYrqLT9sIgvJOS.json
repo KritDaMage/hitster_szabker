@@ -1,0 +1,11 @@
+{
+  "title": "Örökké Téged imádlak",
+  "original_title": "Through It All",
+  "author": "Reuben Morgan",
+  "translator": "Pintér Béla",
+  "sections": [
+    { "type": "verse", "text": "Örökké Téged imádlak, Te látsz engem, jól ismersz.\nKezeiddel betakartál, és járhatok ösvényeden.\nUram, nincs más, Uram, várok Rád!" },
+    { "type": "chorus", "text": "Egy új éneket zeng most szívem a Te csodás hűségedről,\nEgy szerelmes dalt, Uram, csak Neked,\nMert kegyelmed megtart egy életen át!" },
+    { "type": "tag", "text": "Halleluja!\nHalleluja!" }
+  ]
+}

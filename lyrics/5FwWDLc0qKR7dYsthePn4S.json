@@ -1,0 +1,13 @@
+{
+  "title": "Te vagy az út",
+  "original_title": "The Way",
+  "author": "Ben Cantelon, Nick Herbert, Tim Hughes",
+  "translator": "Pintér Béla",
+  "sections": [
+    { "type": "verse", "text": "Rám talált, mikor egyedül voltam,\nVéget ért éjszakám,\nBűnöm terhétől megszabadultam,\nJézus az én utam már." },
+    { "type": "verse", "text": "Visszaadtad a szemeim fényét,\nÁrad a világosság.\nMinden lépéssel ezen az úton\nKözelebb jutok Hozzád." },
+    { "type": "chorus", "text": "Te vagy az Út,\nTe vagy az Út,\nCsodás szerelmed megváltott engem,\nEgyedül Te vagy az Út!" },
+    { "type": "verse", "text": "Minden napon biztonságban élek,\nNem vagyok egyedül.\nTe vagy az Út, az Igazság, az Élet,\nTe vagy az én jövőm." },
+    { "type": "verse", "text": "Boldog vagyok, mert utadon járok,\nSzerelmed körbezár.\nSzabad lélekkel járom a táncot,\nSzívem hazatalál." }
+  ]
+}

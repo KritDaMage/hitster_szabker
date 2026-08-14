@@ -315,7 +315,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .catalog-scrolltop svg{width:20px;height:20px;fill:currentColor}
 .switch-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%}
 .switch-row span{font-size:14px;font-weight:600;color:var(--dim)}
-.switch{position:relative;width:42px;height:24px;border-radius:999px;background:var(--ink-lift);flex:0 0 auto;transition:background .2s ease}
+.switch{position:relative;width:42px;height:24px;border-radius:999px;background:var(--dim);flex:0 0 auto;transition:background .2s ease}
 .switch[aria-checked="true"]{background:var(--hot)}
 .switch-knob{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--paper);transition:transform .2s ease}
 .switch[aria-checked="true"] .switch-knob{transform:translateX(18px)}
@@ -538,17 +538,17 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
       <div class="catalog-body">
         <table class="catalog-table">
           <colgroup>
-            <col class="col-num"><col class="col-check" id="col-catalog-check" style="visibility:collapse"><col class="col-title"><col class="col-orig"><col class="col-year"><col class="col-play"><col class="col-play" id="col-catalog-lastcol" style="visibility:collapse">
+            <col class="col-num"><col class="col-check" id="col-catalog-check" style="width:0"><col class="col-title"><col class="col-orig"><col class="col-year"><col class="col-play"><col class="col-play" id="col-catalog-lastcol" style="width:0">
           </colgroup>
           <thead>
             <tr>
               <th class="num">#</th>
-              <th id="th-catalog-check"></th>
+              <th id="th-catalog-check" style="padding:0"></th>
               <th class="sortable" data-sort="title">Cím<span class="sort-arrow" id="sort-arrow-title"></span></th>
               <th class="sortable" data-sort="original_title">Eredeti cím<span class="sort-arrow" id="sort-arrow-original_title"></span></th>
               <th class="sortable year" data-sort="year">Év<span class="sort-arrow" id="sort-arrow-year"></span></th>
               <th></th>
-              <th id="th-catalog-lastcol"></th>
+              <th id="th-catalog-lastcol" style="padding:0"></th>
             </tr>
           </thead>
           <tbody id="catalog-list"></tbody>
@@ -1363,6 +1363,8 @@ function renderCatalogList(filter){
         saveCatalogChecked();
       };
       tdCheck.appendChild(cb);
+    } else {
+      tdCheck.style.padding = "0";
     }
     const tdTitle = document.createElement("td");
     tdTitle.textContent = entry.title;
@@ -1389,6 +1391,8 @@ function renderCatalogList(filter){
     if (MOCK) {
       tdLast.className = "year";
       tdLast.textContent = entry.created ? new Date(entry.created).toISOString().slice(0, 10) : "—";
+    } else {
+      tdLast.style.padding = "0";
     }
     tr.append(tdNum, tdCheck, tdTitle, tdOrig, tdYear, tdPlay, tdLast);
     if (MOCK && !entry.hasLyrics) tr.classList.add("no-lyrics");
@@ -2055,10 +2059,11 @@ applyTheme();
 
 if (MOCK) {
   $("menu-dev").hidden = false;
-  $("col-catalog-lastcol").style.visibility = "visible";
   $("col-catalog-lastcol").style.width = "92px";
-  $("col-catalog-check").style.visibility = "visible";
+  $("col-catalog-check").style.width = "32px";
+  $("th-catalog-check").style.padding = "";
   const thLastCol = $("th-catalog-lastcol");
+  thLastCol.style.padding = "";
   thLastCol.classList.add("sortable", "year");
   thLastCol.innerHTML = 'Létrehozva<span class="sort-arrow" id="sort-arrow-created"></span>';
   thLastCol.onclick = async () => {

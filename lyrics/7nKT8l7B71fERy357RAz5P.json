@@ -1,0 +1,15 @@
+{
+  "title": "Ha szól szavad",
+  "original_title": "Oceans Will Part",
+  "author": "Ben Fielding",
+  "translator": "Horváth Balázs",
+  "sections": [
+    { "type": "verse", "text": "Mikor nincs bennem tűz, Lelked újra felfűt,\nMikor nincs előttem út, Lelked újra lángra gyújt." },
+    { "type": "pre-chorus", "text": "Ahogy ismét látom kezed nagy tetteit,\nAhogy ismét látom kezed nagy tetteit." },
+    { "type": "chorus", "text": "Ha szól szavad, tenger hasad, s népek jönnek rajta át,\nHit, remény ébred fel, dicsőséged árad ránk!" },
+    { "type": "verse", "text": "Szenvedések útján irgalmad segít át,\nÉnek ébred bennem, mely felrázza lelkem." },
+    { "type": "pre-chorus", "text": "Ahogy ismét látom kezed nagy tetteit,\nAhogy ismét látom kezed nagy tetteit." },
+    { "type": "chorus", "text": "Ha szól szavad, tenger hasad, s népek jönnek rajta át,\nHit, remény ébred fel, dicsőséged árad ránk!" },
+    { "type": "chorus", "text": "Ha szól szavad, tenger hasad, s népek jönnek rajta át,\nHit, remény ébred fel, dicsőséged árad ránk!" }
+  ]
+}
