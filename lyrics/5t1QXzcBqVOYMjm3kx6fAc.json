@@ -1,0 +1,12 @@
+{
+  "title": "Áldalak Téged mindörökké",
+  "original_title": "Made Me Glad",
+  "author": "Miriam Webster",
+  "translator": "Pintér Béla",
+  "sections": [
+    { "type": "verse", "text": "Áldalak Téged mindörökké. Istenem, benned bízom én.\nKihoztál minden félelemből, eljövök lábaid elé." },
+    { "type": "pre-chorus", "text": "Boldoggá tettél, Szívemből ezt éneklem:" },
+    { "type": "chorus", "text": "Te vagy pajzsom, Szabadítóm, örökségem,\nMenedékem, erős váram, Segítségem a szükség idején." },
+    { "type": "tag", "text": "Nincs más Rajtad kívül, Jézus, Nincs más, csak Rád vágyom én." }
+  ]
+}

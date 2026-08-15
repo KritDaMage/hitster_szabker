@@ -1,0 +1,11 @@
+{
+  "title": "Jöjjetek és énekeljünk",
+  "original_title": "Now's The Time",
+  "author": "Carman Licciardello",
+  "translator": "Debreceni István",
+  "sections": [
+    { "type": "verse", "text": "Jöjjetek és énekeljünk együtt az Úr előtt,\nÁldjuk Őt és magasztaljuk mindenek fölött!" },
+    { "type": "chorus", "text": "Ünnepeljük Őt, a menny Urát!\nImádjuk Őt, a Messiást!\nAngyalok zúgják győzelem dalát,\nDicsérjük együtt most a nagy Királyt!" },
+    { "type": "tag", "text": "Halleluja, halleluja, halleluja, halleluja." }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "title": "Legjobb barátom",
+  "original_title": "My Best Friend",
+  "author": "Joel Houston, Marty Sampson",
+  "translator": "Pintér Béla",
+  "sections": [
+    { "type": "verse", "text": "Hallottál már az Egyetlenről,\nAkinek neve Megváltó?\nHallottál már a szerelméről?\nTudod-e, Ő a megtartó?" },
+    { "type": "pre-chorus", "text": "Én már ismerem az Ő nagy kegyelmét, hiszek a Fiúban!" },
+    { "type": "chorus", "text": "Jézus, Ő a Megváltó,\nA legjobb barátom,\nIstennel megbékített!" },
+    { "type": "verse", "text": "Hiszem azt, hogy Ő az Isten,\nAkinek neve Megváltó,\nHiszem azt, hogy Ő feltámadt,\nŐ az első és utolsó." },
+    { "type": "pre-chorus", "text": "Hiszem, visszajön, igen eljön értem, hiszek a Fiúban!" },
+    { "type": "tag", "text": "Semmi sem állhat közénk,\nSenki sem állhat már közénk,\nSemmi sem állhat közénk!" }
+  ]
+}

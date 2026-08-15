@@ -1,0 +1,13 @@
+{
+  "title": "El-Shaddai",
+  "original_title": "El-Shaddai",
+  "author": "Michael Card",
+  "translator": "Németh S. Judit",
+  "sections": [
+    { "type": "chorus", "text": "El Shaddai, El Shaddai, örök élő Adonai,\nEltelnek évezredek és Te nem változol meg,\nEl Shaddai, El Shaddai, örök élő Adonai,\nRólad szól a szív és a száj, El Shaddai." },
+    { "type": "verse", "text": "Te alkottad az eget, napot, földet, vizeket,\nÁbrahám fiainak Te jelöltél ki utat,\nSzóltál, s feltámadt a szél, ott a Veres-tengernél,\nS néped száraz lábbal kelt át." },
+    { "type": "verse", "text": "A pusztában vezettél, megbékélést üzentél,\nKenyereddel tápláltál,\nSasszárnyakon hordoztál, mi nem értettük szavad,\nElvétettük az utat." },
+    { "type": "bridge", "text": "De Te mégis elértél, és Fiaidnak neveztél." },
+    { "type": "tag", "text": "Életem kezedben már. El Shaddai." }
+  ]
+}

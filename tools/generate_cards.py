@@ -23,11 +23,31 @@ import math
 from pathlib import Path
 
 import qrcode
+from PIL import Image, ImageDraw
+from pyzbar.pyzbar import decode as zbar_decode
+from reportlab.graphics import renderPM
+from svglib.svglib import svg2rlg
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE_FILE = ROOT / "source" / "Worship.txt"
 OUTPUT_FILE = ROOT / "tools" / "output" / "cards.html"
+LOGO_FILE = ROOT / "szabker_budapest_ifi.svg"
 APP_BASE_URL = "https://kritdamage.github.io/hitster_szabker/"
+
+# a logo finom vonalai (a kurziv felirat) a QR-modulok felbontasanal
+# kisebb leptekben "zajt" okozhatnak, ami bizonyos meretnel/pozicional
+# megtoheti a beolvashatosagot - ezert minden egyes QR-t tenylegesen
+# ledekodolunk generalas kozben, es ha a celzott meret nem olvashato,
+# fokozatosan kisebbre vesszuk a logot, vegso esetben logo nelkul hagyjuk
+# a meret/olvashatosag kapcsolata nem fokozatos, hanem kaotikus (finom
+# alias-hatas a logo reszletei es a QR-modulracs kozott) - 6.8% korul van
+# egy szuk, de az osszes jelenlegi dalra leellenorzott biztonsagos sav,
+# ez az elsodleges cel; ha egy jovobeli uj dal itt nem menne at, a
+# tartalek lista also, mar korabban is biztonsagosnak talalt ertekei felé
+# lepked
+LOGO_COVERAGE = 0.068
+LOGO_FALLBACK_COVERAGES = [0.068, 0.065, 0.055, 0.045, 0.035, 0.03, 0.0]
+LOGO_RING_MARGIN = 0.18  # feher gyuru szelessege a logo sugarahoz kepest
 
 # A4, mm
 PAGE_W_MM = 210
@@ -127,9 +147,82 @@ def find_best_grid():
     return round(size, 1), cols, rows
 
 
+_logo_cache = None
+
+
+def load_logo():
+    # a logo egy majdnem szel-erintő kor (feher szoveggel benne) - a
+    # negyzet sarkait kell csak atlatszova tenni, a kor belsejet
+    # (a feher betuket is) opakan kell tartani, ezert geometriai
+    # kormaszkot hasznalunk szin-alapu kivagas helyett
+    global _logo_cache
+    if _logo_cache is None:
+        drawing = svg2rlg(str(LOGO_FILE))
+        buf = io.BytesIO()
+        renderPM.drawToFile(drawing, buf, fmt="PNG", bg=0xFFFFFF, dpi=300)
+        buf.seek(0)
+        img = Image.open(buf).convert("RGB")
+        # a logo majdnem-fekete szine (#231f20) helyett tiszta feketet
+        # hasznalunk, hogy pontosan illeszkedjen a QR sajat feketejehez
+        bw = img.convert("L").point(lambda p: 0 if p < 128 else 255)
+        img = Image.merge("RGB", (bw, bw, bw)).convert("RGBA")
+        w, h = img.size
+        radius = min(w, h) / 2
+        cx, cy = w / 2, h / 2
+        mask = Image.new("L", (w, h), 0)
+        px = mask.load()
+        for y in range(h):
+            dy2 = (y + 0.5 - cy) ** 2
+            for x in range(w):
+                dx = x + 0.5 - cx
+                px[x, y] = 255 if dx * dx + dy2 <= radius * radius else 0
+        img.putalpha(mask)
+        _logo_cache = img
+    return _logo_cache
+
+
+def _make_base_qr(url):
+    qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_H, border=2, box_size=16)
+    qr.add_data(url)
+    qr.make(fit=True)
+    return qr.make_image().convert("RGBA")
+
+
+def _is_scannable(img, expected_url):
+    result = zbar_decode(img.convert("L"))
+    return len(result) == 1 and result[0].data.decode("utf-8") == expected_url
+
+
+def _white_ring(size):
+    ring = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    ImageDraw.Draw(ring).ellipse([0, 0, size - 1, size - 1], fill=(255, 255, 255, 255))
+    return ring
+
+
 def make_qr_data_uri(track_id):
     url = f"{APP_BASE_URL}#{track_id}"
-    img = qrcode.make(url, border=2, box_size=8)
+    logo = load_logo()
+
+    for coverage in LOGO_FALLBACK_COVERAGES:
+        img = _make_base_qr(url)
+        if coverage > 0:
+            logo_size = int(img.width * coverage ** 0.5)
+            ring_size = int(logo_size * (1 + LOGO_RING_MARGIN))
+            ring = _white_ring(ring_size)
+            ring_pos = ((img.width - ring_size) // 2, (img.height - ring_size) // 2)
+            img.paste(ring, ring_pos, ring)
+            logo_r = logo.resize((logo_size, logo_size), Image.LANCZOS)
+            pos = ((img.width - logo_size) // 2, (img.height - logo_size) // 2)
+            img.paste(logo_r, pos, logo_r)
+        if _is_scannable(img, url):
+            if coverage != LOGO_COVERAGE:
+                print(f"  megjegyzes: {track_id} - a logo {coverage*100:.0f}%-ra csokkentve, hogy olvashato maradjon")
+            break
+    else:
+        # LOGO_FALLBACK_COVERAGES vegen 0.0 all, ami logo nelkuli sima QR -
+        # az mindig olvashato, ide elvileg sose kellene eljutni
+        img = _make_base_qr(url)
+
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     b64 = base64.b64encode(buf.getvalue()).decode("ascii")
@@ -149,7 +242,13 @@ def build_html(songs, size_mm, cols, rows):
         grid_w = cols * unit_w
         grid_h = rows_here * size_mm
         offset_x = (PAGE_W_MM - grid_w) / 2
-        offset_y = (PAGE_H_MM - grid_h) / 2
+        if rows_here == rows:
+            offset_y = (PAGE_H_MM - grid_h) / 2
+        else:
+            # hianyos utolso lap: a lap tetejere igazitva (ugyanaz a felso
+            # margo, mint egy teli lapon), ne kozepre - a maradek ures
+            # hely lent gyuljon ossze
+            offset_y = (PAGE_H_MM - rows * size_mm) / 2
 
         units = []
         for i, song in enumerate(page_songs):

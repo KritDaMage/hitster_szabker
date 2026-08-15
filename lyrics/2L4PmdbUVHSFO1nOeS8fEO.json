@@ -1,0 +1,11 @@
+{
+  "title": "Arcod hadd lássam meg!",
+  "original_title": "Most High",
+  "author": "Reuben Morgan",
+  "translator": "Veress Zoltán",
+  "sections": [
+    { "type": "verse", "text": "Arcod hadd lássam meg!\nMutasd meg ösvényed!\nRagyogjon ránk a fényed!\nErődet úgy várom,\nJöjj, tölts be még egyszer.\nEmelj fel, Szívem csak Tiéd!" },
+    { "type": "bridge", "text": "Áldalak új énekkel, Ajkam dicsér,\nMeghajol nevedre minden térd!" },
+    { "type": "chorus", "text": "Méltó, méltó Ő az Úr!\nNincs más!" }
+  ]
+}
