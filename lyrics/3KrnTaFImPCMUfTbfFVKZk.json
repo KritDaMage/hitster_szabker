@@ -1,0 +1,11 @@
+{
+  "title": "Szent vagy, szent vagy (Immánuel)",
+  "original_title": "Emmanuel",
+  "author": "Reuben Morgan",
+  "translator": "Fercsik Viktor & Veronika",
+  "sections": [
+    { "type": "verse", "text": "Szent vagy, szent vagy, meghajtom magam Uram előtted.\nHalleluja, értem jöttél el, minden újjá lett." },
+    { "type": "chorus", "text": "Immánuel, Jézus Krisztus, soha nem hagysz el,\nHű pásztorom, Te vigyázol rám, Immánuel.\nSzerelmed a sötét éjszakán fényesen ragyog,\nMegszólítottál, nevemen hívtál, Uram, itt vagyok!" },
+    { "type": "tag", "text": "Szent vagy, szent vagy, és fenséges, nincs más Úr, csak Te!" }
+  ]
+}

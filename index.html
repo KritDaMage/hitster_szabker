@@ -1753,13 +1753,30 @@ async function scan(){
   await v.play();
   scanning = true;
 
+  /* A .scope mindig négyzet, a videó object-fit:cover-rel tölti ki, a .crop
+     overlay pedig 11%-kal beljebb van — csak az itt kiszámolt, ténylegesen
+     látszó négyzetet adjuk oda a felismerőnek, hogy a kereten kívüli QR-t
+     ne olvassa be. */
+  const cv = document.createElement("canvas"), ctx = cv.getContext("2d", { willReadFrequently: true });
+  function cropToCanvas(){
+    const size = Math.min(v.videoWidth, v.videoHeight);
+    const sx = (v.videoWidth - size) / 2, sy = (v.videoHeight - size) / 2;
+    const inner = size * 0.78;
+    const ix = sx + size * 0.11, iy = sy + size * 0.11;
+    cv.width = cv.height = inner;
+    ctx.drawImage(v, ix, iy, inner, inner, 0, 0, inner, inner);
+  }
+
   if ("BarcodeDetector" in window) {
     const det = new BarcodeDetector({ formats: ["qr_code"] });
     const tick = async () => {
       if (!scanning) return;
       try {
-        const hits = await det.detect(v);
-        if (hits.length && hit(hits[0].rawValue)) return;
+        if (v.videoWidth) {
+          cropToCanvas();
+          const hits = await det.detect(cv);
+          if (hits.length && await hit(hits[0].rawValue)) return;
+        }
       } catch(e){}
       requestAnimationFrame(tick);
     };
@@ -1772,15 +1789,13 @@ async function scan(){
         s.onload = res; s.onerror = rej; document.head.appendChild(s);
       }).catch(() => { $("scan-err").textContent = "Nem töltődött be a QR-olvasó."; });
     }
-    const cv = document.createElement("canvas"), ctx = cv.getContext("2d", { willReadFrequently: true });
-    const tick = () => {
+    const tick = async () => {
       if (!scanning) return;
       if (v.videoWidth) {
-        cv.width = v.videoWidth; cv.height = v.videoHeight;
-        ctx.drawImage(v, 0, 0);
+        cropToCanvas();
         const d = ctx.getImageData(0, 0, cv.width, cv.height);
         const r = window.jsQR && window.jsQR(d.data, cv.width, cv.height);
-        if (r && hit(r.data)) return;
+        if (r && await hit(r.data)) return;
       }
       requestAnimationFrame(tick);
     };
@@ -1794,9 +1809,16 @@ function stopScan(){
   stream = null;
 }
 
-function hit(text){
+async function hit(text){
   const id = parseId(text);
   if (!id) { $("scan-err").textContent = "Ez nem ismerős kód. Tartsd rá egy másikra."; return false; }
+  if (mode === "szabker") {
+    const all = await loadAllSongs();
+    if (!all.some(e => e.id === id)) {
+      $("scan-err").textContent = "Ez a dal nincs a Szabker dicsi listában. Tartsd rá egy másikra.";
+      return false;
+    }
+  }
   stopScan();
   if (navigator.vibrate) navigator.vibrate(18);
   play(id);
@@ -1857,7 +1879,8 @@ $("b-toggle").onclick = toggle;
 $("deck").onclick = reveal;
 $("b-next").onclick = () => {
   if (player) player.activateElement && player.activateElement();
-  if (randomMode && mode === "szabker") playRandom(); else scan();
+  if (randomMode && mode === "szabker") playRandom();
+  else { if (playing) toggle(); scan(); }
 };
 $("b-redev").onclick = pickDevice;
 $("b-lyrics").onclick = () => { lyricsPlayerTrackId = null; renderLyrics(); openLyricsDrawer(); };

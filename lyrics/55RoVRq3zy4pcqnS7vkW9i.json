@@ -1,0 +1,9 @@
+{
+  "title": "Szívből dicsérlek",
+  "original_title": "My Heart Sings Praises",
+  "author": "Russell Fragar",
+  "sections": [
+    { "type": "verse", "text": "Szívből dicsérlek, Neved magasztalom,\nSzerelmed mélyebb, mint elmondhatom.\nElőttem jársz, követlek utadon,\nMinden vágyam, hogy Hozzád szálljon fel dalom." },
+    { "type": "chorus", "text": "Szívemben Te erősítesz meg,\nÉjszaka nem fogy el a fény,\nMinden lélegzetem hirdeti kegyelmedet!\nElmémben csak Te vagy a győztes,\nLelkemben a trón a Tiéd,\nÉletem megérintetted, tűzben él." }
+  ]
+}

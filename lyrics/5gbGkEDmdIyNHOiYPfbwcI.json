@@ -1,0 +1,10 @@
+{
+  "title": "Mert az Isten jó",
+  "original_title": "For the Lord Is Good",
+  "sections": [
+    { "type": "verse", "text": "Menjünk most együtt az Úrhoz, mennyei trónjához,\nÖrömmel lépjünk elébe, kiáltsuk: nagy az Ő neve!" },
+    { "type": "verse", "text": "Dicsérje Őt a hangszerek hangja, néki szóljon minden dal,\nDicsérje Istent a menny és a föld, hálaáldozat szálljon Hozzá föl!" },
+    { "type": "chorus", "text": "Mert az Isten jó, mert az Isten jó,\nIgen, Isten jó, az Ő kegyelme örökké tart!\nIgen, Isten jó, az Ő kegyelme örökké tart!" },
+    { "type": "verse", "text": "Jézus, az Úr legyen áldott, teremtője mindennek,\nTáncoljunk együtt előtte, emeld föl kezed és énekeld…" }
+  ]
+}
