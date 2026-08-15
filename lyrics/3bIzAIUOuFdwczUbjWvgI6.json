@@ -1,0 +1,14 @@
+{
+  "title": "Jézus Te Vagy A Trónon",
+  "original_title": "Jesus At The Center",
+  "author": "Adam Ranney, Israel Houghton & Micah Massey",
+  "translator": "Lakatos Péter",
+  "sections": [
+    { "type": "verse", "text": "Jézus Te vagy a trónon mindenhol,\nJézus Te vagy a trónon mindenhol,\nA kezdet és a vég, minden Érted van,\nCsak Érted van, Úr Jézus, Jézus." },
+    { "type": "chorus", "text": "Nincs más Rajtad kívül,\nNem számít már más, csak Te,\nJézus, ülj a trónon,\nÉs minden Néked hódoljon, csak Néked,\n(Légy a trónon mindenhol.)" },
+    { "type": "verse", "text": "Jézus légy a trónon szívemben,\nJézus légy a trónon szívemben,\nA kezdet és a vég, minden Érted van,\nCsak Érted van, Úr Jézus, Jézus." },
+    { "type": "bridge", "text": "Szívemtől fel a mennyig, Jézus légy a trónon,\nRólad szóljon, minden Rólad szóljon,\nSzívemtől fel a mennyig, Jézus légy a trónon,\nRólad szóljon, minden Rólad szóljon." },
+    { "type": "verse", "text": "Jézus légy a trónon néped közt,\nJézus légy a trónon néped közt,\nMinden térd meghajol,\nMinden nyelv megvallja, csak Te vagy Úr Jézus, Jézus." },
+    { "type": "tag", "text": "Jézus, Jézus." }
+  ]
+}

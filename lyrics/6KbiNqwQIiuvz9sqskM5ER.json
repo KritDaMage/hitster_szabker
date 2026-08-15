@@ -1,0 +1,11 @@
+{
+  "title": "Hozzád kiáltunk",
+  "original_title": "We Cry Out",
+  "author": "Walker Beach",
+  "translator": "Petővári Mirjam, Fóris Attila",
+  "sections": [
+    { "type": "verse", "text": "Élet Ura, a kegyelemnek trónján ülsz. Csak te vagy, aki rajtam könyörülsz.\nIgéd bátorít: hívd segítségül nevem, mert elég néked az én kegyelmem." },
+    { "type": "chorus", "text": "Kiáltom szent neved, El Shaddai, Kegyelmes. Úr vagy te minden felett.\nDicsőség Királya, Adonai, szívem Ura, Megváltó, Szabadító." },
+    { "type": "verse", "text": "Bármit tettem, tudom, megbocsájtottad. Szerelmed új életet ad.\nÁtadom magam, hogy hirdessem a te kegyelmed,\nMíg fenn a Mennyben veled leszek." }
+  ]
+}

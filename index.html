@@ -833,9 +833,11 @@ async function startPlayback(id){
     api("tracks/" + id).then(t => { if (trackId === id) curDur = t.duration_ms; }).catch(()=>{});
     if (!usingSdk) startPolling();
     keepAwake();
+    return true;
   } catch(e) {
-    if (e.status === 404) { await pickDevice(); return; }
+    if (e.status === 404) { await pickDevice(); return "device"; }
     $("play-err").textContent = e.message;
+    return false;
   }
 }
 async function play(id, switchView = true, countProgress = true){
@@ -843,13 +845,27 @@ async function play(id, switchView = true, countProgress = true){
   pendingRestoreId = null;
   trackId = id;
   reset();
-  if (switchView) show("play");
   $("play-err").textContent = "";
-  if (countProgress && mode === "szabker") {
+  // a bakelit csak akkor jelenjen meg (es a dal csak akkor szamitson
+  // felfedettnek), ha a lejatszas tenylegesen elindult - amig a
+  // tartalek eszközvalasztó ut nem megbizhato, addig ne elozze meg
+  // a tenyleges visszaigazolast. "device": pickDevice() mar valtott
+  // nezetet es mutatja a sajat hibajat, itt nincs tovabbi teendo.
+  const result = await startPlayback(id);
+  if (result === "device") return;
+  if (switchView) show("play");
+  if (result === true && countProgress && mode === "szabker") {
     revealedIds.add(id);
     updateRevealProgress();
   }
-  await startPlayback(id);
+  if (result === true && mode === "szabker" && !randomMode) {
+    // QR-alapu dicsi jatek: a fizikai kartyan mar ott van az evszam es a
+    // cim, a kepernyon nem kell felfedni - csak a dalszoveg gomb jelenjen
+    // meg automatikusan, ha van hozza dalszoveg
+    lyricsData = await loadLyrics(id);
+    lyricsVersionIndex = 0;
+    $("b-lyrics").style.visibility = lyricsData ? "visible" : "hidden";
+  }
 }
 
 /* fejlesztői módban (?mock=1) a katalógusból és a dalszöveg-nézet lejátszó
@@ -1075,14 +1091,14 @@ async function pauseCurrentPlayback(){
   playing = false;
 }
 
-async function restoreModeSnapshot(snap){
+async function restoreModeSnapshot(snap, allowNavigate = true){
   pendingRestoreId = null;
   if (!snap) {
     trackId = null;
     playing = false;
     reset();
     icon();
-    scanReady();
+    if (allowNavigate) scanReady();
     return;
   }
   trackId = snap.trackId;
@@ -1104,7 +1120,7 @@ async function restoreModeSnapshot(snap){
   renderRing(0);
   renderVinyl(0);
   icon();
-  show("play");
+  if (allowNavigate) show("play");
   $("b-toggle").style.opacity = 1;
   if (snap.revealedFlag && mode === "szabker") {
     lyricsData = await loadLyrics(trackId);
@@ -1118,8 +1134,10 @@ let revealed = { title: "", artist: "", huTitle: "" };
 let catalogReturnView = "play";  // hova menjen a katalógus "Vissza" gombja
 let lyricsPlayerTrackId = null;  // csak katalógusból nyitott dalszövegnél: lejátszó gomb + progress sáv a cím fölött
 function openLyricsDrawer(){
+  const alreadyOpen = $("v-lyrics").classList.contains("open");
   $("v-lyrics").classList.add("open");
   $("lyrics-overlay").classList.add("open");
+  if (!alreadyOpen) history.pushState({ modal: "lyrics" }, "");
 }
 async function toggleLyricsPlayer(){
   const id = lyricsPlayerTrackId;
@@ -1501,9 +1519,11 @@ function lyricsSearchText(data){
 }
 
 async function openCatalog(){
+  const alreadyOpen = $("v-catalog").classList.contains("on");
   catalogReturnView = views.find(v => v !== "catalog" && $("v-"+v).classList.contains("on")) || "play";
   closeMenu();
   show("catalog");
+  if (!alreadyOpen) history.pushState({ modal: "catalog" }, "");
   $("catalog-search").value = "";
   const [all, titles] = await Promise.all([loadAllSongs(), loadTitles()]);
   catalogEntries = all.map(e => {
@@ -1672,6 +1692,9 @@ function fitText(el){
 }
 
 async function reveal(){
+  // QR-alapu dicsi jatekban a fizikai kartya mar felfedi az evszamot/cimet -
+  // a lemezt itt nem kell (nem is szabad) megforditani
+  if (mode === "szabker" && !randomMode) return;
   if (!trackId || $("label").dataset.revealed === "1") return;
   try {
     const t = await api("tracks/" + trackId);
@@ -1815,7 +1838,7 @@ async function hit(text){
   if (mode === "szabker") {
     const all = await loadAllSongs();
     if (!all.some(e => e.id === id)) {
-      $("scan-err").textContent = "Ez a dal nincs a Szabker dicsi listában. Tartsd rá egy másikra.";
+      $("scan-err").textContent = "Ez nem ismerős kód. Tartsd rá egy másikra.";
       return false;
     }
   }
@@ -1888,8 +1911,8 @@ function closeLyricsDrawerByUser(){
   if (lyricsPlayerTrackId && trackId === lyricsPlayerTrackId && playing) toggle();
   closeLyricsDrawer();
 }
-$("b-lyrics-back").onclick = closeLyricsDrawerByUser;
-$("lyrics-overlay").onclick = closeLyricsDrawerByUser;
+$("b-lyrics-back").onclick = () => history.back();
+$("lyrics-overlay").onclick = () => history.back();
 if (MOCK) {
   // a fejlesztői élő szerver bármelyik lyrics/*.json fájl mentésekor újratölti az oldalt —
   // nem csak a beépített szerkesztőn keresztüli mentésnél, hanem az IDE-ből közvetlenül
@@ -1901,7 +1924,11 @@ if (MOCK) {
   });
 }
 $("b-catalog").onclick = openCatalog;
-$("b-catalog-back").onclick = () => show(catalogReturnView);
+$("b-catalog-back").onclick = () => history.back();
+window.addEventListener("popstate", () => {
+  if ($("v-lyrics").classList.contains("open")) closeLyricsDrawerByUser();
+  else if ($("v-catalog").classList.contains("on")) show(catalogReturnView);
+});
 $("catalog-search").addEventListener("input", () => renderCatalogList($("catalog-search").value));
 function updateCatalogScrollTop(){
   $("b-catalog-top").classList.toggle("show", window.scrollY > 400);
@@ -2070,7 +2097,11 @@ document.querySelectorAll(".menu-item[data-mode]").forEach(b => {
     mode = newMode;
     localStorage.setItem("mode", mode);
     applyMode();
-    await restoreModeSnapshot(modeMemory[mode]);
+    // amig az eszközvalasztó (tartalek lejatszasi ut) nyitva van, ne
+    // dobjon at innen a bakelitre - maradjon a felhasznalo azon, amit
+    // eppen probal megoldani
+    const onDevView = $("v-dev").classList.contains("on");
+    await restoreModeSnapshot(modeMemory[mode], !onDevView);
   };
 });
 $("b-random-toggle").onclick = toggleRandomMode;

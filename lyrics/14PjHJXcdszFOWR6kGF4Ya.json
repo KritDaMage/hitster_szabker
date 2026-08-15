@@ -1,0 +1,13 @@
+{
+  "title": "Most és örökké",
+  "original_title": "Yours Forever",
+  "author": "Braden Lang, Joel Davies",
+  "translator": "Fercsik Viktor, Fercsikné Haász Veronika",
+  "sections": [
+    { "type": "verse", "text": "Téged hívlak, mikor sötétség támad,\nNem félek én, mert fényed árad rám.\nKeskeny az út, de szemem csak Rád néz,\nA Te szereteted mindenre elég!\nNincs többé bűn, igazzá tettél, szabad lettem, ami volt eltűnt.\nNeked adom az életem, hogy a világban hirdessem nagy neved!" },
+    { "type": "pre-chorus", "text": "Nincs más – szeretete a megoldás!\nJézusban van minden áldás! Szeretete a megoldás!" },
+    { "type": "chorus", "text": "És mi most és örökké csak érted élünk már,\nMost és örökké, a szívünk Téged áld!\nMost és örökké! (a szívünk Téged áld!)" },
+    { "type": "verse", "text": "Dicsérlek én, csak Benned bízom, Te adsz reményt – minden nap.\nOdaadom az életem, hogy a világban hirdessem nagy neved!" },
+    { "type": "bridge", "text": "Odaadta értünk életét – kiárasztotta ránk kegyelmét.\nTudom, tudom – a remény soha meg nem szégyenít!" }
+  ]
+}

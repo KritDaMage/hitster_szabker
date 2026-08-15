@@ -1,0 +1,11 @@
+{
+  "title": "A mi Istenünk (Leborulok lábadhoz)",
+  "original_title": "This Is Our God",
+  "sections": [
+    { "type": "verse", "text": "Kegyelmed elég, Több, mint elég,\nIgédben bízok én,\nÍgy várok Rád, Vonj közel megint,\nSzellemed újítson meg!" },
+    { "type": "chorus", "text": "Leborulok előtted,\nLeborulok előtted,\nÉs imádlak téged." },
+    { "type": "verse", "text": "Jelenlétedben Világíts nekem,\nSzavad hatalmával,\nHelyreálltam, Szabaddá lettem,\nSzellemed segít engem." },
+    { "type": "chorus", "text": "Leborulok lábadhoz,\nLeborulok lábadhoz,\nÉs imádlak Jézus!" },
+    { "type": "bridge", "text": "Önként adtál oda mindent, Életedet a kereszten,\nMily nagy szeretet! Mit adott nekünk, A mi Istenünk,\nA halálból fölemeltettél, Életed lett nekünk a fény,\nSzolga-Király, Szabadító, A mi Istenünk!" }
+  ]
+}

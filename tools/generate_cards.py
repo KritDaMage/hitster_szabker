@@ -19,6 +19,7 @@ mindket nyomtatott oldal kifele nezzen.
 
 import base64
 import io
+import math
 from pathlib import Path
 
 import qrcode
@@ -38,6 +39,54 @@ EDGE_INSET_MM = 3  # a vagasjelek ennyivel maradjanak beljebb a lap szelenel
 # keresi meg a pontos meretet, ami a legtobb egyseget engedi kiferni
 # veszteseg nelkul. Egy egyseg (domino) 2x ekkora szeles, mint magas.
 SIZE_SEARCH_RANGE_MM = (45, 55)
+
+# hatoldali motivum: evszamonkent kicsit mas alaku, amorf blob, ami a
+# kartya szelen belogva levagodik
+MIN_K, MAX_K = 3, 8
+MOTIF_N_POINTS = 40
+MOTIF_SCALE = 1.4
+
+
+def hash01(n):
+    h = (n * 2654435761) & 0xFFFFFFFF
+    return (h % 10000) / 10000
+
+
+def motif_points(year, min_year, max_year, cx, cy, radius):
+    seed = year * 97
+    t = (year - min_year) / (max_year - min_year) if max_year > min_year else 0
+    k = min(MIN_K + int(t * (MAX_K - MIN_K + 1)), MAX_K)
+    a = 0.08 + hash01(seed * 13) * 0.10
+    phi = hash01(seed * 31) * 2 * math.pi
+    pts = []
+    for i in range(MOTIF_N_POINTS):
+        theta = 2 * math.pi * i / MOTIF_N_POINTS
+        r = 1 + a * math.cos(k * theta + phi)
+        x = cx + radius * r * math.cos(theta)
+        y = cy + radius * r * math.sin(theta)
+        pts.append((x, y))
+    return pts
+
+
+def smooth_path(pts):
+    # Catmull-Rom -> kubikus Bezier, zart gorbe - ez adja az amorf,
+    # lekerekitett blob-format a sokszog-csucsok helyett
+    n = len(pts)
+    d = f"M {pts[0][0]:.1f},{pts[0][1]:.1f} "
+    for i in range(n):
+        p0, p1, p2, p3 = pts[(i - 1) % n], pts[i], pts[(i + 1) % n], pts[(i + 2) % n]
+        c1x, c1y = p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6
+        c2x, c2y = p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6
+        d += f"C {c1x:.1f},{c1y:.1f} {c2x:.1f},{c2y:.1f} {p2[0]:.1f},{p2[1]:.1f} "
+    return d + "Z"
+
+
+def motif_svg(year, min_year, max_year):
+    ang = hash01(year * 41) * 2 * math.pi
+    cx = 50 + 40 * math.cos(ang)
+    cy = 50 + 40 * math.sin(ang)
+    pts = motif_points(year, min_year, max_year, cx, cy, 44 * MOTIF_SCALE)
+    return f'<svg class="motif" viewBox="0 0 100 100"><path d="{smooth_path(pts)}"/></svg>'
 
 
 def parse_songs():
@@ -91,6 +140,8 @@ def build_html(songs, size_mm, cols, rows):
     per_page = cols * rows
     pages = [songs[i:i + per_page] for i in range(0, len(songs), per_page)]
     unit_w = 2 * size_mm
+    years = [int(s["year"]) for s in songs if s["year"].isdigit()]
+    min_year, max_year = min(years), max(years)
 
     page_blocks = []
     for page_songs in pages:
@@ -103,10 +154,14 @@ def build_html(songs, size_mm, cols, rows):
         units = []
         for i, song in enumerate(page_songs):
             qr = make_qr_data_uri(song["track_id"])
+            motif = ""
+            if song["year"].isdigit():
+                motif = f'<div class="frame">{motif_svg(int(song["year"]), min_year, max_year)}</div>'
             units.append(
                 '<div class="unit">'
                 f'<div class="half front"><img src="{qr}" alt=""></div>'
                 '<div class="half back">'
+                f'{motif}'
                 f'<div class="year">{song["year"]}</div>'
                 '<div class="rule"></div>'
                 f'<div class="title">{song["hu_title"]}</div>'
@@ -213,8 +268,25 @@ def build_html(songs, size_mm, cols, rows):
     flex-direction: column;
     padding: 3mm;
     overflow: hidden;
+    position: relative;
   }}
+  .half.back .frame {{
+    position: absolute;
+    inset: 2mm;
+    overflow: hidden;
+    z-index: 0;
+  }}
+  .half.back .motif {{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: .16;
+  }}
+  .half.back .motif path {{ fill: #000; }}
   .half.back .year {{
+    position: relative;
+    z-index: 1;
     font-family: "Bricolage Grotesque", "Segoe UI", system-ui, -apple-system, sans-serif;
     font-size: 9mm;
     font-weight: 800;
@@ -222,11 +294,15 @@ def build_html(songs, size_mm, cols, rows):
     line-height: 1;
   }}
   .half.back .rule {{
+    position: relative;
+    z-index: 1;
     width: 40%;
     border-top: 0.4mm solid #000;
     margin: 1.5mm 0;
   }}
   .half.back .title {{
+    position: relative;
+    z-index: 1;
     font-family: "Bricolage Grotesque", "Segoe UI", system-ui, -apple-system, sans-serif;
     font-size: 4.4mm;
     font-weight: 400;
