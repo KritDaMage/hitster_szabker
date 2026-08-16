@@ -2091,7 +2091,15 @@ document.querySelectorAll(".menu-item[data-mode]").forEach(b => {
   b.onclick = async () => {
     const newMode = b.dataset.mode;
     const changed = newMode !== mode;
-    if (!changed) return;
+    if (!changed) {
+      // ha a katalogusban allva a sajat, mar aktiv mododra kattintasz,
+      // ez egy gyorsgomb vissza a lemezhez
+      if ($("v-catalog").classList.contains("on")) {
+        closeMenu();
+        history.back();
+      }
+      return;
+    }
     modeMemory[mode] = snapshotMode();
     await pauseCurrentPlayback();
     mode = newMode;
