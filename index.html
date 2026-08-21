@@ -243,7 +243,7 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
    olvassuk le képkockánként, lásd startEdgeTracking(). A koordináta-
    rendszer fix 0–100-as viewBox, nincs szükség DOM-mérésre, mert
    ugyanaz az inset van rajta, mint a disc-flip-en. */
-.disc-edge{position:absolute;inset:14px;pointer-events:none;overflow:visible}
+.disc-edge{position:absolute;inset:14px;width:calc(100% - 28px);height:calc(100% - 28px);pointer-events:none;overflow:visible}
 
 /* the blank label — the whole point of the screen */
 .label{
@@ -571,7 +571,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
           </div>
         </div>
       </div>
-      <svg class="disc-edge" viewBox="0 0 100 100" aria-hidden="true">
+      <svg class="disc-edge" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
         <path id="disc-edge-path" fill="#f06292"></path>
       </svg>
     </div>
