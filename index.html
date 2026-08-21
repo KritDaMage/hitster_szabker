@@ -572,7 +572,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
         </div>
       </div>
       <svg class="disc-edge" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-        <path id="disc-edge-path" fill="#f06292"></path>
+        <path id="disc-edge-path" fill="var(--vinyl-b)"></path>
       </svg>
     </div>
     <button class="pill ghost" id="b-lyrics" style="visibility:hidden">Dalszöveg</button>
@@ -1156,7 +1156,7 @@ const EDGE_TY     = [0, -12, -18, -8, 2, 0];
 const EDGE_SCALE  = [1, 1.08, 1.14, 1.06, .97, 1];
 const EDGE_TILT_OPEN  = [0, 0, 0, 0, -2.5, 0];
 const EDGE_TILT_CLOSE = [0, 0, 0, 0, 2.5, 0];
-const EDGE_THICKNESS_RATIO = .12; // a szalag max. fél-szelessege a lemez sugarahoz (R=48) kepest
+const EDGE_THICKNESS_RATIO = .06; // a szalag max. teljes vastagsaga a lemez sugarahoz (R=50) kepest
 const EDGE_SEGS = 24; // szalag-felbontas a hossza menten
 
 /* a CSS "ease-in"/"ease-out" kulcsszavak nem t² / t(2-t) parabolák,
@@ -1206,14 +1206,25 @@ function interpAt(fraction, values){
   const eased = edgeEase(EDGE_EASES[i], localT);
   return values[i] + (values[i + 1] - values[i]) * eased;
 }
-function buildEdgeRibbonPath(rotDeg){
+function buildEdgeRibbonPath(rotDeg, P){
   const cx = 50, cy = 50, R = 50; // R = a lemez tenyleges sugara ebben a koordinatarendszerben
+  const RY = 50.2; // apro, EMPIRIKUS fuggoleges nyujtas — a dobozok/matek papiron pontosan egyeznek,
+                 // de a gyakorlatban meg mindig maradt egy haj­szalnyi res fent/lent, ezt zarja be
   const theta = rotDeg * Math.PI / 180;
   const c = Math.cos(theta); // elojeles — SOSEM valtjuk kulon elojelre, hogy folytonos maradjon
   const taperAmt = Math.abs(c);
   const stateFactor = Math.abs(Math.sin(theta));
   const maxW = EDGE_THICKNESS_RATIO * R; // teljes vastagsag, nem fel-vastagsag
 
+  // A .deck-en valodi CSS perspective:1400px van, tehat a lemez sajat
+  // pereme NEM egyszeru koszinusszal vetul, hanem valodi perspektiva-
+  // osztassal: screen = local * P/(P - z), ahol z = -localX*sin(theta)
+  // (rotateY hatasa). Ezt itt szamoljuk ki minden φ pontra — a scale/
+  // translateY/rotateZ-t szandekosan NEM itt, hanem kulso CSS transform-
+  // kent alkalmazzuk (layer.style.transform), mert ezek a muveletek nem
+  // erintik a Z-t, igy bizonyithatoan felcserelhetok a vetitessel: pontos
+  // eredmenyt adnak lancolt 3D-transzformaciokent is.
+  //
   // Tavol a 90 foktol (taperAmt kozel 1) a szalag KULSO pereme pontosan
   // a lemez sajat sziluettjen ul, a vastagsag teljesen befele no. Pontosan
   // 90-nel (taperAmt=0, elen all a lemez) nincs ertelmes "kulso/belso"
@@ -1227,9 +1238,18 @@ function buildEdgeRibbonPath(rotDeg){
   const left = [], right = [];
   for (let i = 0; i <= EDGE_SEGS; i++) {
     const phi = -Math.PI / 2 + (i / EDGE_SEGS) * Math.PI;
-    const ox = cx + R * c * Math.cos(phi);
-    const oy = cy + R * Math.sin(phi);
-    const wPhiFactor = (1 - taperAmt) + taperAmt * Math.abs(Math.cos(phi));
+    const localX = R * Math.cos(phi);
+    const localY = RY * Math.sin(phi);
+    const z = -localX * Math.sin(theta);
+    const f = P / (P - z);
+    const ox = cx + localX * c * f;
+    const oy = cy + localY * f;
+
+    // also korlat, hogy a csucs kozeleben is maradjon erzekelheto
+    // vastagsag — kulonben a majdnem-nullara vekonyodo szal ugy tunhet,
+    // mintha nem erne el a lemez tetejet/aljat, pedig a vegpont
+    // geometriailag pontosan odaer
+    const wPhiFactor = (1 - taperAmt) + taperAmt * Math.max(.2, Math.abs(Math.cos(phi)));
     const w = maxW * stateFactor * wPhiFactor;
     const half = w / 2;
     left.push([ox + half * (1 - c), oy]);
@@ -1240,10 +1260,10 @@ function buildEdgeRibbonPath(rotDeg){
   for (let i = right.length - 1; i >= 0; i--) d += ` L ${right[i][0]} ${right[i][1]}`;
   return d + " Z";
 }
-function drawDiscEdge(thetaDeg){
+function drawDiscEdge(thetaDeg, P){
   const e = document.getElementById("disc-edge-path");
   if (!e) return;
-  e.setAttribute("d", buildEdgeRibbonPath(thetaDeg));
+  e.setAttribute("d", buildEdgeRibbonPath(thetaDeg, P));
 }
 function clearDiscEdge(){
   const e = document.getElementById("disc-edge-path");
@@ -1258,6 +1278,12 @@ function startEdgeTracking(df, isOpening){
   const angles = isOpening ? EDGE_OPEN_ANGLES : EDGE_CLOSE_ANGLES;
   const tilts  = isOpening ? EDGE_TILT_OPEN : EDGE_TILT_CLOSE;
   const layer = document.querySelector(".disc-edge");
+  // egyszeri meres (nem kepkockankent) — a doboz meg nincs transzformalva,
+  // stabil, megbizhato lekerdezni. Ebbol szamoljuk at a .deck sajat
+  // perspective:1400px erteket a mi 0-100-as SVG-egysegeinkre.
+  const rectW = layer ? layer.getBoundingClientRect().width : 0;
+  const unit = rectW ? rectW / 100 : 1;
+  const P = 1400 / unit;
   function tick(){
     if (!df.classList.contains("flip-opening") && !df.classList.contains("flip-closing")) {
       cancelEdgeTracking();
@@ -1266,7 +1292,7 @@ function startEdgeTracking(df, isOpening){
     const anim = df.getAnimations().find(a => a.playState === "running" || a.playState === "paused");
     if (anim && layer) {
       const fraction = (anim.currentTime || 0) / dur;
-      drawDiscEdge(interpAt(fraction, angles));
+      drawDiscEdge(interpAt(fraction, angles), P);
       const ty = interpAt(fraction, EDGE_TY);
       const sc = interpAt(fraction, EDGE_SCALE);
       const tilt = interpAt(fraction, tilts);
