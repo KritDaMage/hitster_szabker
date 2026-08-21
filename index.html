@@ -26,6 +26,8 @@
   --fill-ink:#16123A;
   --vinyl-a:#0d0b22;
   --vinyl-b:#14112c;
+  --vinyl-c:#2b2555;
+  --vinyl-d:#0b0919;
   --disc: 78vw;
   --font: "Bricolage Grotesque", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
@@ -42,6 +44,8 @@
   --fill-ink:#221F26;
   --vinyl-a:#161616;
   --vinyl-b:#232323;
+  --vinyl-c:#3c3c3c;
+  --vinyl-d:#0a0a0a;
 }
 @media (min-height:800px){ :root{ --disc: 72vw; } }
 
@@ -141,23 +145,6 @@ main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;paddin
 .lyrics-close-row{flex:0 0 auto;display:flex;justify-content:space-between}
 .lyrics-pager-row{flex:0 0 auto}
 
-/* ─── jobb oldali fiók: szabályok ──────────────────────────── */
-#v-rules{
-  display:flex !important;flex-direction:column;align-items:stretch;gap:12px;
-  position:fixed;top:0;right:0;bottom:0;width:100%;max-width:640px;
-  background:var(--ink);z-index:21;
-  padding:max(24px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));
-  transform:translateX(100%);transition:transform .25s ease;
-}
-#v-rules.open{transform:translateX(0);box-shadow:-12px 0 40px rgba(0,0,0,.4)}
-.rules-scroll{width:100%;max-width:640px;margin:0 auto;flex:1 1 auto;min-height:0;overflow-y:auto;
-  display:flex;flex-direction:column;gap:16px;padding-bottom:12px}
-.rules-scroll h1{font-size:clamp(22px,6vw,28px);font-weight:800;letter-spacing:-.03em;line-height:1.15;color:var(--paper)}
-.rules-scroll h2{font-size:15px;font-weight:800;letter-spacing:-.01em;color:var(--paper);margin-top:4px}
-.rules-scroll p,.rules-scroll li{font-size:15px;line-height:1.55;color:var(--paper)}
-.rules-scroll ul,.rules-scroll ol{padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
-.rules-scroll .dim{color:var(--dim)}
-
 /* ─── fejlesztői dalszöveg-szerkesztő ────────────────────── */
 .edit-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:30;
@@ -183,7 +170,7 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
 
 /* ─── the disc: signature element ────────────────────────── */
 .deck{position:relative;width:var(--disc);height:var(--disc);max-width:340px;max-height:340px;cursor:pointer;
-  border-radius:50%;box-shadow:10px 18px 44px rgba(0,0,0,.55);perspective:1400px;}
+  border-radius:50%;box-shadow:10px 18px 44px rgba(0,0,0,.55);}
 .ring{position:absolute;inset:0;transform:rotate(-90deg);touch-action:none}
 .ring circle{fill:none;stroke-width:3;stroke-linecap:round}
 .ring .track{stroke:var(--ink-lift)}
@@ -191,59 +178,15 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
 .ring .scrub{stroke:transparent;stroke-width:34;pointer-events:stroke;touch-action:none;cursor:grab}
 .ring .scrub:active{cursor:grabbing}
 
-/* felfedéskor a teljes bakelit megfordul, mint egy igazi lemez —
-   közben mintha felemelnénk (nő és kicsit felénk billen), majd
-   ahogy visszaejtjük a helyére, finoman megbillen — és ugyanígy
-   vissza is fordítható, tetszőlegesen sokszor */
-.disc-flip{
-  position:absolute;inset:14px;border-radius:50%;
-  transform-style:preserve-3d;
-  transform:rotateY(0deg);
-}
-.deck[data-revealed="1"] .disc-flip{transform:rotateY(180deg)}
-.disc-flip.flip-opening{animation:disc-flip-open var(--flip-dur, .5s) linear both}
-.disc-flip.flip-closing{animation:disc-flip-close var(--flip-dur, .5s) linear both}
-@keyframes disc-flip-open{
-  0%   {transform:translateY(0)     scale(1)    rotateZ(0deg)    rotateY(0deg);   animation-timing-function:ease-in}
-  20%  {transform:translateY(-12px) scale(1.08) rotateZ(0deg)    rotateY(45deg);  animation-timing-function:linear}
-  50%  {transform:translateY(-18px) scale(1.14) rotateZ(0deg)    rotateY(100deg); animation-timing-function:linear}
-  78%  {transform:translateY(-8px)  scale(1.06) rotateZ(0deg)    rotateY(155deg); animation-timing-function:ease-out}
-  92%  {transform:translateY(2px)   scale(.97)  rotateZ(-2.5deg) rotateY(188deg); animation-timing-function:ease-out}
-  100% {transform:translateY(0)     scale(1)    rotateZ(0deg)    rotateY(180deg)}
-}
-@keyframes disc-flip-close{
-  0%   {transform:translateY(0)     scale(1)    rotateZ(0deg)   rotateY(180deg); animation-timing-function:ease-in}
-  20%  {transform:translateY(-12px) scale(1.08) rotateZ(0deg)   rotateY(135deg); animation-timing-function:linear}
-  50%  {transform:translateY(-18px) scale(1.14) rotateZ(0deg)   rotateY(80deg);  animation-timing-function:linear}
-  78%  {transform:translateY(-8px)  scale(1.06) rotateZ(0deg)   rotateY(25deg);  animation-timing-function:ease-out}
-  92%  {transform:translateY(2px)   scale(.97)  rotateZ(2.5deg) rotateY(-8deg);  animation-timing-function:ease-out}
-  100% {transform:translateY(0)     scale(1)    rotateZ(0deg)   rotateY(0deg)}
-}
-@media (prefers-reduced-motion: reduce){
-  .disc-flip.flip-opening,.disc-flip.flip-closing{animation:none}
-}
-
 .vinyl{
-  position:absolute;inset:0;border-radius:50%;
+  position:absolute;inset:14px;border-radius:50%;
   background:
     conic-gradient(from 41deg, transparent 0deg 72deg, rgba(255,255,255,.11) 90deg, transparent 108deg 252deg, rgba(255,255,255,.11) 270deg, transparent 288deg 360deg),
-    repeating-radial-gradient(circle at 50% 50%, var(--vinyl-a) 0 1px, var(--vinyl-b) 1px 3px);
+    repeating-radial-gradient(circle at 50% 50%, var(--vinyl-a) 0 1px, var(--vinyl-b) 1px 3px),
+    radial-gradient(circle at 34% 28%, var(--vinyl-c) 0%, var(--vinyl-d) 62%);
   box-shadow:inset 0 0 0 1px rgba(246,236,221,.07);
   display:grid;place-items:center;
-  backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  transform:rotate(var(--spin, 0deg));
 }
-.vinyl-back{transform:rotateY(180deg) rotate(var(--spin, 0deg))}
-
-/* a lemez "éle": sima 2D réteg a lemez FÖLÖTT (a HTML-ben a disc-flip
-   után áll, hogy mindig felül legyen), nem vesz részt a 3D-transzfor-
-   mációban (elkerülve a backface-visibility renderelési furcsaságait) —
-   a fordulás/emelkedés/billenés együtt fut a valódi .disc-flip
-   animációval, mert ugyanannak a CSS animációnak a lejátszási idejét
-   olvassuk le képkockánként, lásd startEdgeTracking(). A koordináta-
-   rendszer fix 0–100-as viewBox, nincs szükség DOM-mérésre, mert
-   ugyanaz az inset van rajta, mint a disc-flip-en. */
-.disc-edge{position:absolute;inset:14px;width:calc(100% - 28px);height:calc(100% - 28px);pointer-events:none;overflow:visible}
 
 /* the blank label — the whole point of the screen */
 .label{
@@ -252,22 +195,38 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
   display:grid;place-items:center;text-align:center;padding:6%;
   box-shadow:inset 0 0 0 1px rgba(0,0,0,.14);
   position:relative;
+  overflow:hidden;
 }
 .label::after{
   content:"";position:absolute;width:7%;aspect-ratio:1;border-radius:50%;
   background:var(--label-ink);box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);
+  transition:opacity .35s ease;
 }
-.label-printed::after{display:none}
-#blank-logo{position:absolute;inset:8%;width:84%;height:84%;object-fit:cover;border-radius:50%}
+#blank-logo{
+  position:absolute;inset:8%;width:84%;height:84%;object-fit:cover;border-radius:50%;
+  transition:opacity .35s ease, transform .35s ease;
+}
 .printed{
   color:var(--label-ink);line-height:1.15;
   position:absolute;inset:16%;
   display:flex;flex-direction:column;justify-content:center;align-items:center;
-  text-align:center;
+  opacity:0;transform:scale(.9);pointer-events:none;
+  transition:opacity .35s ease, transform .35s ease;
 }
-.printed .yr{font-size:clamp(26px,9vw,40px);font-weight:800;letter-spacing:-.03em;display:block}
+.label[data-revealed="1"] .blank{opacity:0;transform:scale(.9);pointer-events:none}
+.label[data-revealed="1"] .printed{opacity:1;transform:none;pointer-events:auto}
+.label[data-revealed="1"]::after{opacity:0}
+.printed .yr{
+  font-size:clamp(26px,9vw,40px);font-weight:800;letter-spacing:-.03em;
+  display:block;overflow:hidden;
+  max-height:0;opacity:0;margin-bottom:0;
+  transition:max-height .35s ease, opacity .3s ease, margin-bottom .35s ease;
+}
+.label[data-year-revealed="1"] .printed .yr{max-height:60px;opacity:1;margin-bottom:2px}
 .printed .ti{font-size:clamp(9px,2.8vw,12px);font-weight:600;margin-top:2px;width:100%;
-  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-overflow:ellipsis}
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-overflow:ellipsis;
+  overflow-wrap:break-word}
+.label:not([data-year-revealed="1"]) .printed .ti{font-weight:800}
 .printed .ar{font-size:clamp(9px,3vw,12px);opacity:.62;display:block;margin-top:2px;width:100%;
   overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 
@@ -289,7 +248,8 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
   position:absolute;inset:0;border-radius:50%;
   background:
     conic-gradient(from 41deg, transparent 0deg 72deg, rgba(255,255,255,.11) 90deg, transparent 108deg 252deg, rgba(255,255,255,.11) 270deg, transparent 288deg 360deg),
-    repeating-radial-gradient(circle at 50% 50%, var(--vinyl-a) 0 1px, var(--vinyl-b) 1px 3px);
+    repeating-radial-gradient(circle at 50% 50%, var(--vinyl-a) 0 1px, var(--vinyl-b) 1px 3px),
+    radial-gradient(circle at 34% 28%, var(--vinyl-c) 0%, var(--vinyl-d) 62%);
   box-shadow:inset 0 0 0 1px rgba(246,236,221,.07);
   display:grid;place-items:center;
   animation:hero-spin 12s linear infinite;
@@ -471,7 +431,6 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 
 <div class="menu-overlay" id="menu-overlay"></div>
 <div class="lyrics-overlay" id="lyrics-overlay"></div>
-<div class="lyrics-overlay" id="rules-overlay"></div>
 <div class="edit-overlay" id="edit-overlay">
   <div class="edit-panel">
     <textarea class="edit-textarea" id="edit-textarea" spellcheck="false"></textarea>
@@ -483,12 +442,6 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   </div>
 </div>
 <nav class="menu" id="menu">
-  <button class="menu-item" id="b-menu-devices">Eszközválasztó</button>
-  <button class="menu-item" id="b-menu-logout">Kijelentkezés</button>
-  <button class="menu-item" id="b-menu-rules">Szabályok</button>
-
-  <div class="menu-divider"></div>
-
   <h2>Mód</h2>
   <button class="menu-item" data-mode="general">Általános</button>
   <button class="menu-item" data-mode="szabker">Szabker dicsi</button>
@@ -559,21 +512,12 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
         <circle class="fill" id="prog" cx="50" cy="50" r="48.5"></circle>
         <circle class="scrub" id="scrub" cx="50" cy="50" r="48.5"></circle>
       </svg>
-      <div class="disc-flip" id="disc-flip">
-        <div class="vinyl">
-          <div class="label">
-            <img class="blank" id="blank-logo" src="szabker_budapest_ifi.svg" alt="">
-          </div>
-        </div>
-        <div class="vinyl vinyl-back">
-          <div class="label label-printed">
-            <span class="printed"><b class="yr" id="r-yr"></b><b class="ti" id="r-ti"></b><b class="ar" id="r-ar"></b></span>
-          </div>
+      <div class="vinyl" id="vinyl">
+        <div class="label" id="label">
+          <img class="blank" id="blank-logo" src="szabker_budapest_ifi.svg" alt="">
+          <span class="printed"><b class="yr" id="r-yr"></b><b class="ti" id="r-ti"></b><b class="ar" id="r-ar"></b></span>
         </div>
       </div>
-      <svg class="disc-edge" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-        <path id="disc-edge-path" fill="var(--vinyl-b)"></path>
-      </svg>
     </div>
     <button class="pill ghost" id="b-lyrics" style="visibility:hidden">Dalszöveg</button>
     <p class="err" id="play-err"></p>
@@ -595,53 +539,6 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
     </div>
     <div class="lyrics-scroll" id="lyrics-scroll"></div>
     <div class="lyrics-pager-row" id="lyrics-pager-row"></div>
-  </section>
-
-  <!-- 5.5 szabályok -->
-  <section class="view" id="v-rules">
-    <div class="lyrics-close-row">
-      <button class="pill ghost" id="b-rules-back">Vissza</button>
-    </div>
-    <div class="rules-scroll">
-      <h1>Szabályok</h1>
-      <p class="dim">A Hitster játékszabályok saját, Szabker dicsi-változata — fizikai kártyákkal és ezzel az alkalmazással.</p>
-
-      <h2>Kétféleképpen játszható</h2>
-      <ul>
-        <li><strong>Kártyákkal</strong> — a fizikai kártyák QR-kódját olvassátok be. A felfedés ilyenkor <strong>kizárólag a kártya hátoldalán</strong> történik: a képernyő szándékosan sosem árulja el a dalt, a Felfedés gomb ilyenkor nem is csinál semmit.</li>
-        <li><strong>QR nélkül (véletlen)</strong> — nincs szükség fizikai kártyákra, az app véletlenszerűen indít egy még fel nem fedezett dalt a katalógusból. A felfedés ilyenkor <strong>kizárólag a képernyőn</strong>, a Felfedés gombbal történik.</li>
-      </ul>
-      <p>A kettő közt a menüben, Szabker dicsi módban a „QR nélkül” kapcsolóval válthattok. A kétféle felfedés nem keverhető egy menetben — az dönti el, melyiket kell használni, hogy fizikai kártyával vagy anélkül játszotok-e éppen.</p>
-
-      <h2>Előkészület</h2>
-      <ul>
-        <li>Minden játékos (vagy csapat) kap 1 kártyát, amit a hátoldalával — évszámmal és címmel — felfelé maga elé tesz. Ez lesz az idővonal kezdete. (QR nélküli módban ez elmarad, elég fejben tartani az eddig felfedezett dalok évszámát.)</li>
-        <li>Válasszatok egy DJ-t, aki a telefonján megnyitja az alkalmazást.</li>
-      </ul>
-
-      <h2>Menet</h2>
-      <ol>
-        <li><strong>Indítás</strong> — a DJ beolvassa a következő kártya QR-kódját (vagy megnyomja a „Következő véletlen dal” gombot), megszólal a dal.</li>
-        <li><strong>Elhelyezés és tippelés</strong> — a soron következő játékos a saját idővonalán helyezi el a kártyát oda, ahova szerinte időrendben illik: a legrégebbi dal balra, a legújabb jobbra. Ha zsetonokkal is játszotok, <strong>ekkor, a felfedés előtt</strong> mondja be a dal (magyar) címét is — utána már úgyis látszik a válasz.</li>
-        <li><strong>Felfedés</strong> — kártyás módban fordítsátok meg a fizikai kártyát, QR nélküli módban nyomjátok meg a képernyőn a Felfedés gombot. Ez <strong>egyszerre</strong> mutatja meg az évszámot és a címet, tehát a helyezést és a cím-tippet is ekkor derül ki egyben. Ha a kártya jó helyre került, a játékos megtartja az idővonalán; ha rossz helyre, kikerül a játékból — hacsak egy másik játékos zsetonnal ki nem javítja (lásd lent).</li>
-        <li>Ha két kártya ugyanabból az évből van, egymáshoz képest bármilyen sorrendben elhelyezhetők.</li>
-      </ol>
-
-      <h2>Győzelem</h2>
-      <p>Az nyer, aki elsőként gyűjt össze 10 helyesen elhelyezett kártyát az idővonalán.</p>
-
-      <h2>Zsetonok (elhagyható)</h2>
-      <ul>
-        <li>Minden játékos 3 zsetonnal (gomb, aprópénz, bármi) kezd.</li>
-        <li><strong>Saját körben:</strong> 1 zseton beváltható egy plusz dal meghallgatására.</li>
-        <li><strong>Más körében:</strong> ha úgy gondolod, valaki rosszul helyezte el a kártyáját, kiálthatod: „Szabker!”, és egy zsetont feltéve megpróbálhatod jobb helyre tenni. Ha igazad van, a kártya a tiéd lesz.</li>
-        <li><strong>Bármikor:</strong> 3 zseton beváltható arra, hogy egy kártyát találgatás nélkül, biztosan jó helyre tegyél az idővonaladra.</li>
-        <li>Zsetont kaptok, ha a felfedés előtt bemondott cím-tippetek is helyesnek bizonyul, nemcsak az évszám-helyezés.</li>
-      </ul>
-
-      <h2>Dalszöveg</h2>
-      <p>Felfedés után, ha a dalhoz van rögzített dalszöveg, megjelenik egy „Dalszöveg” gomb — érdemes közösen elénekelni a felfedezett dalokat!</p>
-    </div>
   </section>
 
   <!-- 6. dalkatalógus (Szabker dicsi mód) -->
@@ -724,11 +621,6 @@ const REDIRECT_URI = location.origin + location.pathname;
 /* ?mock=1 a URL-ben: kihagyja a Spotify belépést/API-t, kitalált adatokkal
    fut a felület, hogy a UI-n lehessen dolgozni bejelentkezés nélkül. */
 const MOCK = new URLSearchParams(location.search).get("mock") === "1";
-
-/* ?slow=N a URL-ben: N-szeresére lassítja a lemez-flip animációját,
-   hogy képkockánként ellenőrizhető legyen (pl. ?slow=8) */
-const SLOWMO = Math.max(1, parseFloat(new URLSearchParams(location.search).get("slow")) || 1);
-if (SLOWMO > 1) document.documentElement.style.setProperty("--flip-dur", (0.5 * SLOWMO) + "s");
 
 const SCOPES = [
   "streaming",
@@ -864,11 +756,6 @@ function authExpired(){
   throw new Error("Lejárt a belépés. Töltsd újra az oldalt.");
 }
 
-function logout(){
-  localStorage.removeItem("tok");
-  location.reload();
-}
-
 async function api(path, opts = {}){
   if (MOCK && !realSpotify) return mockApi(path, opts);
   const token = await getToken();
@@ -982,6 +869,7 @@ async function play(id, switchView = true, countProgress = true){
   if (switchView) show("play");
   if (result === true && countProgress && mode === "szabker") {
     revealedIds.add(id);
+    saveRevealedIds();
     updateRevealProgress();
   }
   if (result === true && mode === "szabker" && !randomMode) {
@@ -1075,7 +963,7 @@ function renderRing(pos){
 }
 function renderVinyl(pos){
   if (reduceMotion) return;
-  $("disc-flip").style.setProperty("--spin", vinylDeg(pos).toFixed(1) + "deg");
+  $("vinyl").style.transform = "rotate(" + vinylDeg(pos).toFixed(1) + "deg)";
 }
 function renderLyricsPlayer(pos){
   const fill = document.getElementById("lyrics-player-fill");
@@ -1120,236 +1008,30 @@ async function seekTo(ms){
   } catch(e){ $("play-err").textContent = e.message; }
 }
 
-function setVinylTransition(v){
-  document.querySelectorAll(".vinyl").forEach(el => { el.style.transition = v; });
-}
-
-/* ── a lemez "éle" fordulás közben ──────────────────────────
-   Sima 2D SVG-réteg a .disc-flip alatt, NEM vesz részt a 3D-transzfor-
-   mációban. Mivel a réteg mérete/inset-je fixen ugyanaz, mint a
-   disc-flip-é, nincs szükség DOM-mérésre — a saját 0-100-as viewBox
-   koordinátarendszerében cx=cy=50, ry=50 mindig érvényes.
-
-   Az él egy kitöltött "szalag": a középvonala (bumpCx = 50 + 50·cos)
-   folytonosan csúszik át a lemez közepén, a szélessége két tényező
-   szorzata:
-   - a lemez FORGÁSÁTÓL (sin szög): lapos oldalnál (0°/180°) eltűnik,
-     élen állva (90°) éri el a maximumát;
-   - a szalag HOSSZA menti pozíciótól (φ): a tetején/alján nullára
-     keskenyedik (mint egy lencse), DE ez a keskenyedés is eltűnik,
-     amint a lemez pontosan élre fordul — ott a szalag egyenletes
-     vastagságú, szögletes végű téglalappá simul.
-   A szélesség-eltolás mindig VÍZSZINTES (nem a görbe normálisa mentén),
-   mert az utóbbi a szalag tetején/alján (ahol az érintő vízszintes)
-   "V" alakú glitchet okozna.
-
-   A forgás mellett a lemez emelkedését/nagyítását/billenését (translateY,
-   scale, rotateZ) is lekövetjük ugyanezekkel az arányokkal, hogy a
-   réteg pontosan együtt mozogjon a valódi .disc-flip animációval —
-   mindkettő ugyanannak a fut CSS animációnak a lejátszási idejét olvassa
-   le képkockánként (df.getAnimations()[0].currentTime). */
-const EDGE_STOPS  = [0, .20, .50, .78, .92, 1];
-const EDGE_EASES  = ["ease-in", "linear", "linear", "ease-out", "ease-out"];
-const EDGE_OPEN_ANGLES  = [0, 45, 100, 155, 188, 180];
-const EDGE_CLOSE_ANGLES = [180, 135, 80, 25, -8, 0];
-const EDGE_TY     = [0, -12, -18, -8, 2, 0];
-const EDGE_SCALE  = [1, 1.08, 1.14, 1.06, .97, 1];
-const EDGE_TILT_OPEN  = [0, 0, 0, 0, -2.5, 0];
-const EDGE_TILT_CLOSE = [0, 0, 0, 0, 2.5, 0];
-const EDGE_THICKNESS_RATIO = .06; // a szalag max. teljes vastagsaga a lemez sugarahoz (R=50) kepest
-const EDGE_SEGS = 24; // szalag-felbontas a hossza menten
-
-/* a CSS "ease-in"/"ease-out" kulcsszavak nem t² / t(2-t) parabolák,
-   hanem konkrét cubic-bezier görbék (cubic-bezier(.42,0,1,1) ill.
-   cubic-bezier(0,0,.58,1)) — ha ezt közelítéssel helyettesítjük, a
-   valódi CSS-animációval szemben apró, de a gyors/rövid szakaszoknál
-   (pl. a landolásnál lévő túllendülésnél) jól látható csúszás jön ki. */
-function cubicBezier(p1x, p1y, p2x, p2y){
-  const A = (a1, a2) => 1 - 3 * a2 + 3 * a1;
-  const B = (a1, a2) => 3 * a2 - 6 * a1;
-  const C = a1 => 3 * a1;
-  const bezX = t => ((A(p1x, p2x) * t + B(p1x, p2x)) * t + C(p1x)) * t;
-  const bezY = t => ((A(p1y, p2y) * t + B(p1y, p2y)) * t + C(p1y)) * t;
-  const bezXDeriv = t => 3 * A(p1x, p2x) * t * t + 2 * B(p1x, p2x) * t + C(p1x);
-  function solveT(x){
-    let t = x;
-    for (let i = 0; i < 8; i++) {
-      const dx = bezX(t) - x;
-      if (Math.abs(dx) < 1e-6) return t;
-      const d = bezXDeriv(t);
-      if (Math.abs(d) < 1e-6) break;
-      t -= dx / d;
-    }
-    let lo = 0, hi = 1;
-    t = x;
-    for (let i = 0; i < 20; i++) {
-      t = (lo + hi) / 2;
-      if (bezX(t) < x) lo = t; else hi = t;
-    }
-    return t;
-  }
-  return x => bezY(solveT(x));
-}
-const CSS_EASE_IN = cubicBezier(.42, 0, 1, 1);
-const CSS_EASE_OUT = cubicBezier(0, 0, .58, 1);
-function edgeEase(name, t){
-  if (name === "ease-in") return CSS_EASE_IN(t);
-  if (name === "ease-out") return CSS_EASE_OUT(t);
-  return t;
-}
-function interpAt(fraction, values){
-  fraction = Math.min(Math.max(fraction, 0), 1);
-  let i = 0;
-  while (i < EDGE_STOPS.length - 2 && fraction > EDGE_STOPS[i + 1]) i++;
-  const segStart = EDGE_STOPS[i], segEnd = EDGE_STOPS[i + 1];
-  const localT = segEnd > segStart ? (fraction - segStart) / (segEnd - segStart) : 1;
-  const eased = edgeEase(EDGE_EASES[i], localT);
-  return values[i] + (values[i + 1] - values[i]) * eased;
-}
-function buildEdgeRibbonPath(rotDeg, P){
-  const cx = 50, cy = 50, R = 50; // R = a lemez tenyleges sugara ebben a koordinatarendszerben
-  const RY = 50.2; // apro, EMPIRIKUS fuggoleges nyujtas — a dobozok/matek papiron pontosan egyeznek,
-                 // de a gyakorlatban meg mindig maradt egy haj­szalnyi res fent/lent, ezt zarja be
-  const theta = rotDeg * Math.PI / 180;
-  const c = Math.cos(theta); // elojeles — SOSEM valtjuk kulon elojelre, hogy folytonos maradjon
-  const taperAmt = Math.abs(c);
-  const stateFactor = Math.abs(Math.sin(theta));
-  const maxW = EDGE_THICKNESS_RATIO * R; // teljes vastagsag, nem fel-vastagsag
-
-  // A .deck-en valodi CSS perspective:1400px van, tehat a lemez sajat
-  // pereme NEM egyszeru koszinusszal vetul, hanem valodi perspektiva-
-  // osztassal: screen = local * P/(P - z), ahol z = -localX*sin(theta)
-  // (rotateY hatasa). Ezt itt szamoljuk ki minden φ pontra — a scale/
-  // translateY/rotateZ-t szandekosan NEM itt, hanem kulso CSS transform-
-  // kent alkalmazzuk (layer.style.transform), mert ezek a muveletek nem
-  // erintik a Z-t, igy bizonyithatoan felcserelhetok a vetitessel: pontos
-  // eredmenyt adnak lancolt 3D-transzformaciokent is.
-  //
-  // Tavol a 90 foktol (taperAmt kozel 1) a szalag KULSO pereme pontosan
-  // a lemez sajat sziluettjen ul, a vastagsag teljesen befele no. Pontosan
-  // 90-nel (taperAmt=0, elen all a lemez) nincs ertelmes "kulso/belso"
-  // oldal, ott szimmetrikus, kozepre allo teglalap a helyes.
-  //
-  // A ket szel: ox + half*(1-c) es ox - half*(1+c). A tavolsaguk MINDIG
-  // pontosan w (=2*half), fuggetlenul c elojeletől — igy a ket hatarvonal
-  // sose cserelhet sorrendet/metszheti egymast (korabban ez az elojel-
-  // fuggo kevereskeplet miatt 120° felett bekovetkezett, es "osszecsipodo"
-  // szalagkent latszott a bal oldalon).
-  const left = [], right = [];
-  for (let i = 0; i <= EDGE_SEGS; i++) {
-    const phi = -Math.PI / 2 + (i / EDGE_SEGS) * Math.PI;
-    const localX = R * Math.cos(phi);
-    const localY = RY * Math.sin(phi);
-    const z = -localX * Math.sin(theta);
-    const f = P / (P - z);
-    const ox = cx + localX * c * f;
-    const oy = cy + localY * f;
-
-    // also korlat, hogy a csucs kozeleben is maradjon erzekelheto
-    // vastagsag — kulonben a majdnem-nullara vekonyodo szal ugy tunhet,
-    // mintha nem erne el a lemez tetejet/aljat, pedig a vegpont
-    // geometriailag pontosan odaer
-    const wPhiFactor = (1 - taperAmt) + taperAmt * Math.max(.2, Math.abs(Math.cos(phi)));
-    const w = maxW * stateFactor * wPhiFactor;
-    const half = w / 2;
-    left.push([ox + half * (1 - c), oy]);
-    right.push([ox - half * (1 + c), oy]);
-  }
-  let d = `M ${left[0][0]} ${left[0][1]}`;
-  for (let i = 1; i < left.length; i++) d += ` L ${left[i][0]} ${left[i][1]}`;
-  for (let i = right.length - 1; i >= 0; i--) d += ` L ${right[i][0]} ${right[i][1]}`;
-  return d + " Z";
-}
-function drawDiscEdge(thetaDeg, P){
-  const e = document.getElementById("disc-edge-path");
-  if (!e) return;
-  e.setAttribute("d", buildEdgeRibbonPath(thetaDeg, P));
-}
-function clearDiscEdge(){
-  const e = document.getElementById("disc-edge-path");
-  if (e) e.setAttribute("d", "M 0 0 Z");
-  const layer = document.querySelector(".disc-edge");
-  if (layer) layer.style.transform = "";
-}
-let edgeRAF = null;
-function startEdgeTracking(df, isOpening){
-  cancelEdgeTracking();
-  const dur = 500 * SLOWMO; // ms, egyezik a --flip-dur-ral
-  const angles = isOpening ? EDGE_OPEN_ANGLES : EDGE_CLOSE_ANGLES;
-  const tilts  = isOpening ? EDGE_TILT_OPEN : EDGE_TILT_CLOSE;
-  const layer = document.querySelector(".disc-edge");
-  // egyszeri meres (nem kepkockankent) — a doboz meg nincs transzformalva,
-  // stabil, megbizhato lekerdezni. Ebbol szamoljuk at a .deck sajat
-  // perspective:1400px erteket a mi 0-100-as SVG-egysegeinkre.
-  const rectW = layer ? layer.getBoundingClientRect().width : 0;
-  const unit = rectW ? rectW / 100 : 1;
-  const P = 1400 / unit;
-  function tick(){
-    if (!df.classList.contains("flip-opening") && !df.classList.contains("flip-closing")) {
-      cancelEdgeTracking();
-      return;
-    }
-    const anim = df.getAnimations().find(a => a.playState === "running" || a.playState === "paused");
-    if (anim && layer) {
-      const fraction = (anim.currentTime || 0) / dur;
-      drawDiscEdge(interpAt(fraction, angles), P);
-      const ty = interpAt(fraction, EDGE_TY);
-      const sc = interpAt(fraction, EDGE_SCALE);
-      const tilt = interpAt(fraction, tilts);
-      layer.style.transform = `translateY(${ty}px) scale(${sc}) rotate(${tilt}deg)`;
-    }
-    edgeRAF = requestAnimationFrame(tick);
-  }
-  edgeRAF = requestAnimationFrame(tick);
-}
-function cancelEdgeTracking(){
-  if (edgeRAF) { cancelAnimationFrame(edgeRAF); edgeRAF = null; }
-  clearDiscEdge();
-}
-
-/* felfedés/visszafedés: emeléssel-billenéssel megforgatja a teljes bakelitet;
-   nem használjuk a csendes állapot-visszaállításoknál (reset, mód-váltás) —
-   ott ugrás kell animáció nélkül, ezt a data-revealed direkt állítása adja */
-function setDiscRevealed(isRevealed){
-  const deck = $("deck"), df = $("disc-flip");
-  const wasRevealed = deck.dataset.revealed === "1";
-  deck.dataset.revealed = isRevealed ? "1" : "0";
-  if (wasRevealed === isRevealed || reduceMotion) return;
-  df.classList.remove("flip-opening", "flip-closing");
-  void df.offsetWidth;
-  df.classList.add(isRevealed ? "flip-opening" : "flip-closing");
-  startEdgeTracking(df, isRevealed);
-  df.addEventListener("animationend", function onEnd(){
-    df.classList.remove("flip-opening", "flip-closing");
-    cancelEdgeTracking();
-    df.removeEventListener("animationend", onEnd);
-  });
-}
-
 $("scrub").addEventListener("click", e => e.stopPropagation());
 $("scrub").addEventListener("pointerdown", e => {
   e.stopPropagation();
   if (!curDur) return;
   dragging = true;
   $("scrub").setPointerCapture(e.pointerId);
-  setVinylTransition("transform .4s ease");
+  $("vinyl").style.transition = "transform .4s ease";
   paint(ringFraction(e) * curDur, curDur);
 });
 $("scrub").addEventListener("pointermove", e => {
   if (!dragging) return;
-  setVinylTransition("none");
+  $("vinyl").style.transition = "none";
   paint(ringFraction(e) * curDur, curDur);
 });
 $("scrub").addEventListener("pointerup", async e => {
   if (!dragging) return;
   dragging = false;
-  setVinylTransition("");
+  $("vinyl").style.transition = "";
   await seekTo(Math.round(ringFraction(e) * curDur));
 });
 $("scrub").addEventListener("pointercancel", () => {
   if (!dragging) return;
   dragging = false;
-  setVinylTransition("");
+  $("vinyl").style.transition = "";
 });
 const PLAY_ICON_PATH = "M8 5v14l11-7z";
 const PAUSE_ICON_PATH = "M6 5h4v14H6zm8 0h4v14h-4z";
@@ -1369,12 +1051,10 @@ function icon(){
   });
 }
 function reset(){
-  $("deck").dataset.revealed = "0";
-  $("disc-flip").classList.remove("flip-opening", "flip-closing");
-  cancelEdgeTracking();
-  revealedTrackId = null;
+  $("label").dataset.revealed = "0";
+  $("label").dataset.yearRevealed = "0";
   $("prog").style.strokeDasharray = "0 999";
-  $("disc-flip").style.setProperty("--spin", "0deg");
+  $("vinyl").style.transform = "rotate(0deg)";
   curDur = 0;
   posBase = 0;
   pendingRestoreId = null;
@@ -1411,7 +1091,7 @@ function snapshotMode(){
   if (!trackId) return null;
   return {
     trackId,
-    revealedFlag: $("deck").dataset.revealed === "1",
+    revealedFlag: $("label").dataset.revealed === "1",
     revealed: { ...revealed },
     yrText: $("r-yr").textContent
   };
@@ -1443,13 +1123,10 @@ async function restoreModeSnapshot(snap, allowNavigate = true){
   playing = false;
   pendingRestoreId = snap.trackId;
   revealed = snap.revealed;
-  revealedTrackId = snap.revealedFlag ? snap.trackId : null;
   lyricsData = null;
   lyricsVersionIndex = 0;
   $("b-lyrics").style.visibility = "hidden";
-  $("deck").dataset.revealed = snap.revealedFlag ? "1" : "0";
-  $("disc-flip").classList.remove("flip-opening", "flip-closing");
-  cancelEdgeTracking();
+  $("label").dataset.revealed = snap.revealedFlag ? "1" : "0";
   if (snap.revealedFlag) {
     $("r-yr").textContent = snap.yrText;
     $("r-ti").textContent = snap.revealed.huTitle || snap.revealed.title;
@@ -1469,7 +1146,7 @@ async function restoreModeSnapshot(snap, allowNavigate = true){
 let lyricsData = null;
 let lyricsVersionIndex = 0;  // melyik fordítás van megjelenítve, ha több is van
 let revealed = { title: "", artist: "", huTitle: "" };
-let revealedTrackId = null;  // melyik trackId adatai vannak már betöltve a bakelit hátoldalán
+let revealBusy = false;  // a fel-/visszatakaró fade alatt igaz — addig a reveal() nem indul ujra
 let catalogReturnView = "play";  // hova menjen a katalógus "Vissza" gombja
 let lyricsPlayerTrackId = null;  // csak katalógusból nyitott dalszövegnél: lejátszó gomb + progress sáv a cím fölött
 function openLyricsDrawer(){
@@ -1493,16 +1170,6 @@ async function toggleLyricsPlayer(){
 function closeLyricsDrawer(){
   $("v-lyrics").classList.remove("open");
   $("lyrics-overlay").classList.remove("open");
-}
-function openRulesDrawer(){
-  const alreadyOpen = $("v-rules").classList.contains("open");
-  $("v-rules").classList.add("open");
-  $("rules-overlay").classList.add("open");
-  if (!alreadyOpen) history.pushState({ modal: "rules" }, "");
-}
-function closeRulesDrawer(){
-  $("v-rules").classList.remove("open");
-  $("rules-overlay").classList.remove("open");
 }
 async function loadLyrics(id){
   try {
@@ -2040,28 +1707,26 @@ function fitText(el){
   }
 }
 
+const REVEAL_FADE_MS = 350; // egyezzen a CSS .printed/.blank transition idejevel
+
 async function reveal(){
   // QR-alapu dicsi jatekban a fizikai kartya mar felfedi az evszamot/cimet -
   // a lemezt itt nem kell (nem is szabad) megforditani
   if (mode === "szabker" && !randomMode) return;
-  if (!trackId) return;
-  // mig a lemez forog, ne szakitsuk felbe egy ujabb kattintassal -
-  // kozeputt valtott iranyu animacio elcsuszna/eltorzulna
-  const df0 = $("disc-flip");
-  if (df0.classList.contains("flip-opening") || df0.classList.contains("flip-closing")) return;
+  if (!trackId || revealBusy) return;
 
-  // mar fel van fedve: csak visszaforditjuk, adatok maradnak a hatoldalon
-  if ($("deck").dataset.revealed === "1") {
-    setDiscRevealed(false);
+  // mar fel van fedve: ujabb kattintasra visszatakarjuk — nincs uj API-hivas,
+  // az adatok maradnak, csak a label megy vissza az ures (blank) oldalara
+  if ($("label").dataset.revealed === "1") {
+    revealBusy = true;
+    $("label").dataset.revealed = "0";
+    $("label").dataset.yearRevealed = "0";
     $("b-lyrics").style.visibility = "hidden";
+    setTimeout(() => { revealBusy = false; }, REVEAL_FADE_MS);
     return;
   }
-  // ugyanehhez a szamhoz mar van betoltott adat: csak megforditjuk ujra, nincs uj API-hivas
-  if (revealedTrackId === trackId) {
-    setDiscRevealed(true);
-    if (mode === "szabker" && lyricsData) $("b-lyrics").style.visibility = "visible";
-    return;
-  }
+
+  revealBusy = true;
   try {
     const t = await api("tracks/" + trackId);
     const titles = await loadTitles();
@@ -2074,8 +1739,7 @@ async function reveal(){
     $("r-yr").textContent = (override && override.year) ? String(override.year) : (t.album.release_date || "").slice(0, 4);
     $("r-ti").textContent = huTitle || originalTitle;
     $("r-ar").textContent = huTitle ? originalTitle : originalArtist;
-    revealedTrackId = trackId;
-    setDiscRevealed(true);
+    $("label").dataset.revealed = "1";
 
     lyricsData = null;
     lyricsVersionIndex = 0;
@@ -2085,6 +1749,30 @@ async function reveal(){
       if (lyricsData) $("b-lyrics").style.visibility = "visible";
     }
   } catch(e){ $("play-err").textContent = e.message; }
+  finally {
+    setTimeout(() => { revealBusy = false; }, REVEAL_FADE_MS);
+  }
+}
+
+// masodik lepcso: a mar felfedett cimke KOZEPERE (a label korre) kattintva
+// derul ki csak az evszam — addig csak a magyar/eredeti cim latszik.
+// Ujabb kattintasra ugyanugy visszatakarodik, mint a fo felfedes.
+function revealYear(){
+  if ($("label").dataset.revealed !== "1") return;
+  $("label").dataset.yearRevealed = $("label").dataset.yearRevealed === "1" ? "0" : "1";
+}
+// true, ha a kattintas a kozepso labelen belul volt (nem a fekete szelen) —
+// a label sajat, tenylegesen renderelt kor-alakjahoz merve, nem a deck-hez
+// kepesti aranyhoz, igy fuggetlen a --disc meretezestol. A #blank-logo-hoz
+// merunk, NEM a .label-hez — a .label 8%-kal nagyobb a lathato logonal
+// (belso margo), az a gyuru meg a fekete resz folytatasanak szamit.
+// A #blank-logo felfedeskor lathatatlanna valik (opacity:0), de a
+// layoutban marad, tehat a merese mindig ervenyes.
+function clickedOnLabel(evt){
+  const r = $("blank-logo").getBoundingClientRect();
+  const dx = evt.clientX - (r.left + r.width / 2);
+  const dy = evt.clientY - (r.top + r.height / 2);
+  return Math.hypot(dx, dy) <= r.width / 2;
 }
 
 /* ══════════ 5. eszközválasztó (ha nincs SDK) ══════════════ */
@@ -2216,8 +1904,17 @@ async function hit(text){
 }
 
 /* Szabker dicsi mód: hányból hányat fedtünk már fel — ugyanez a lista
-   adja a "QR nélküli" véletlen módnak is, hogy melyik dal maradt még hátra */
-let revealedIds = new Set();
+   adja a "QR nélküli" véletlen módnak is, hogy melyik dal maradt még hátra.
+   localStorage-ban marad meg, hogy egy véletlen oldalfrissítés ne nullázza. */
+const REVEALED_IDS_KEY = "revealedIds";
+function loadRevealedIds(){
+  try { return new Set(JSON.parse(localStorage.getItem(REVEALED_IDS_KEY) || "[]")); }
+  catch(e){ return new Set(); }
+}
+function saveRevealedIds(){
+  localStorage.setItem(REVEALED_IDS_KEY, JSON.stringify([...revealedIds]));
+}
+let revealedIds = loadRevealedIds();
 let catalogSizeCache = null;
 async function getCatalogSize(){
   if (catalogSizeCache === null) {
@@ -2235,6 +1932,7 @@ async function updateRevealProgress(){
 }
 function clearRevealedIds(){
   revealedIds.clear();
+  saveRevealedIds();
   updateRevealProgress();
 }
 async function resetRevealProgress(){
@@ -2266,7 +1964,7 @@ document.addEventListener("visibilitychange", () => {
 $("b-login").onclick = login;
 $("b-cancel").onclick = () => { stopScan(); show("play"); };
 $("b-toggle").onclick = toggle;
-$("deck").onclick = reveal;
+$("deck").onclick = e => clickedOnLabel(e) ? revealYear() : reveal();
 $("b-next").onclick = () => {
   if (player) player.activateElement && player.activateElement();
   if (randomMode && mode === "szabker") playRandom();
@@ -2280,9 +1978,6 @@ function closeLyricsDrawerByUser(){
 }
 $("b-lyrics-back").onclick = () => history.back();
 $("lyrics-overlay").onclick = () => history.back();
-$("b-menu-rules").onclick = () => { closeMenu(); openRulesDrawer(); };
-$("b-rules-back").onclick = () => history.back();
-$("rules-overlay").onclick = () => history.back();
 if (MOCK) {
   // a fejlesztői élő szerver bármelyik lyrics/*.json fájl mentésekor újratölti az oldalt —
   // nem csak a beépített szerkesztőn keresztüli mentésnél, hanem az IDE-ből közvetlenül
@@ -2296,8 +1991,7 @@ if (MOCK) {
 $("b-catalog").onclick = openCatalog;
 $("b-catalog-back").onclick = () => history.back();
 window.addEventListener("popstate", () => {
-  if ($("v-rules").classList.contains("open")) closeRulesDrawer();
-  else if ($("v-lyrics").classList.contains("open")) closeLyricsDrawerByUser();
+  if ($("v-lyrics").classList.contains("open")) closeLyricsDrawerByUser();
   else if ($("v-catalog").classList.contains("on")) show(catalogReturnView);
 });
 $("catalog-search").addEventListener("input", () => renderCatalogList($("catalog-search").value));
@@ -2453,12 +2147,7 @@ function toggleTheme(){
   localStorage.setItem("theme", theme);
   applyTheme();
 }
-function openMenu(){
-  const loggedIn = MOCK || !!localStorage.getItem("tok");
-  $("b-menu-devices").hidden = !loggedIn;
-  $("b-menu-logout").hidden = !loggedIn;
-  $("menu").classList.add("open"); $("menu-overlay").classList.add("open");
-}
+function openMenu(){ $("menu").classList.add("open"); $("menu-overlay").classList.add("open"); }
 function closeMenu(){ $("menu").classList.remove("open"); $("menu-overlay").classList.remove("open"); }
 
 $("b-menu").onclick = openMenu;
@@ -2490,8 +2179,6 @@ document.querySelectorAll(".menu-item[data-mode]").forEach(b => {
 });
 $("b-random-toggle").onclick = toggleRandomMode;
 $("b-theme-toggle").onclick = toggleTheme;
-$("b-menu-devices").onclick = () => { closeMenu(); pickDevice(); };
-$("b-menu-logout").onclick = () => { closeMenu(); logout(); };
 $("b-reveal-reset").onclick = resetRevealProgress;
 applyMode();
 applyRandomMode();
