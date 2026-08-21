@@ -122,6 +122,7 @@ header{
 .menu-bottom{margin-top:auto;display:flex;flex-direction:column;gap:14px}
 .menu-link{padding:10px 16px;font-size:13px;color:var(--dim);text-align:left;text-decoration:underline;text-underline-offset:3px}
 .menu-item{padding:14px 16px;border-radius:12px;text-align:left;font-size:16px;font-weight:600;color:var(--paper)}
+.menu-account{display:flex;flex-direction:column;gap:8px}
 .menu-item[aria-current="true"]{background:var(--fill);color:var(--fill-ink)}
 
 main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;padding:20px 0}
@@ -152,6 +153,27 @@ main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;paddin
   opacity:0;pointer-events:none;transition:opacity .2s ease;
 }
 .edit-overlay.open{opacity:1;pointer-events:auto}
+.rules-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:30;
+  opacity:0;pointer-events:none;transition:opacity .25s ease;
+}
+.rules-overlay.open{opacity:1;pointer-events:auto}
+.rules-panel{
+  display:flex;flex-direction:column;align-items:stretch;gap:12px;
+  position:fixed;top:0;right:0;bottom:0;width:100%;max-width:640px;
+  background:var(--ink);z-index:31;
+  padding:max(24px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));
+  color:var(--paper);
+  transform:translateX(100%);transition:transform .25s ease;
+}
+.rules-panel.open{transform:translateX(0);box-shadow:-12px 0 40px rgba(0,0,0,.4)}
+.rules-close-row{flex:0 0 auto;display:flex;justify-content:space-between}
+.rules-scroll{flex:1 1 auto;min-height:0;overflow-y:auto}
+.rules-panel h2{margin:0 0 4px}
+.rules-sub{color:var(--dim);font-size:13px;margin:0 0 18px}
+.rules-panel h3{font-size:14px;margin:18px 0 6px}
+.rules-panel p{font-size:14px;line-height:1.5;margin:0}
+.rules-panel ol{font-size:14px;line-height:1.5;margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
 .edit-panel{
   width:1400px;max-width:95vw;height:80vh;max-height:90vh;min-width:320px;min-height:200px;
   background:var(--ink-lift);border-radius:16px;padding:16px;
@@ -431,6 +453,34 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 
 <div class="menu-overlay" id="menu-overlay"></div>
 <div class="lyrics-overlay" id="lyrics-overlay"></div>
+<div class="rules-overlay" id="rules-overlay">
+  <div class="rules-panel" id="rules-panel">
+    <div class="rules-close-row">
+      <button type="button" class="pill ghost" id="b-rules-close">Vissza</button>
+    </div>
+    <div class="rules-scroll">
+      <h2>Játékszabályok</h2>
+      <p class="rules-sub">A klasszikus Hitster menete, a mi verziónkra szabva.</p>
+
+      <h3>Cél</h3>
+      <p>A dalokat időrendbe kell rakni — ki tudja a legjobban, melyik szám mikor jelent meg?</p>
+
+      <h3>Egy kör</h3>
+      <ol>
+        <li>A soron lévő játékos beolvassa egy kártya QR-kódját. Elindul a dal, de a képernyőn semmi nem árulja el, mi szól — se cím, se évszám.</li>
+        <li>Amíg szól, a játékos eldönti, hova illik a dal a saját, már kirakott idővonalán: korábbi vagy későbbi számok közé.</li>
+        <li>Miután letette a kártyát, jöhet a felfedés: a lemez <b>fekete szélére</b> kattintva előjön a cím (magyar és eredeti), a lemez <b>közepére</b> kattintva pedig az évszám.</li>
+        <li>Ha a kártya jó helyre került az idővonalon, ott is marad; ha nem, félrekerül.</li>
+      </ol>
+
+      <h3>Győzelem</h3>
+      <p>Az nyer, aki elsőként összerak 10 helyesen elhelyezett kártyát az idővonalán — vagy amennyit a társaság előre megbeszélt.</p>
+
+      <h3>Szabker dicsi mód</h3>
+      <p>QR-kódos dicsi játéknál a fizikai kártya hátoldalán már ott van az évszám és a cím, ezért ott a lemez nem fordul/fedi fel újra semmit — csak a Dalszöveg gomb segít, ha van hozzá felvéve szöveg. A "QR nélkül" kapcsolóval a kártyák helyett a katalógusból jön egy véletlen dal.</p>
+    </div>
+  </div>
+</div>
 <div class="edit-overlay" id="edit-overlay">
   <div class="edit-panel">
     <textarea class="edit-textarea" id="edit-textarea" spellcheck="false"></textarea>
@@ -442,6 +492,14 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   </div>
 </div>
 <nav class="menu" id="menu">
+  <button class="menu-item" id="b-menu-rules">Játékszabályok</button>
+  <div class="menu-account" id="menu-account" hidden>
+    <button class="menu-item" id="b-menu-devices">Eszközválasztó</button>
+    <button class="menu-item" id="b-menu-logout">Kijelentkezés</button>
+  </div>
+
+  <div class="menu-divider"></div>
+
   <h2>Mód</h2>
   <button class="menu-item" data-mode="general">Általános</button>
   <button class="menu-item" data-mode="szabker">Szabker dicsi</button>
@@ -2147,34 +2205,43 @@ function toggleTheme(){
   localStorage.setItem("theme", theme);
   applyTheme();
 }
-function openMenu(){ $("menu").classList.add("open"); $("menu-overlay").classList.add("open"); }
+function openMenu(){
+  $("menu-account").hidden = !(MOCK || !!localStorage.getItem("tok"));
+  $("menu").classList.add("open");
+  $("menu-overlay").classList.add("open");
+}
 function closeMenu(){ $("menu").classList.remove("open"); $("menu-overlay").classList.remove("open"); }
+function logout(){
+  localStorage.removeItem("tok");
+  closeMenu();
+  closeLyricsDrawer();
+  show("auth");
+}
+function openRules(){ $("rules-overlay").classList.add("open"); $("rules-panel").classList.add("open"); }
+function closeRules(){ $("rules-overlay").classList.remove("open"); $("rules-panel").classList.remove("open"); }
 
 $("b-menu").onclick = openMenu;
+$("b-menu-logout").onclick = logout;
+$("b-menu-devices").onclick = () => { closeMenu(); pickDevice(); };
+$("b-menu-rules").onclick = openRules;
+$("b-rules-close").onclick = closeRules;
+$("rules-overlay").onclick = e => { if (e.target.id === "rules-overlay") closeRules(); };
 $("menu-overlay").onclick = closeMenu;
 document.querySelectorAll(".menu-item[data-mode]").forEach(b => {
   b.onclick = async () => {
     const newMode = b.dataset.mode;
     const changed = newMode !== mode;
-    if (!changed) {
-      // ha a katalogusban allva a sajat, mar aktiv mododra kattintasz,
-      // ez egy gyorsgomb vissza a lemezhez
-      if ($("v-catalog").classList.contains("on")) {
-        closeMenu();
-        history.back();
-      }
-      return;
+    if (changed) {
+      modeMemory[mode] = snapshotMode();
+      await pauseCurrentPlayback();
+      mode = newMode;
+      localStorage.setItem("mode", mode);
+      applyMode();
     }
-    modeMemory[mode] = snapshotMode();
-    await pauseCurrentPlayback();
-    mode = newMode;
-    localStorage.setItem("mode", mode);
-    applyMode();
-    // amig az eszközvalasztó (tartalek lejatszasi ut) nyitva van, ne
-    // dobjon at innen a bakelitre - maradjon a felhasznalo azon, amit
-    // eppen probal megoldani
-    const onDevView = $("v-dev").classList.contains("on");
-    await restoreModeSnapshot(modeMemory[mode], !onDevView);
+    // a mod-valto gombok mindig a lemezhez vigyenek, kiveve ha lejart/hianyzik a bejelentkezes
+    if (!MOCK && !(await getToken())) { try { authExpired(); } catch(e){} return; }
+    closeLyricsDrawer();
+    await restoreModeSnapshot(modeMemory[mode], true);
   };
 });
 $("b-random-toggle").onclick = toggleRandomMode;
