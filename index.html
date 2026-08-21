@@ -26,8 +26,6 @@
   --fill-ink:#16123A;
   --vinyl-a:#0d0b22;
   --vinyl-b:#14112c;
-  --vinyl-c:#2b2555;
-  --vinyl-d:#0b0919;
   --disc: 78vw;
   --font: "Bricolage Grotesque", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
@@ -44,8 +42,6 @@
   --fill-ink:#221F26;
   --vinyl-a:#161616;
   --vinyl-b:#232323;
-  --vinyl-c:#3c3c3c;
-  --vinyl-d:#0a0a0a;
 }
 @media (min-height:800px){ :root{ --disc: 72vw; } }
 
@@ -205,8 +201,8 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
   transform:rotateY(0deg);
 }
 .deck[data-revealed="1"] .disc-flip{transform:rotateY(180deg)}
-.disc-flip.flip-opening{animation:disc-flip-open .5s linear both}
-.disc-flip.flip-closing{animation:disc-flip-close .5s linear both}
+.disc-flip.flip-opening{animation:disc-flip-open var(--flip-dur, .5s) linear both}
+.disc-flip.flip-closing{animation:disc-flip-close var(--flip-dur, .5s) linear both}
 @keyframes disc-flip-open{
   0%   {transform:translateY(0)     scale(1)    rotateZ(0deg)    rotateY(0deg);   animation-timing-function:ease-in}
   20%  {transform:translateY(-12px) scale(1.08) rotateZ(0deg)    rotateY(45deg);  animation-timing-function:linear}
@@ -231,14 +227,23 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
   position:absolute;inset:0;border-radius:50%;
   background:
     conic-gradient(from 41deg, transparent 0deg 72deg, rgba(255,255,255,.11) 90deg, transparent 108deg 252deg, rgba(255,255,255,.11) 270deg, transparent 288deg 360deg),
-    repeating-radial-gradient(circle at 50% 50%, var(--vinyl-a) 0 1px, var(--vinyl-b) 1px 3px),
-    radial-gradient(circle at 34% 28%, var(--vinyl-c) 0%, var(--vinyl-d) 62%);
+    repeating-radial-gradient(circle at 50% 50%, var(--vinyl-a) 0 1px, var(--vinyl-b) 1px 3px);
   box-shadow:inset 0 0 0 1px rgba(246,236,221,.07);
   display:grid;place-items:center;
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
   transform:rotate(var(--spin, 0deg));
 }
 .vinyl-back{transform:rotateY(180deg) rotate(var(--spin, 0deg))}
+
+/* a lemez "éle": sima 2D réteg a lemez FÖLÖTT (a HTML-ben a disc-flip
+   után áll, hogy mindig felül legyen), nem vesz részt a 3D-transzfor-
+   mációban (elkerülve a backface-visibility renderelési furcsaságait) —
+   a fordulás/emelkedés/billenés együtt fut a valódi .disc-flip
+   animációval, mert ugyanannak a CSS animációnak a lejátszási idejét
+   olvassuk le képkockánként, lásd startEdgeTracking(). A koordináta-
+   rendszer fix 0–100-as viewBox, nincs szükség DOM-mérésre, mert
+   ugyanaz az inset van rajta, mint a disc-flip-en. */
+.disc-edge{position:absolute;inset:14px;pointer-events:none;overflow:visible}
 
 /* the blank label — the whole point of the screen */
 .label{
@@ -284,8 +289,7 @@ footer{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1
   position:absolute;inset:0;border-radius:50%;
   background:
     conic-gradient(from 41deg, transparent 0deg 72deg, rgba(255,255,255,.11) 90deg, transparent 108deg 252deg, rgba(255,255,255,.11) 270deg, transparent 288deg 360deg),
-    repeating-radial-gradient(circle at 50% 50%, var(--vinyl-a) 0 1px, var(--vinyl-b) 1px 3px),
-    radial-gradient(circle at 34% 28%, var(--vinyl-c) 0%, var(--vinyl-d) 62%);
+    repeating-radial-gradient(circle at 50% 50%, var(--vinyl-a) 0 1px, var(--vinyl-b) 1px 3px);
   box-shadow:inset 0 0 0 1px rgba(246,236,221,.07);
   display:grid;place-items:center;
   animation:hero-spin 12s linear infinite;
@@ -567,6 +571,9 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
           </div>
         </div>
       </div>
+      <svg class="disc-edge" viewBox="0 0 100 100" aria-hidden="true">
+        <path id="disc-edge-path" fill="#f06292"></path>
+      </svg>
     </div>
     <button class="pill ghost" id="b-lyrics" style="visibility:hidden">Dalszöveg</button>
     <p class="err" id="play-err"></p>
@@ -717,6 +724,11 @@ const REDIRECT_URI = location.origin + location.pathname;
 /* ?mock=1 a URL-ben: kihagyja a Spotify belépést/API-t, kitalált adatokkal
    fut a felület, hogy a UI-n lehessen dolgozni bejelentkezés nélkül. */
 const MOCK = new URLSearchParams(location.search).get("mock") === "1";
+
+/* ?slow=N a URL-ben: N-szeresére lassítja a lemez-flip animációját,
+   hogy képkockánként ellenőrizhető legyen (pl. ?slow=8) */
+const SLOWMO = Math.max(1, parseFloat(new URLSearchParams(location.search).get("slow")) || 1);
+if (SLOWMO > 1) document.documentElement.style.setProperty("--flip-dur", (0.5 * SLOWMO) + "s");
 
 const SCOPES = [
   "streaming",
@@ -1112,6 +1124,163 @@ function setVinylTransition(v){
   document.querySelectorAll(".vinyl").forEach(el => { el.style.transition = v; });
 }
 
+/* ── a lemez "éle" fordulás közben ──────────────────────────
+   Sima 2D SVG-réteg a .disc-flip alatt, NEM vesz részt a 3D-transzfor-
+   mációban. Mivel a réteg mérete/inset-je fixen ugyanaz, mint a
+   disc-flip-é, nincs szükség DOM-mérésre — a saját 0-100-as viewBox
+   koordinátarendszerében cx=cy=50, ry=50 mindig érvényes.
+
+   Az él egy kitöltött "szalag": a középvonala (bumpCx = 50 + 50·cos)
+   folytonosan csúszik át a lemez közepén, a szélessége két tényező
+   szorzata:
+   - a lemez FORGÁSÁTÓL (sin szög): lapos oldalnál (0°/180°) eltűnik,
+     élen állva (90°) éri el a maximumát;
+   - a szalag HOSSZA menti pozíciótól (φ): a tetején/alján nullára
+     keskenyedik (mint egy lencse), DE ez a keskenyedés is eltűnik,
+     amint a lemez pontosan élre fordul — ott a szalag egyenletes
+     vastagságú, szögletes végű téglalappá simul.
+   A szélesség-eltolás mindig VÍZSZINTES (nem a görbe normálisa mentén),
+   mert az utóbbi a szalag tetején/alján (ahol az érintő vízszintes)
+   "V" alakú glitchet okozna.
+
+   A forgás mellett a lemez emelkedését/nagyítását/billenését (translateY,
+   scale, rotateZ) is lekövetjük ugyanezekkel az arányokkal, hogy a
+   réteg pontosan együtt mozogjon a valódi .disc-flip animációval —
+   mindkettő ugyanannak a fut CSS animációnak a lejátszási idejét olvassa
+   le képkockánként (df.getAnimations()[0].currentTime). */
+const EDGE_STOPS  = [0, .20, .50, .78, .92, 1];
+const EDGE_EASES  = ["ease-in", "linear", "linear", "ease-out", "ease-out"];
+const EDGE_OPEN_ANGLES  = [0, 45, 100, 155, 188, 180];
+const EDGE_CLOSE_ANGLES = [180, 135, 80, 25, -8, 0];
+const EDGE_TY     = [0, -12, -18, -8, 2, 0];
+const EDGE_SCALE  = [1, 1.08, 1.14, 1.06, .97, 1];
+const EDGE_TILT_OPEN  = [0, 0, 0, 0, -2.5, 0];
+const EDGE_TILT_CLOSE = [0, 0, 0, 0, 2.5, 0];
+const EDGE_THICKNESS_RATIO = .12; // a szalag max. fél-szelessege a lemez sugarahoz (R=48) kepest
+const EDGE_SEGS = 24; // szalag-felbontas a hossza menten
+
+/* a CSS "ease-in"/"ease-out" kulcsszavak nem t² / t(2-t) parabolák,
+   hanem konkrét cubic-bezier görbék (cubic-bezier(.42,0,1,1) ill.
+   cubic-bezier(0,0,.58,1)) — ha ezt közelítéssel helyettesítjük, a
+   valódi CSS-animációval szemben apró, de a gyors/rövid szakaszoknál
+   (pl. a landolásnál lévő túllendülésnél) jól látható csúszás jön ki. */
+function cubicBezier(p1x, p1y, p2x, p2y){
+  const A = (a1, a2) => 1 - 3 * a2 + 3 * a1;
+  const B = (a1, a2) => 3 * a2 - 6 * a1;
+  const C = a1 => 3 * a1;
+  const bezX = t => ((A(p1x, p2x) * t + B(p1x, p2x)) * t + C(p1x)) * t;
+  const bezY = t => ((A(p1y, p2y) * t + B(p1y, p2y)) * t + C(p1y)) * t;
+  const bezXDeriv = t => 3 * A(p1x, p2x) * t * t + 2 * B(p1x, p2x) * t + C(p1x);
+  function solveT(x){
+    let t = x;
+    for (let i = 0; i < 8; i++) {
+      const dx = bezX(t) - x;
+      if (Math.abs(dx) < 1e-6) return t;
+      const d = bezXDeriv(t);
+      if (Math.abs(d) < 1e-6) break;
+      t -= dx / d;
+    }
+    let lo = 0, hi = 1;
+    t = x;
+    for (let i = 0; i < 20; i++) {
+      t = (lo + hi) / 2;
+      if (bezX(t) < x) lo = t; else hi = t;
+    }
+    return t;
+  }
+  return x => bezY(solveT(x));
+}
+const CSS_EASE_IN = cubicBezier(.42, 0, 1, 1);
+const CSS_EASE_OUT = cubicBezier(0, 0, .58, 1);
+function edgeEase(name, t){
+  if (name === "ease-in") return CSS_EASE_IN(t);
+  if (name === "ease-out") return CSS_EASE_OUT(t);
+  return t;
+}
+function interpAt(fraction, values){
+  fraction = Math.min(Math.max(fraction, 0), 1);
+  let i = 0;
+  while (i < EDGE_STOPS.length - 2 && fraction > EDGE_STOPS[i + 1]) i++;
+  const segStart = EDGE_STOPS[i], segEnd = EDGE_STOPS[i + 1];
+  const localT = segEnd > segStart ? (fraction - segStart) / (segEnd - segStart) : 1;
+  const eased = edgeEase(EDGE_EASES[i], localT);
+  return values[i] + (values[i + 1] - values[i]) * eased;
+}
+function buildEdgeRibbonPath(rotDeg){
+  const cx = 50, cy = 50, R = 50; // R = a lemez tenyleges sugara ebben a koordinatarendszerben
+  const theta = rotDeg * Math.PI / 180;
+  const c = Math.cos(theta); // elojeles — SOSEM valtjuk kulon elojelre, hogy folytonos maradjon
+  const taperAmt = Math.abs(c);
+  const stateFactor = Math.abs(Math.sin(theta));
+  const maxW = EDGE_THICKNESS_RATIO * R; // teljes vastagsag, nem fel-vastagsag
+
+  // Tavol a 90 foktol (taperAmt kozel 1) a szalag KULSO pereme pontosan
+  // a lemez sajat sziluettjen ul, a vastagsag teljesen befele no. Pontosan
+  // 90-nel (taperAmt=0, elen all a lemez) nincs ertelmes "kulso/belso"
+  // oldal, ott szimmetrikus, kozepre allo teglalap a helyes.
+  //
+  // A ket szel: ox + half*(1-c) es ox - half*(1+c). A tavolsaguk MINDIG
+  // pontosan w (=2*half), fuggetlenul c elojeletől — igy a ket hatarvonal
+  // sose cserelhet sorrendet/metszheti egymast (korabban ez az elojel-
+  // fuggo kevereskeplet miatt 120° felett bekovetkezett, es "osszecsipodo"
+  // szalagkent latszott a bal oldalon).
+  const left = [], right = [];
+  for (let i = 0; i <= EDGE_SEGS; i++) {
+    const phi = -Math.PI / 2 + (i / EDGE_SEGS) * Math.PI;
+    const ox = cx + R * c * Math.cos(phi);
+    const oy = cy + R * Math.sin(phi);
+    const wPhiFactor = (1 - taperAmt) + taperAmt * Math.abs(Math.cos(phi));
+    const w = maxW * stateFactor * wPhiFactor;
+    const half = w / 2;
+    left.push([ox + half * (1 - c), oy]);
+    right.push([ox - half * (1 + c), oy]);
+  }
+  let d = `M ${left[0][0]} ${left[0][1]}`;
+  for (let i = 1; i < left.length; i++) d += ` L ${left[i][0]} ${left[i][1]}`;
+  for (let i = right.length - 1; i >= 0; i--) d += ` L ${right[i][0]} ${right[i][1]}`;
+  return d + " Z";
+}
+function drawDiscEdge(thetaDeg){
+  const e = document.getElementById("disc-edge-path");
+  if (!e) return;
+  e.setAttribute("d", buildEdgeRibbonPath(thetaDeg));
+}
+function clearDiscEdge(){
+  const e = document.getElementById("disc-edge-path");
+  if (e) e.setAttribute("d", "M 0 0 Z");
+  const layer = document.querySelector(".disc-edge");
+  if (layer) layer.style.transform = "";
+}
+let edgeRAF = null;
+function startEdgeTracking(df, isOpening){
+  cancelEdgeTracking();
+  const dur = 500 * SLOWMO; // ms, egyezik a --flip-dur-ral
+  const angles = isOpening ? EDGE_OPEN_ANGLES : EDGE_CLOSE_ANGLES;
+  const tilts  = isOpening ? EDGE_TILT_OPEN : EDGE_TILT_CLOSE;
+  const layer = document.querySelector(".disc-edge");
+  function tick(){
+    if (!df.classList.contains("flip-opening") && !df.classList.contains("flip-closing")) {
+      cancelEdgeTracking();
+      return;
+    }
+    const anim = df.getAnimations().find(a => a.playState === "running" || a.playState === "paused");
+    if (anim && layer) {
+      const fraction = (anim.currentTime || 0) / dur;
+      drawDiscEdge(interpAt(fraction, angles));
+      const ty = interpAt(fraction, EDGE_TY);
+      const sc = interpAt(fraction, EDGE_SCALE);
+      const tilt = interpAt(fraction, tilts);
+      layer.style.transform = `translateY(${ty}px) scale(${sc}) rotate(${tilt}deg)`;
+    }
+    edgeRAF = requestAnimationFrame(tick);
+  }
+  edgeRAF = requestAnimationFrame(tick);
+}
+function cancelEdgeTracking(){
+  if (edgeRAF) { cancelAnimationFrame(edgeRAF); edgeRAF = null; }
+  clearDiscEdge();
+}
+
 /* felfedés/visszafedés: emeléssel-billenéssel megforgatja a teljes bakelitet;
    nem használjuk a csendes állapot-visszaállításoknál (reset, mód-váltás) —
    ott ugrás kell animáció nélkül, ezt a data-revealed direkt állítása adja */
@@ -1123,8 +1292,10 @@ function setDiscRevealed(isRevealed){
   df.classList.remove("flip-opening", "flip-closing");
   void df.offsetWidth;
   df.classList.add(isRevealed ? "flip-opening" : "flip-closing");
+  startEdgeTracking(df, isRevealed);
   df.addEventListener("animationend", function onEnd(){
     df.classList.remove("flip-opening", "flip-closing");
+    cancelEdgeTracking();
     df.removeEventListener("animationend", onEnd);
   });
 }
@@ -1174,6 +1345,7 @@ function icon(){
 function reset(){
   $("deck").dataset.revealed = "0";
   $("disc-flip").classList.remove("flip-opening", "flip-closing");
+  cancelEdgeTracking();
   revealedTrackId = null;
   $("prog").style.strokeDasharray = "0 999";
   $("disc-flip").style.setProperty("--spin", "0deg");
@@ -1251,6 +1423,7 @@ async function restoreModeSnapshot(snap, allowNavigate = true){
   $("b-lyrics").style.visibility = "hidden";
   $("deck").dataset.revealed = snap.revealedFlag ? "1" : "0";
   $("disc-flip").classList.remove("flip-opening", "flip-closing");
+  cancelEdgeTracking();
   if (snap.revealedFlag) {
     $("r-yr").textContent = snap.yrText;
     $("r-ti").textContent = snap.revealed.huTitle || snap.revealed.title;
