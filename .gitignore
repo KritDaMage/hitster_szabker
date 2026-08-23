@@ -1,4 +1,5 @@
 CLAUDE.md
-/source
+/source/*
 /tools/output
 /.vscode
+!/source/Worship.txt
