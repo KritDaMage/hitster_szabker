@@ -1,0 +1,12 @@
+{
+  "title": "Úr Jézus, jöjj!",
+  "original_title": "Come Jesus, Come",
+  "author": "Bryan Fowler, Stephen McWhirter, Hank Bentley, Tara McWhirter",
+  "translator": "Szabóné Rácz Éva",
+  "sections": [
+    { "type": "verse", "text": "Hívlak, Uram, imám Hozzád száll:\nÚr Jézus, jöjj, a szívem kiált.\nHa úgy érezném, összetörnék,\nMegragadom az élő reményt." },
+    { "type": "chorus", "text": "Úr Jézus, jöjj, olyan rég várunk Rád,\nHogy majd visszatérsz, meggyógyul a szív,\nMeglátunk Téged!\nÚgy vágyódunk Rád, mosd a szívünket át!\nJöjj közel hát, halld meg imám:\nÚr Jézus, jöjj!\nÚr Jézus, jöjj!" },
+    { "type": "verse", "text": "Nem lesz több harc, lehull minden lánc.\nMikor visszatérsz, a szívem már kész.\nEgyek leszünk, nincs különbség,\nEgyütt zengjük Jézus nevét!" },
+    { "type": "verse", "text": "Egy nap visszatér és a szemedbe néz.\nRagadd meg ma a jelenlétét! (nagy kegyelmét)\nTedd le terhed, kegyelme elég, (Jézus elé)\nBűneid elmosta a kereszten rég.\n(Elmosta bűneid...)" }
+  ]
+}

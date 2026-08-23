@@ -1,0 +1,18 @@
+{
+  "title": "Áldjad őt én lelkem",
+  "original_title": "Praise",
+  "author": "Brandon Lake, Chandler Moore, Chris Brown, Cody Carnes, Pat Barrett, Steven Furtick",
+  "translator": "Perjesi-Sangala Felicie",
+  "sections": [
+    { "type": "intro", "text": "Minden, ami csak lélegzik,\nDicsérje Őt, dicsérje Őt!" },
+    { "type": "verse", "text": "A hegyeknek csúcsán, s a völgyeknek mélyén,\nMinden időben én áldom nevét.\nHa tengerhez érek, szorít ellenségem,\nMinden időben én áldom nevét." },
+    { "type": "pre-chorus", "text": "Amíg csak élek, lelkemben új dal zeng:" },
+    { "type": "chorus", "text": "Ooooooo, Áldjad Őt, én lelkem!" },
+    { "type": "verse", "text": "Ha feldúlt a lelkem vagy boldog vagyok,\nTéged emel fel minden dalom.\nA hangom a fegyver, már nem kell a csend,\nA dicséret hangja falakat rombol le." },
+    { "type": "pre-chorus", "text": "A szívemben ég, hogy Istenem él,\nCsendben hogy maradhatnék?" },
+    { "type": "chorus", "text": "Ooooooo, Áldjad Őt, én lelkem!" },
+    { "type": "bridge", "text": "Dicsérem, mert él, legyőzte az éjt,\nDicsérem, mert övé a föld és az ég,\nDicsérem, mert jó Örökkévaló,\nDicsérem, mert őnála nincsen méltóbb." },
+    { "type": "bridge", "text": "Dicsérem, mert él, legyőzte az éjt,\nDicsérem, mert övé a föld és az ég,\nDicsérem, mert jó Örökkévaló,\nDicsérem, mert őnála nincsen méltóbb." },
+    { "type": "outro", "text": "Minden, ami csak lélegzik,\nDicsérje Őt, dicsérje Őt!" }
+  ]
+}

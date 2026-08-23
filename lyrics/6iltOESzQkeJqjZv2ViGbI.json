@@ -1,0 +1,18 @@
+{
+  "title": "Dicsőség királya",
+  "original_title": "King of Glory",
+  "author": "Todd Dulaney",
+  "translator": "Perjesi-Sangala Felicie",
+  "sections": [
+    { "type": "verse", "text": "Minden nép az Isten előtt hódol,\nMinden térd a Király előtt meghajol." },
+    { "type": "pre-chorus", "text": "Ó, dicsérjük Őt és áldjuk Őt!" },
+    { "type": "chorus", "text": "Dicsőség királya, tölts be most,\nJöjj, Urunk, vágyunk Rád,\nÓ, úgy vágyunk Rád!" },
+    { "type": "verse", "text": "Minden nép az Isten előtt hódol,\nMinden térd a Király előtt meghajol." },
+    { "type": "pre-chorus", "text": "Ó, dicsérjük Őt, áldjuk Őt,\nEmeljük Nevét minden név fölé!" },
+    { "type": "chorus", "text": "Dicsőség királya, tölts be most,\nJöjj, Urunk, vágyunk Rád,\nÓ, úgy vágyunk Rád!" },
+    { "type": "bridge", "text": "Neked zeng Halleluja itt a Földön lent,\nNeked zeng Halleluja ott a Mennyben fent.\nNeked zeng Halleluja itt a Földön lent,\nNeked zeng Halleluja ott a Mennyben fent.\nNeked zeng Halleluja itt a Földön lent,\nNeked zeng Halleluja, zeng Halleluja,\nZeng Halleluja, zeng Halleluja." },
+    { "type": "chorus", "text": "Dicsőség királya, tölts be most,\nJöjj, Urunk, vágyunk Rád,\nÓ, úgy vágyunk Rád!" },
+    { "type": "bridge", "text": "Dicsőséged jöjjön el! Gyógyításod jöjjön el!\nBékességed jöjjön el! Királyságod jöjjön el!\nKirályságod jöjjön el..." },
+    { "type": "tag", "text": "Dicsőség királya!\nZeng Halleluja!" }
+  ]
+}

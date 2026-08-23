@@ -1,0 +1,15 @@
+{
+  "title": "A folyó árad",
+  "original_title": "Dance In The Rain (Jump And Dance)",
+  "author": "Todd Dulaney",
+  "translator": "Perjesi-Sangala Felicie",
+  "sections": [
+    { "type": "verse", "text": "Ez a folyó árad,\nSoha ki nem szárad,\nÁradj ránk, áradj ránk!\nÁttöri a gátat,\nSoha ki nem szárad,\nÁradj ránk, áradj ránk!" },
+    { "type": "chorus", "text": "Az erőd árad ránk, nyitva áll a szívünk,\nA fényed árad ránk, nyitva áll a szívünk,\nA lelked árad ránk, nyitva áll a szívünk,\nÁradj ránk, áradj ránk!" },
+    { "type": "verse", "text": "Ez a folyó árad,\nSoha ki nem szárad,\nÁradj ránk, áradj ránk!\nÁttöri a gátat,\nSoha ki nem szárad,\nÁradj ránk, áradj ránk!" },
+    { "type": "chorus", "text": "Az erőd árad ránk, nyitva áll a szívünk,\nA fényed árad ránk, nyitva áll a szívünk,\nA lelked árad ránk, nyitva áll a szívünk,\nÁradj ránk, áradj ránk!" },
+    { "type": "bridge", "text": "Táncolj, mert méltó rá,\nTapsolj, mert méltó rá!" },
+    { "type": "chorus", "text": "Az erőd árad ránk, nyitva áll a szívünk,\nA fényed árad ránk, nyitva áll a szívünk,\nA lelked árad ránk, nyitva áll a szívünk,\nÁradj ránk, áradj ránk!" },
+    { "type": "bridge", "text": "(Áradj) Áradj ránk, (áradj) áradj ránk,\n(Áradj) Áradj ránk,\n(Áradj ránk) Áradj ránk!\nÁradjon a folyó, áradjon a folyó,\nÁradjon a folyó, áradjon a folyó." }
+  ]
+}

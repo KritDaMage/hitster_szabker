@@ -1,0 +1,14 @@
+{
+  "title": "A Golgotára gondolok",
+  "original_title": "O Praise The Name (Anástasis)",
+  "author": "Dean Ussher, Marty Sampson, Benjamin Hastings",
+  "translator": "Csóka Dávid, Németh Katica, Stanzel Benjámin",
+  "sections": [
+    { "type": "verse", "text": "A Golgotára gondolok,\nHol Jézus vére értem folyt.\nLátom sebét, kezén s lábán,\nMegváltómat a keresztfán." },
+    { "type": "verse", "text": "Könnyel testét eláztatták,\nJózsef sírjába fektették.\nBekötözték és elhagyták,\nEgyedül bent a Messiást." },
+    { "type": "chorus", "text": "Ó, dicsérjük az Úr nevét,\nDicsérjük most és örökké,\nVég nélkül zeng az énekünk,\nUrunk, ó Istenünk!" },
+    { "type": "verse", "text": "Harmadnapon hajnal hasadt,\nFeltámadott a Menny fia.\nHalál, mondd csak, hol a fullánk?\nAngyalkar zeng: Jézus Király!" },
+    { "type": "verse", "text": "És visszatér majd fehérben,\nRagyogva áttörve az éjt,\nFeltámadok a szentekkel,\nSzemem Jézus arcán pihen." },
+    { "type": "chorus", "text": "Ó, dicsérjük az Úr nevét,\nDicsérjük most és örökké,\nVég nélkül zeng az énekünk,\nUrunk, ó Istenünk!" }
+  ]
+}

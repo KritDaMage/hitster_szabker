@@ -1,0 +1,13 @@
+{
+  "title": "A kegyelmed elég",
+  "original_title": "Your Grace Is Enough",
+  "author": "Matt Maher, Chris Tomlin",
+  "translator": "Marika Payne",
+  "sections": [
+    { "type": "verse", "text": "Hűséges vagy, oh Istenünk,\nA harcokban nem nekünk kell győznünk,\nCsendes vízhez terelgetsz és irgalmadhoz,\nNem választ minket semmi el." },
+    { "type": "pre-chorus", "text": "Most itt áll a néped, vár Rád, mint gyermek,\nKi várja, hogy lássa Atyját." },
+    { "type": "chorus", "text": "A kegyelmed elég, a kegyelmed elég,\nA kegyelmed elég nekem." },
+    { "type": "verse", "text": "Féltő és igaz Isten vagy,\nA gyengék által vezetsz másokat,\nA megváltásnak énekére bátorítasz,\nA néped együtt énekel." },
+    { "type": "chorus", "text": "A kegyelmed elég, a mennyből jössz közénk,\nA kegyelmed elég nekem.\nA szerelmed befed, elég a kegyelmed,\nA kegyelmed elég nekem, nekem." }
+  ]
+}

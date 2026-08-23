@@ -138,7 +138,7 @@ main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;paddin
 #v-lyrics{
   display:flex !important;flex-direction:column;align-items:stretch;gap:12px;
   position:fixed;top:0;right:0;bottom:0;width:100%;max-width:640px;
-  background:var(--ink);z-index:21;
+  background:var(--ink);z-index:21;overflow:hidden;
   padding:max(24px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));
   transform:translateX(100%);transition:transform .25s ease;
 }
@@ -168,12 +168,20 @@ main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;paddin
 }
 .rules-panel.open{transform:translateX(0);box-shadow:-12px 0 40px rgba(0,0,0,.4)}
 .rules-close-row{flex:0 0 auto;display:flex;justify-content:space-between}
-.rules-scroll{flex:1 1 auto;min-height:0;overflow-y:auto}
-.rules-panel h2{margin:0 0 4px}
-.rules-sub{color:var(--dim);font-size:13px;margin:0 0 18px}
-.rules-panel h3{font-size:14px;margin:18px 0 6px}
-.rules-panel p{font-size:14px;line-height:1.5;margin:0}
-.rules-panel ol{font-size:14px;line-height:1.5;margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.rules-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:28px}
+.rules-panel h2{margin:0}
+.rules-sub{color:var(--dim);font-size:13px;margin:0}
+.rules-group-title{color:var(--dim);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;margin:0}
+.rule-card{display:flex;align-items:center;gap:18px}
+.rule-card.icon-left{flex-direction:row-reverse}
+.rule-card-icon{flex:0 0 auto;width:clamp(88px,26vw,132px);height:clamp(88px,26vw,132px);color:var(--paper);opacity:.92}
+.rule-card-icon svg{width:100%;height:100%;display:block}
+.rule-card-body{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:6px}
+.rule-card-title{font-size:15px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--hot);margin:0}
+.rule-card-body p{margin:0;font-size:14px;line-height:1.55}
+@media (max-width:420px){
+  .rule-card, .rule-card.icon-left{flex-direction:column;align-items:flex-start;gap:10px}
+}
 .edit-panel{
   width:1400px;max-width:95vw;height:80vh;max-height:90vh;min-width:320px;min-height:200px;
   background:var(--ink-lift);border-radius:16px;padding:16px;
@@ -334,6 +342,7 @@ h1{font-size:clamp(26px,7.6vw,34px);font-weight:800;letter-spacing:-.035em;line-
 code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   background:var(--ink-lift);padding:3px 6px;border-radius:5px;word-break:break-all;color:var(--paper)}
 .err{color:var(--hot);font-size:14px;text-align:center;line-height:1.5;max-width:34ch;min-height:2.4em}
+#playlist-err{min-height:auto;max-width:none;text-align:left;font-size:12px}
 .devs{display:flex;flex-direction:column;gap:8px;width:100%;max-width:420px;margin:0 auto}
 .catalog-search{width:100%;max-width:420px;margin:0 auto;padding:14px 16px;border-radius:12px;
   background:var(--ink-lift);color:var(--paper);font:inherit;font-size:15px;border:none;outline:none;
@@ -360,10 +369,12 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 #v-catalog.on{align-items:stretch;align-self:stretch}
 #v-catalog .lyrics-scroll{max-width:900px;scrollbar-gutter:stable}
 .lyrics-scroll{width:100%;max-width:640px;margin:0 auto;flex:1 1 auto;min-height:0;overflow-y:auto;
-  display:flex;flex-direction:column;gap:20px;padding:4px 4px 20px}
+  overscroll-behavior:contain;padding:0 4px 20px}
+.lyrics-scroll > * + *{margin-top:20px}
 .lyrics-head{display:flex;flex-direction:column;gap:6px;padding-bottom:16px;border-bottom:1px solid rgba(var(--line-rgb),.12);
-  position:sticky;top:0;background:var(--ink);z-index:1}
-.catalog-top{position:sticky;top:0;background:var(--ink);z-index:1;display:flex;flex-direction:column;gap:20px;padding-bottom:4px}
+  position:sticky;top:0;background:var(--ink);z-index:1;transform:translateZ(0)}
+.catalog-top{position:sticky;top:0;background:var(--ink);z-index:1;display:flex;flex-direction:column;gap:20px;padding-bottom:4px;
+  transform:translateZ(0)}
 .lyrics-player{display:flex;align-items:center;gap:12px;margin-bottom:4px}
 .lyrics-player-btn{width:40px;height:40px;border-radius:50%;background:var(--hot);color:var(--hot-ink);
   display:grid;place-items:center;flex:0 0 auto}
@@ -376,6 +387,16 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .lyrics-meta{display:flex;flex-direction:column;gap:2px;margin-top:14px}
 .lyrics-meta-line{font-size:13px;color:var(--dim);line-height:1.5}
 .lyrics-meta-line b{font-weight:600}
+.lyrics-video-wrap{padding-top:16px;border-top:1px solid rgba(var(--line-rgb),.12)}
+.lyrics-video{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:16/9;background:var(--ink-lift)}
+.lyrics-video img{width:100%;height:100%;object-fit:cover;display:block}
+.lyrics-video iframe{width:100%;height:100%;border:0;display:block}
+.lyrics-video-btn{position:absolute;inset:0;width:100%;height:100%;display:grid;place-items:center;
+  background:rgba(0,0,0,.25);border:0;cursor:pointer}
+.lyrics-video-btn span{width:52px;height:52px;border-radius:50%;background:var(--hot);color:var(--hot-ink);
+  display:grid;place-items:center}
+.lyrics-video-btn span svg{width:22px;height:22px;fill:currentColor;margin-left:3px}
+.lyrics-video-btn:active span{transform:scale(.93)}
 .lyrics-pager{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px}
 .lyrics-pager-btn{width:32px;height:32px;border-radius:50%;background:var(--ink-lift);color:var(--paper);
   display:grid;place-items:center;font-size:18px;font-weight:700;flex:0 0 auto}
@@ -462,22 +483,121 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
       <h2>Játékszabályok</h2>
       <p class="rules-sub">A klasszikus Hitster menete, a mi verziónkra szabva.</p>
 
-      <h3>Cél</h3>
-      <p>A dalokat időrendbe kell rakni — ki tudja a legjobban, melyik szám mikor jelent meg?</p>
+      <div class="rule-card">
+        <div class="rule-card-icon">
+          <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 66h56" stroke-dasharray="1 9"/>
+            <circle cx="20" cy="66" r="11"/>
+            <circle cx="20" cy="66" r="3" fill="currentColor" stroke="none"/>
+            <circle cx="48" cy="66" r="11"/>
+            <circle cx="48" cy="66" r="3" fill="currentColor" stroke="none"/>
+            <path d="M66 52l16 14-16 14"/>
+          </svg>
+        </div>
+        <div class="rule-card-body">
+          <h3 class="rule-card-title">Cél</h3>
+          <p>A dalokat időrendbe kell rakni — ki tudja a legjobban, melyik szám mikor jelent meg?</p>
+        </div>
+      </div>
 
-      <h3>Egy kör</h3>
-      <ol>
-        <li>A soron lévő játékos beolvassa egy kártya QR-kódját. Elindul a dal, de a képernyőn semmi nem árulja el, mi szól — se cím, se évszám.</li>
-        <li>Amíg szól, a játékos eldönti, hova illik a dal a saját, már kirakott idővonalán: korábbi vagy későbbi számok közé.</li>
-        <li>Miután letette a kártyát, jöhet a felfedés: a lemez <b>fekete szélére</b> kattintva előjön a cím (magyar és eredeti), a lemez <b>közepére</b> kattintva pedig az évszám.</li>
-        <li>Ha a kártya jó helyre került az idővonalon, ott is marad; ha nem, félrekerül.</li>
-      </ol>
+      <h3 class="rules-group-title">Egy kör</h3>
 
-      <h3>Győzelem</h3>
-      <p>Az nyer, aki elsőként összerak 10 helyesen elhelyezett kártyát az idővonalán — vagy amennyit a társaság előre megbeszélt.</p>
+      <div class="rule-card">
+        <div class="rule-card-icon">
+          <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 30V18a4 4 0 0 1 4-4h12"/>
+            <path d="M82 30V18a4 4 0 0 0-4-4H66"/>
+            <path d="M14 66v12a4 4 0 0 0 4 4h12"/>
+            <path d="M82 66v12a4 4 0 0 1-4 4H66"/>
+            <rect x="30" y="30" width="36" height="36" rx="3"/>
+            <rect x="37" y="37" width="9" height="9" rx="1.5" fill="currentColor" stroke="none"/>
+            <rect x="50" y="37" width="9" height="9" rx="1.5" fill="currentColor" stroke="none"/>
+            <rect x="37" y="50" width="9" height="9" rx="1.5" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div class="rule-card-body">
+          <h3 class="rule-card-title">1. Beolvasás</h3>
+          <p>A soron lévő játékos beolvassa egy kártya QR-kódját. Elindul a dal, de a képernyőn semmi nem árulja el, mi szól — se cím, se évszám.</p>
+        </div>
+      </div>
 
-      <h3>Szabker dicsi mód</h3>
-      <p>QR-kódos dicsi játéknál a fizikai kártya hátoldalán már ott van az évszám és a cím, ezért ott a lemez nem fordul/fedi fel újra semmit — csak a Dalszöveg gomb segít, ha van hozzá felvéve szöveg. A "QR nélkül" kapcsolóval a kártyák helyett a katalógusból jön egy véletlen dal.</p>
+      <div class="rule-card icon-left">
+        <div class="rule-card-icon">
+          <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 78h76"/>
+            <circle cx="26" cy="78" r="2.8" fill="currentColor" stroke="none"/>
+            <circle cx="70" cy="78" r="2.8" fill="currentColor" stroke="none"/>
+            <rect x="14" y="58" width="22" height="14" rx="3"/>
+            <rect x="60" y="58" width="22" height="14" rx="3"/>
+            <rect x="35" y="14" width="26" height="32" rx="4"/>
+            <path d="M48 48v14"/>
+            <path d="M41 58l7 7 7-7"/>
+          </svg>
+        </div>
+        <div class="rule-card-body">
+          <h3 class="rule-card-title">2. Elhelyezés</h3>
+          <p>Amíg szól, a játékos eldönti, hova illik a dal a saját, már kirakott idővonalán: korábbi vagy későbbi számok közé.</p>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-card-icon">
+          <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="42" cy="50" r="28"/>
+            <circle cx="42" cy="50" r="9" fill="currentColor" stroke="none"/>
+            <path d="M70 30a28 28 0 0 1 4 30"/>
+            <path d="M76 50l4 11-11-3"/>
+          </svg>
+        </div>
+        <div class="rule-card-body">
+          <h3 class="rule-card-title">3. Felfedés</h3>
+          <p>Miután letette a kártyát, jöhet a felfedés: a lemez <b>fekete szélére</b> kattintva előjön a cím (magyar és eredeti), a lemez <b>közepére</b> kattintva pedig az évszám.</p>
+        </div>
+      </div>
+
+      <div class="rule-card icon-left">
+        <div class="rule-card-icon">
+          <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="34" cy="44" r="22"/>
+            <path d="M23 45l8 8 16-18"/>
+            <path d="M70 26l16 32M86 26l-16 32"/>
+          </svg>
+        </div>
+        <div class="rule-card-body">
+          <h3 class="rule-card-title">4. Eredmény</h3>
+          <p>Ha a kártya jó helyre került az idővonalon, ott is marad; ha nem, félrekerül.</p>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-card-icon">
+          <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M32 16h32v20a16 16 0 0 1-32 0V16z"/>
+            <path d="M32 24H18a10 10 0 0 0 14 16"/>
+            <path d="M64 24h14a10 10 0 0 1-14 16"/>
+            <path d="M48 52v12"/>
+            <path d="M40 68h16l2 12H38l2-12z"/>
+          </svg>
+        </div>
+        <div class="rule-card-body">
+          <h3 class="rule-card-title">Győzelem</h3>
+          <p>Az nyer, aki elsőként összerak 10 helyesen elhelyezett kártyát az idővonalán — vagy amennyit a társaság előre megbeszélt.</p>
+        </div>
+      </div>
+
+      <div class="rule-card icon-left">
+        <div class="rule-card-icon">
+          <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M36 64V20l40-8v40"/>
+            <circle cx="28" cy="68" r="10"/>
+            <circle cx="68" cy="60" r="10"/>
+          </svg>
+        </div>
+        <div class="rule-card-body">
+          <h3 class="rule-card-title">Szabker dicsi mód</h3>
+          <p>QR-kódos dicsi játéknál a fizikai kártya hátoldalán már ott van az évszám és a cím, ezért ott a lemez nem fordul/fedi fel újra semmit — csak a Dalszöveg gomb segít, ha van hozzá felvéve szöveg. A "QR nélkül" kapcsolóval a kártyák helyett a katalógusból jön egy véletlen dal.</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -505,6 +625,16 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   <button class="menu-item" data-mode="szabker">Szabker dicsi</button>
 
   <div class="menu-divider"></div>
+
+  <div class="menu-catalog" id="menu-general">
+    <h2>Általános</h2>
+    <label class="switch-row">
+      <span>QR nélkül</span>
+      <button type="button" class="switch" id="b-general-random-toggle" role="switch" aria-checked="false"><span class="switch-knob"></span></button>
+    </label>
+    <input type="url" class="catalog-search" id="playlist-url-input" placeholder="Publikus Spotify lejátszási lista linkje" autocomplete="off">
+    <p class="err" id="playlist-err"></p>
+  </div>
 
   <div class="menu-catalog" id="menu-catalog">
     <h2>Dicsi</h2>
@@ -700,6 +830,10 @@ let wakeLock = null;
 let curDur = 0;
 let mode = localStorage.getItem("mode") || "general";
 let randomMode = localStorage.getItem("randomMode") === "1";
+let generalRandomMode = localStorage.getItem("generalRandomMode") === "1";
+let playlistTrackIds = null;      // az utoljára betöltött playlist track ID-i
+let playlistTrackIdsFor = null;   // melyik playlist ID-hez tartozik a fenti cache
+let playlistPlayedIds = new Set(); // ismétlés nélküli húzáshoz: mit adtunk már ki ebből a listából
 const systemPrefersLight = window.matchMedia && matchMedia("(prefers-color-scheme: light)").matches;
 let theme = localStorage.getItem("theme") || (systemPrefersLight ? "light" : "dark");
 let dragging = false;
@@ -1626,6 +1760,59 @@ function metaLine(label, value){
   return p;
 }
 
+/* YouTube-videó a dalszöveghez: fejlesztői mód (?mock=1) alatt kattintásra töltődik be,
+   liveban egyáltalán nem renderelődik — lásd CLAUDE.md / lyrics/README.md */
+/* elfogadja a csupasz ID-t, egy teljes linket, és a YouTube "adott ponttól"
+   linkjében/megosztásában szereplő ?t= paramétert (másodperc vagy 1h2m3s alak) is */
+function parseYoutube(input){
+  if (!input) return null;
+  const s = String(input).trim();
+  const urlMatch = s.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+  const bareMatch = !urlMatch && s.match(/^([\w-]{11})/);
+  const id = urlMatch ? urlMatch[1] : (bareMatch ? bareMatch[1] : null);
+  if (!id) return null;
+  let start = 0;
+  const tMatch = s.match(/[?&#]t=([0-9hms]+)/i) || s.match(/[?&]start=(\d+)/i);
+  if (tMatch) {
+    if (/^\d+$/.test(tMatch[1])) {
+      start = parseInt(tMatch[1], 10);
+    } else {
+      const hms = tMatch[1].match(/(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/i);
+      start = (parseInt(hms[1] || 0, 10) * 3600) + (parseInt(hms[2] || 0, 10) * 60) + parseInt(hms[3] || 0, 10);
+    }
+  }
+  return { id, start };
+}
+function youtubeVideoBlock(id, start){
+  const holder = document.createElement("div");
+  holder.className = "lyrics-video-wrap";
+  const box = document.createElement("div");
+  box.className = "lyrics-video";
+  const img = document.createElement("img");
+  img.src = "https://img.youtube.com/vi/" + id + "/hqdefault.jpg";
+  img.alt = "";
+  img.loading = "lazy";
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "lyrics-video-btn";
+  btn.setAttribute("aria-label", "Videó lejátszása");
+  btn.innerHTML = '<span><svg viewBox="0 0 24 24"><path d="' + PLAY_ICON_PATH + '"/></svg></span>';
+  btn.onclick = () => {
+    // youtube-nocookie.com néhány videónál (pl. kiadói/VEVO-tartalom) "A videó nem áll
+    // rendelkezésre" hibát ad, miközben a sima domain ugyanazt lejátssza — ezért ez utóbbi
+    const frame = document.createElement("iframe");
+    frame.src = "https://www.youtube.com/embed/" + id + "?autoplay=1" + (start ? "&start=" + start : "");
+    frame.allow = "autoplay; encrypted-media; picture-in-picture";
+    frame.allowFullscreen = true;
+    frame.title = "YouTube videó";
+    box.innerHTML = "";
+    box.appendChild(frame);
+  };
+  box.appendChild(img);
+  box.appendChild(btn);
+  holder.appendChild(box);
+  return holder;
+}
 function renderLyrics(){
   const wrap = $("lyrics-scroll");
   wrap.innerHTML = "";
@@ -1639,8 +1826,19 @@ function renderLyrics(){
   if (lyricsVersionIndex >= versions.length) lyricsVersionIndex = 0;
   const active = versions[lyricsVersionIndex] || null;
 
-  const huTitle = (active && active.title) || revealed.huTitle;
-  const originalTitle = (active && active.original_title) || revealed.title;
+  // original_title a titles.json-ból jön elsőként (lásd CLAUDE.md) — az eredeti
+  // (angol) cím a dal tulajdonsága, nem a fordításé, tehát nem térhet el
+  // fordításonként, és a titles.json a hiteles forrás rá; a lyrics-fájl saját
+  // original_title mezője csak azoknál a (+ jelű, de * nélküli) daloknál esik
+  // latba, amikhez nincs titles.json bejegyzés.
+  // A magyar title viszont a FORDÍTÁS tulajdonsága: ha egy dalnak több
+  // (versions) fordítása van, mindegyiknek lehet — és gyakran van is — más
+  // magyar címe, ezért ott a lyrics-fájl aktív verziójáé az elsőbbség, a
+  // titles.json csak akkor esik latba, ha az aktív verzió nem ad meg sajátot.
+  const tid = lyricsPlayerTrackId || trackId;
+  const override = (tid && titlesCache) ? titlesCache[tid] : null;
+  const huTitle = (active && active.title) || (override && override.hu) || revealed.huTitle;
+  const originalTitle = (override && override.title) || (active && active.original_title) || revealed.title;
   const author = (active && active.author) || revealed.artist;
 
   const head = document.createElement("div");
@@ -1751,6 +1949,10 @@ function renderLyrics(){
     empty.style.color = "var(--dim)";
     empty.textContent = "Nincs dalszöveg.";
     wrap.appendChild(empty);
+  }
+  if (MOCK && active && active.youtube) {
+    const yt = parseYoutube(active.youtube);
+    if (yt) wrap.appendChild(youtubeVideoBlock(yt.id, yt.start));
   }
 
   requestAnimationFrame(() => texts.forEach(fitText));
@@ -1869,6 +2071,17 @@ function parseId(text){
   if ((m = s.match(/open\.spotify\.com\/(?:intl-[a-z-]+\/)?track\/([A-Za-z0-9]{22})/))) return m[1];
   if ((m = s.match(/[#\/]([A-Za-z0-9]{22})(?:[?&#]|$)/))) return m[1];
   if (/^[A-Za-z0-9]{22}$/.test(s)) return s;
+  return null;
+}
+
+/* Általános mód, QR nélkül: playlist link/URI/puszta ID felismerése —
+   csak publikus lejátszási listákkal működik, azokhoz nem kell külön scope. */
+function parsePlaylistId(text){
+  const s = (text || "").trim();
+  let m;
+  if ((m = s.match(/spotify:playlist:([A-Za-z0-9]+)/))) return m[1];
+  if ((m = s.match(/open\.spotify\.com\/(?:intl-[a-z-]+\/)?playlist\/([A-Za-z0-9]+)/))) return m[1];
+  if (/^[A-Za-z0-9]{10,}$/.test(s)) return s;
   return null;
 }
 
@@ -2010,6 +2223,49 @@ async function playRandom(){
   play(entry.id);
 }
 
+/* Általános mód, QR nélkül: véletlen dal egy megadott publikus playlistből.
+   A teljes track-listát lapozva töltjük le és gyorsítótárazzuk, amíg a
+   playlist linkje nem változik — utána ismétlés nélkül húzunk belőle,
+   amíg el nem fogy, aztán újraindul a kör (ugyanaz a minta, mint a
+   Szabker dicsi mód katalógus-alapú véletlen húzásánál). */
+async function fetchPlaylistTrackIds(id){
+  const ids = [];
+  let path = "playlists/" + encodeURIComponent(id) + "/tracks?fields=items(track(id,is_local)),next&limit=100";
+  let guard = 0;
+  while (path && guard++ < 40) {
+    const j = await api(path);
+    (j.items || []).forEach(it => {
+      if (it.track && !it.track.is_local && it.track.id) ids.push(it.track.id);
+    });
+    path = j.next ? j.next.replace("https://api.spotify.com/v1/", "") : null;
+  }
+  return ids;
+}
+async function ensurePlaylistTracks(id){
+  if (playlistTrackIdsFor !== id || !playlistTrackIds) {
+    playlistTrackIds = await fetchPlaylistTrackIds(id);
+    playlistTrackIdsFor = id;
+    playlistPlayedIds = new Set();
+  }
+  return playlistTrackIds;
+}
+async function playRandomFromPlaylist(){
+  $("play-err").textContent = "";
+  const id = parsePlaylistId(localStorage.getItem("playlistUrl") || "");
+  if (!id) { $("play-err").textContent = "Adj meg egy publikus Spotify lejátszási lista linket a menüben."; return; }
+  if (!(await ensureRealSpotifyReady("0".repeat(22)))) return;
+  let ids;
+  try { ids = await ensurePlaylistTracks(id); }
+  catch(e) { $("play-err").textContent = "Nem sikerült betölteni a listát: " + e.message; return; }
+  if (!ids.length) { $("play-err").textContent = "Nem található lejátszható szám ebben a listában."; return; }
+  let pool = ids.filter(t => !playlistPlayedIds.has(t));
+  if (!pool.length) { playlistPlayedIds.clear(); pool = ids; }
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  playlistPlayedIds.add(pick);
+  if (navigator.vibrate) navigator.vibrate(18);
+  play(pick);
+}
+
 /* ══════════ 7. képernyő ébren ═════════════════════════════ */
 async function keepAwake(){
   try { if ("wakeLock" in navigator) wakeLock = await navigator.wakeLock.request("screen"); } catch(e){}
@@ -2026,6 +2282,7 @@ $("deck").onclick = e => clickedOnLabel(e) ? revealYear() : reveal();
 $("b-next").onclick = () => {
   if (player) player.activateElement && player.activateElement();
   if (randomMode && mode === "szabker") playRandom();
+  else if (generalRandomMode && mode === "general") playRandomFromPlaylist();
   else { if (playing) toggle(); scan(); }
 };
 $("b-redev").onclick = pickDevice;
@@ -2157,7 +2414,7 @@ async function scanReady(){
   if (!MOCK && !(await getToken())) { try { authExpired(); } catch(e){} return; }
   // első koppintás egyben feloldja a mobil autoplay-tiltást is
   show("play");
-  const useRandom = randomMode && mode === "szabker";
+  const useRandom = (randomMode && mode === "szabker") || (generalRandomMode && mode === "general");
   if (autoplayUnlocked) {
     $("b-next").textContent = useRandom ? "Következő véletlen dal" : "Következő kártya";
     $("b-toggle").style.opacity = 1;
@@ -2180,6 +2437,7 @@ function applyMode(){
   $("mode-label").textContent = mode === "szabker" ? "Szabker dicsi" : "Általános";
   $("blank-logo").hidden = mode !== "szabker";
   $("menu-catalog").classList.toggle("show", mode === "szabker");
+  $("menu-general").classList.toggle("show", mode === "general");
   document.querySelectorAll(".menu-item").forEach(b => {
     b.setAttribute("aria-current", b.dataset.mode === mode ? "true" : "false");
   });
@@ -2193,6 +2451,15 @@ function toggleRandomMode(){
   localStorage.setItem("randomMode", randomMode ? "1" : "0");
   applyRandomMode();
   updateRevealProgress();
+  if (!trackId && $("v-play").classList.contains("on")) scanReady();
+}
+function applyGeneralRandomMode(){
+  $("b-general-random-toggle").setAttribute("aria-checked", generalRandomMode ? "true" : "false");
+}
+function toggleGeneralRandomMode(){
+  generalRandomMode = !generalRandomMode;
+  localStorage.setItem("generalRandomMode", generalRandomMode ? "1" : "0");
+  applyGeneralRandomMode();
   if (!trackId && $("v-play").classList.contains("on")) scanReady();
 }
 function applyTheme(){
@@ -2245,10 +2512,23 @@ document.querySelectorAll(".menu-item[data-mode]").forEach(b => {
   };
 });
 $("b-random-toggle").onclick = toggleRandomMode;
+$("b-general-random-toggle").onclick = toggleGeneralRandomMode;
 $("b-theme-toggle").onclick = toggleTheme;
 $("b-reveal-reset").onclick = resetRevealProgress;
+$("playlist-url-input").value = localStorage.getItem("playlistUrl") || "";
+$("playlist-url-input").addEventListener("change", () => {
+  const val = $("playlist-url-input").value.trim();
+  localStorage.setItem("playlistUrl", val);
+  playlistTrackIds = null;
+  playlistTrackIdsFor = null;
+  playlistPlayedIds = new Set();
+  $("playlist-err").textContent = val && !parsePlaylistId(val)
+    ? "Ez nem tűnik érvényes Spotify lejátszási lista linknek."
+    : "";
+});
 applyMode();
 applyRandomMode();
+applyGeneralRandomMode();
 applyTheme();
 
 if (MOCK) {

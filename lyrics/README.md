@@ -53,6 +53,17 @@ listában — ott, ahol a dalban ténylegesen elhangzik.
   a lényeg, hogy a címke a szakasz valódi szerepét tükrözze, ne a legutóbb
   használt sablont.
 - `text`: a szakasz sorai, `\n`-nel elválasztva.
+- `youtube`: opcionális, egy YouTube-videó a dalhoz (pl. eredeti előadás vagy
+  lyric video). Elfogadja a csupasz 11 karakteres videó ID-t, vagy egy teljes
+  linket (`youtube.com/watch?v=...`, `youtu.be/...`, `youtube.com/embed/...`).
+  Ha azt szeretnéd, hogy ne az elejétől induljon, illeszd be a YouTube
+  „Megosztás” → „adott ponttól” linkjét, vagy a lejátszó jobb klikkjéből az
+  „URL másolása az aktuális időponttól” opciót — a link végén lévő `?t=93`
+  (másodperc) vagy `?t=1m33s` alakot az app automatikusan felismeri és onnan
+  indítja a videót. **Egyelőre csak fejlesztői módban (`?mock=1`) jelenik meg**,
+  kattintásra töltődik be (nincs automatikus iframe/lekérés) — élesben a mezőt
+  az app figyelmen kívül hagyja. Ha `versions` van használatban, mindegyik
+  verzió kaphat saját `youtube` mezőt (ugyanúgy, mint a `title`/`translator`/stb.).
 
 Ha egy dalhoz nincs itt fájl, a „Dalszöveg" gomb egyszerűen nem jelenik meg
 felfedéskor — nem kell mindegyikhez azonnal elkészíteni.

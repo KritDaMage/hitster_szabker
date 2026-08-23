@@ -1,0 +1,14 @@
+{
+  "title": "Szabadság vár",
+  "original_title": "Freedom Is Coming",
+  "author": "Ben Fielding, Mi-Kaisha Masella, Ben Tan",
+  "translator": "Szabkerdebrecen",
+  "sections": [
+    { "type": "verse", "text": "Ígéret földje vár a távolban már,\nDe van, hogy a tenger még előttem áll.\nÍgy futok, mert tudom, előttem jársz,\nLépteim őrzöd, Te vezetsz tovább." },
+    { "type": "chorus", "text": "Érzem, hogy eljön a szabadulás,\nÓ-ó, nincs többé lánc,\nVégre szabadság vár.\nÉrzem, hogy eljön a szabadulás,\nVeled, Jézus, már új élet vár." },
+    { "type": "verse", "text": "Szellemed szabadság, áraszd most rám,\nÉleted adtad, így győzelem vár,\nOlykor az utamban magas fal áll,\nTe áttöröd értem, míg szívem imád." },
+    { "type": "chorus", "text": "Érzem, hogy eljön a szabadulás,\nÓ-ó, nincs többé lánc,\nVégre szabadság vár.\nÉrzem, hogy eljön a szabadulás,\nVeled, Jézus, már új élet vár." },
+    { "type": "bridge", "text": "Porba hull minden lánc,\nMíg dicsérem az Urak Urát.\nNincs több bűn, nincs több vád,\nDicsérlek, mert megváltottál." },
+    { "type": "tag", "text": "Amikor a völgyben járok, Neved ott is,\nNagyobb mindennél.\nVelem vagy a nehézségben, karod óv,\nÍgy szívem már nem fél." }
+  ]
+}

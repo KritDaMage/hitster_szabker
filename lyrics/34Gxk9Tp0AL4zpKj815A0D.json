@@ -1,0 +1,16 @@
+{
+  "title": "Szabaddá tettél",
+  "original_title": "I Gotta Song",
+  "author": "James Wilson",
+  "translator": "Perjesi-Sangala Felicie, Kerekes Ernő, Andelic Jonathan",
+  "sections": [
+    { "type": "verse", "text": "Szent bizonyosság: Jézus enyém!\nFöldi utamra sugárzik e fény,\nVár az örökség, mennyei rész,\nLelkem örömmel, ó, fölfelé néz." },
+    { "type": "pre-chorus", "text": "Ó, igen, folyton szóljon,\nÓ, az örömben, bajban,\nÓ, Megváltóm áldom,\nMinden éjjel, minden nappal." },
+    { "type": "chorus", "text": "Szívemből hangosan szól a dal,\nA dicséret tiéd, Jézus, csak tiéd,\nCsak neked szóljon most minden tánc,\nSzabaddá tettél, szabaddá tettél!" },
+    { "type": "verse", "text": "Szent bizonyosság: Jézus enyém!\nFöldi utamra sugárzik e fény,\nVár az örökség, mennyei rész,\nLelkem örömmel, ó, fölfelé néz." },
+    { "type": "pre-chorus", "text": "Ó, igen, folyton szóljon,\nÓ, az örömben, bajban,\nÓ, Megváltóm áldom,\nMinden éjjel, minden nappal." },
+    { "type": "chorus", "text": "Szívemből hangosan szól a dal,\nA dicséret tiéd, Jézus, csak tiéd,\nCsak neked szóljon most minden tánc,\nSzabaddá tettél, szabaddá tettél!" },
+    { "type": "bridge", "text": "Gyere, áldjuk! / Áldd!\nGyere, dicsérjük! / Áldd!\nMagasztaljuk Őt! / Áldd!\nA Megmentőt! / Áldd!\nŐ a győztes! / Áldd!\nSzabadító! / Áldd!\nA gyógyító! / Áldd!\nGyere, áldd most Őt!" },
+    { "type": "chorus", "text": "Szívemből hangosan szól a dal,\nA dicséret tiéd, Jézus, csak tiéd,\nCsak neked szóljon most minden tánc,\nSzabaddá tettél, szabaddá tettél!" }
+  ]
+}
