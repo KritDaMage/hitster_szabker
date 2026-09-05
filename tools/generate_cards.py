@@ -18,8 +18,11 @@ mindket nyomtatott oldal kifele nezzen.
 """
 
 import base64
+import datetime
 import io
 import math
+import re
+import sys
 from pathlib import Path
 
 import qrcode
@@ -31,6 +34,11 @@ from svglib.svglib import svg2rlg
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE_FILE = ROOT / "source" / "Worship.txt"
 OUTPUT_FILE = ROOT / "tools" / "output" / "cards.html"
+# a legutobbi tenyleges nyomtatas allapota (verziokovetett, hogy ne vesszen el)
+PRINTED_FILE = ROOT / "tools" / "printed.txt"
+# a kettejuk kulonbsege: mit kell ujranyomtatni (a .gitignore miatt csak helyben).
+# NEM a source/reprint.txt - az a felhasznalo sajat, kezzel vezetett listaja.
+REPRINT_FILE = ROOT / "source" / "ujranyomtatas.txt"
 LOGO_FILE = ROOT / "szabker_budapest_ifi.svg"
 APP_BASE_URL = "https://kritdamage.github.io/hitster_szabker/"
 
@@ -420,8 +428,165 @@ def build_html(songs, size_mm, cols, rows):
 """
 
 
+# ─── ujranyomtatasi lista ─────────────────────────────────
+# A kartyan harom dolog latszik: a QR (track_id), az evszam es a magyar cim.
+# Ha ezek barmelyike valtozik, a mar kinyomtatott lap ervenytelen. A
+# PRINTED_FILE ezt a harom mezot orzi meg minden legutobb kinyomtatott
+# dalrol, a REPRINT_FILE pedig az azota keletkezett kulonbseget irja le.
+
+def load_printed():
+    """A legutobbi nyomtatas allapota track_id -> mezok. None, ha meg nincs."""
+    if not PRINTED_FILE.exists():
+        return None
+    printed = {}
+    for line in PRINTED_FILE.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split("|")
+        if len(parts) != 4:
+            continue
+        track_id, hu_title, original_title, year = [x.strip() for x in parts]
+        printed[track_id] = {
+            "track_id": track_id,
+            "hu_title": hu_title,
+            "original_title": original_title,
+            "year": year,
+        }
+    return printed
+
+
+def save_printed(songs):
+    lines = [
+        "# A legutobb KINYOMTATOTT kartyak allapota - a tools/generate_cards.py irja.",
+        "# Formatum: track_id|magyar cim|eredeti cim|evszam",
+        "# Ne szerkeszd kezzel; frissiteshez: python tools/generate_cards.py --nyomtatva",
+        "",
+    ]
+    for s in sorted(songs, key=lambda x: x["track_id"]):
+        lines.append(f"{s['track_id']}|{s['hu_title']}|{s['original_title']}|{s['year']}")
+    PRINTED_FILE.parent.mkdir(parents=True, exist_ok=True)
+    PRINTED_FILE.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def diff_against_printed(songs, printed):
+    """(uj, modosult, kidobando) - a modosult elemek (dal, valtozasok) parok."""
+    current = {s["track_id"]: s for s in songs}
+    new_songs, changed = [], []
+    for track_id, song in current.items():
+        before = printed.get(track_id)
+        if before is None:
+            new_songs.append(song)
+            continue
+        diffs = []
+        if before["year"] != song["year"]:
+            diffs.append(f"evszam: {before['year']} -> {song['year']}")
+        if before["hu_title"] != song["hu_title"]:
+            diffs.append(f"cim: „{before['hu_title']}” -> „{song['hu_title']}”")
+        if diffs:
+            changed.append((song, diffs))
+    dropped = [before for track_id, before in printed.items() if track_id not in current]
+    return new_songs, changed, dropped
+
+
+# ─── irasmod-ellenorzes ───────────────────────────────────
+# Az Istenre utalo nevmas nagybetus (lasd CLAUDE.md). Gepiesen nem donetheto
+# el, hogy a szo Istent vagy embert szolit-e meg, ezert csak figyelmeztetunk.
+NEVMASOK = (
+    "te|teged|tied|neked|veled|benned|rad|rolad|hozzad|tolod|erted|altalad|"
+    "nalad|nalam|o|ot|ora|neki|vele|benne|rola|hozza|erte|altala|ove|"
+    "ur|urnak|urat|urad|urunk|uram|atyam|atya"
+)
+EKEZET = str.maketrans("áéíóöőúüű", "aeiooouuu")
+
+
+def nagybetu_figyelmeztetes(songs):
+    """(cim, szo) parok, ahol egy nevmas kisbetus - lehet, hogy Istenre utal."""
+    szavak = set(NEVMASOK.split("|"))
+    talalatok = []
+    for song in songs:
+        for m in re.finditer(r"[^\W\d_]+", song["hu_title"], re.UNICODE):
+            szo = m.group(0)
+            if not szo[0].islower():
+                continue
+            if szo.lower().translate(EKEZET) in szavak:
+                talalatok.append((song["hu_title"], szo))
+    return talalatok
+
+
+def write_reprint(songs, printed, per_page):
+    """A kulonbseget kiirja a source/ujranyomtatas.txt-be, emberi olvasasra."""
+    stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    out = [f"UJRANYOMTATANDO KARTYAK - {stamp}", ""]
+
+    if printed is None:
+        out += ["Nincs rogzitett nyomtatasi allapot (tools/printed.txt hianyzik),",
+                "ezert nincs mihez hasonlitani. Nyomtasd ki az egeszet, majd:",
+                "",
+                "    python tools/generate_cards.py --nyomtatva"]
+        REPRINT_FILE.parent.mkdir(parents=True, exist_ok=True)
+        REPRINT_FILE.write_text("\n".join(out) + "\n", encoding="utf-8")
+        return 0
+
+    new_songs, changed, dropped = diff_against_printed(songs, printed)
+
+    def block(title, items, fmt):
+        out.append(f"{title} ({len(items)})")
+        if items:
+            out.extend("  " + fmt(x) for x in items)
+        else:
+            out.append("  (nincs)")
+        out.append("")
+
+    # ha ugyanaz a cim tobb csoportban is szerepel, akkor tobb lap van belole a
+    # pakliban, es mindegyik megy - ezt ki kell irni, kulonben felrevezeto
+    tobbszoros = {s["hu_title"] for s, _ in changed} & {s["hu_title"] for s in dropped}
+
+    def sokszoros(hu):
+        return "   << EBBOL TOBB LAP VAN, MINDEGYIKET DOBD KI" if hu in tobbszoros else ""
+
+    def changed_line(x):
+        song, before = x[0], printed[x[0]["track_id"]]
+        line = f"{song['hu_title']} | {song['original_title']} | {song['year']}"
+        # a kidobando lapot a REGI erteke alapjan lehet megtalalni a pakliban
+        was = []
+        if before["hu_title"] != song["hu_title"]:
+            was.append(before["hu_title"])
+        if before["year"] != song["year"]:
+            was.append(before["year"])
+        if was:
+            line += f"   (a lapon: {' / '.join(was)})"
+        return line + sokszoros(song["hu_title"])
+
+    block("DOBD KI A REGIT, NYOMTASD KI AZ UJAT",
+          sorted(changed, key=lambda x: x[0]["hu_title"].lower()),
+          changed_line)
+    block("VADONATUJ, CSAK NYOMTASD KI",
+          sorted(new_songs, key=lambda x: x["hu_title"].lower()),
+          lambda s: f"{s['hu_title']} | {s['original_title']} | {s['year']}")
+    block("CSAK DOBD KI, NINCS HELYETTE UJ",
+          sorted(dropped, key=lambda x: x["hu_title"].lower()),
+          lambda s: f"{s['hu_title']} | {s['original_title']} | {s['year']}"
+                    f"   (a lapon: {s['year']})" + sokszoros(s["hu_title"]))
+
+    out.append("Ha kinyomtattad: python tools/generate_cards.py --nyomtatva")
+    REPRINT_FILE.parent.mkdir(parents=True, exist_ok=True)
+    REPRINT_FILE.write_text("\n".join(out) + "\n", encoding="utf-8")
+    return len(new_songs) + len(changed) + len(dropped)
+
+
 def main():
     songs = parse_songs()
+
+    # "mar kinyomtattam" mod: csak rogziti a jelenlegi allapotot, nem general
+    if "--nyomtatva" in sys.argv or "--printed" in sys.argv:
+        save_printed(songs)
+        _, cols, rows = find_best_grid()
+        write_reprint(songs, load_printed(), cols * rows)
+        print(f"{len(songs)} dal rogzitve kinyomtatottkent: {PRINTED_FILE}")
+        print(f"Az ujranyomtatasi lista kiurult: {REPRINT_FILE}")
+        return
+
     size_mm, cols, rows = find_best_grid()
     per_page = cols * rows
     print(f"{len(songs)} csillagozott dal a forrasban.")
@@ -433,6 +598,24 @@ def main():
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_FILE.write_text(html, encoding="utf-8")
     print(f"Kesz: {OUTPUT_FILE}")
+
+    figyelmeztetesek = nagybetu_figyelmeztetes(songs)
+    if figyelmeztetesek:
+        print()
+        print(f"Figyelem: {len(figyelmeztetesek)} cimben kisbetus a nevmas. Ha Istenre")
+        print("utal, nagybetu kell (lasd CLAUDE.md); ha embert szolit meg, maradhat:")
+        for cim, szo in figyelmeztetesek:
+            print(f"  '{szo}'  ->  {cim}")
+        print()
+
+    printed = load_printed()
+    todo = write_reprint(songs, printed, per_page)
+    if printed is None:
+        print(f"Nincs meg rogzitett nyomtatasi allapot - lasd {REPRINT_FILE}")
+    elif todo:
+        print(f"Ujranyomtatando/kidobando: {todo} kartya - reszletek: {REPRINT_FILE}")
+    else:
+        print("A kinyomtatott kartyak naprakeszek, nincs ujranyomtatando.")
 
 
 if __name__ == "__main__":

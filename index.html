@@ -612,13 +612,13 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   </div>
 </div>
 <nav class="menu" id="menu">
-  <button class="menu-item" id="b-menu-rules">Játékszabályok</button>
+  <button class="menu-item" id="b-menu-rules" hidden>Játékszabályok</button>
   <div class="menu-account" id="menu-account" hidden>
     <button class="menu-item" id="b-menu-devices">Eszközválasztó</button>
     <button class="menu-item" id="b-menu-logout">Kijelentkezés</button>
   </div>
 
-  <div class="menu-divider"></div>
+  <div class="menu-divider" id="menu-divider-top"></div>
 
   <h2>Mód</h2>
   <button class="menu-item" data-mode="general">Általános</button>
@@ -1284,6 +1284,7 @@ function snapshotMode(){
   return {
     trackId,
     revealedFlag: $("label").dataset.revealed === "1",
+    yearFlag: $("label").dataset.yearRevealed === "1",
     revealed: { ...revealed },
     yrText: $("r-yr").textContent
   };
@@ -1319,6 +1320,7 @@ async function restoreModeSnapshot(snap, allowNavigate = true){
   lyricsVersionIndex = 0;
   $("b-lyrics").style.visibility = "hidden";
   $("label").dataset.revealed = snap.revealedFlag ? "1" : "0";
+  $("label").dataset.yearRevealed = snap.revealedFlag && snap.yearFlag ? "1" : "0";
   if (snap.revealedFlag) {
     $("r-yr").textContent = snap.yrText;
     $("r-ti").textContent = snap.revealed.huTitle || snap.revealed.title;
@@ -1558,8 +1560,8 @@ function updateCatalogSortIndicators(){
 function renderCatalogList(filter){
   const list = $("catalog-list");
   list.innerHTML = "";
-  const q = filter.trim().toLowerCase();
-  const shown = q ? catalogEntries.filter(e => (e.searchText || e.title.toLowerCase()).includes(q)) : catalogEntries;
+  const q = searchNorm(filter);
+  const shown = q ? catalogEntries.filter(e => e.searchText.includes(q)) : catalogEntries;
   if (!shown.length) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
@@ -1720,6 +1722,17 @@ function renderCatalogHistogram(entries){
   chart.appendChild(svg);
 }
 
+/* keresési normalizálás: kisbetű, ékezetek le (az NFD az ő-t/ű-t is szétszedi),
+   minden nem betű/szám (vessző, pont, kötőjel, aposztrof) szóközzé — így a
+   "koszonom szepen" is megtalálja a "Köszönöm, szépen"-t.
+   Ugyanez fut a beírt keresőkifejezésre és a katalógus searchText-jére is. */
+function searchNorm(s){
+  return (s || "").toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
+}
+
 function lyricsSearchText(data){
   if (!data) return "";
   const versions = Array.isArray(data.versions) ? data.versions : [data];
@@ -1736,7 +1749,9 @@ async function openCatalog(){
   const [all, titles] = await Promise.all([loadAllSongs(), loadTitles()]);
   catalogEntries = all.map(e => {
     const t = titles[e.id] || {};
-    return { id: e.id, title: e.title, original_title: t.title || "", year: t.year || "", hasLyrics: e.hasLyrics };
+    const entry = { id: e.id, title: e.title, original_title: t.title || "", year: t.year || "", hasLyrics: e.hasLyrics };
+    entry.searchText = searchNorm(entry.title + " " + entry.original_title);
+    return entry;
   });
   sortCatalogEntries();
   updateCatalogSortIndicators();
@@ -1746,7 +1761,7 @@ async function openCatalog(){
   // a teljes dalszöveget is betöltjük kereséshez — a lista már látszik, ez csak utólag bővíti ki
   const lyricsList = await Promise.all(catalogEntries.map(e => e.hasLyrics ? loadLyrics(e.id) : null));
   catalogEntries.forEach((e, i) => {
-    e.searchText = (e.title + " " + e.original_title + " " + lyricsSearchText(lyricsList[i])).toLowerCase();
+    e.searchText = searchNorm(e.title + " " + e.original_title + " " + lyricsSearchText(lyricsList[i]));
   });
 }
 
@@ -2023,16 +2038,17 @@ function revealYear(){
 }
 // true, ha a kattintas a kozepso labelen belul volt (nem a fekete szelen) —
 // a label sajat, tenylegesen renderelt kor-alakjahoz merve, nem a deck-hez
-// kepesti aranyhoz, igy fuggetlen a --disc meretezestol. A #blank-logo-hoz
-// merunk, NEM a .label-hez — a .label 8%-kal nagyobb a lathato logonal
-// (belso margo), az a gyuru meg a fekete resz folytatasanak szamit.
-// A #blank-logo felfedeskor lathatatlanna valik (opacity:0), de a
-// layoutban marad, tehat a merese mindig ervenyes.
+// kepesti aranyhoz, igy fuggetlen a --disc meretezestol. A talalati kor a
+// logo kore: az inset:8% miatt a label atmerojenek 84%-a — a kimarado gyuru
+// meg a fekete resz folytatasanak szamit. Magat a #blank-logo elemet NEM
+// merhetjuk, mert altalanos modban rejtve van (hidden -> display:none, nulla
+// meretu rect), es akkor az evszam masodik lepcsoje elerhetetlen lenne.
 function clickedOnLabel(evt){
-  const r = $("blank-logo").getBoundingClientRect();
+  const r = $("label").getBoundingClientRect();
+  if (!r.width) return false;
   const dx = evt.clientX - (r.left + r.width / 2);
   const dy = evt.clientY - (r.top + r.height / 2);
-  return Math.hypot(dx, dy) <= r.width / 2;
+  return Math.hypot(dx, dy) <= r.width * 0.42;
 }
 
 /* ══════════ 5. eszközválasztó (ha nincs SDK) ══════════════ */
@@ -2230,12 +2246,17 @@ async function playRandom(){
    Szabker dicsi mód katalógus-alapú véletlen húzásánál). */
 async function fetchPlaylistTrackIds(id){
   const ids = [];
-  let path = "playlists/" + encodeURIComponent(id) + "/tracks?fields=items(track(id,is_local)),next&limit=100";
+  /* 2026 februárja óta a régi GET /playlists/{id}/tracks Development Mode-ban
+     403 Forbidden-t ad — az élő endpoint a /items, a maximális lapméret 50,
+     és a sorokban a track helyére az item mező lépett (a track csak
+     visszafelé kompatibilitásból van még ott). */
+  let path = "playlists/" + encodeURIComponent(id) + "/items?fields=items(is_local,item(id,type)),next&limit=50";
   let guard = 0;
-  while (path && guard++ < 40) {
+  while (path && guard++ < 100) {
     const j = await api(path);
     (j.items || []).forEach(it => {
-      if (it.track && !it.track.is_local && it.track.id) ids.push(it.track.id);
+      const t = it.item || it.track;
+      if (t && !it.is_local && !t.is_local && t.id && (t.type || "track") === "track") ids.push(t.id);
     });
     path = j.next ? j.next.replace("https://api.spotify.com/v1/", "") : null;
   }
@@ -2256,7 +2277,16 @@ async function playRandomFromPlaylist(){
   if (!(await ensureRealSpotifyReady("0".repeat(22)))) return;
   let ids;
   try { ids = await ensurePlaylistTracks(id); }
-  catch(e) { $("play-err").textContent = "Nem sikerült betölteni a listát: " + e.message; return; }
+  catch(e) {
+    // 403: a Spotify nem enged hozzáférni ehhez a listához (jellemzően szerkesztői/
+    // algoritmikus lista, vagy másik felhasználó listája); 404: rossz/törölt link
+    $("play-err").textContent = e.status === 403
+      ? "A Spotify nem engedi lekérni ennek a listának a tartalmát. Próbáld egy saját, publikus listáddal."
+      : e.status === 404
+        ? "Nincs ilyen lejátszási lista. Ellenőrizd a linket a menüben."
+        : "Nem sikerült betölteni a listát: " + e.message;
+    return;
+  }
   if (!ids.length) { $("play-err").textContent = "Nem található lejátszható szám ebben a listában."; return; }
   let pool = ids.filter(t => !playlistPlayedIds.has(t));
   if (!pool.length) { playlistPlayedIds.clear(); pool = ids; }
@@ -2474,6 +2504,8 @@ function toggleTheme(){
 }
 function openMenu(){
   $("menu-account").hidden = !(MOCK || !!localStorage.getItem("tok"));
+  // a felső elválasztó csak akkor kell, ha van felette valami
+  $("menu-divider-top").hidden = $("menu-account").hidden && $("b-menu-rules").hidden;
   $("menu").classList.add("open");
   $("menu-overlay").classList.add("open");
 }
@@ -2533,6 +2565,7 @@ applyTheme();
 
 if (MOCK) {
   $("menu-dev").hidden = false;
+  $("b-menu-rules").hidden = false;
   $("col-catalog-lastcol").style.width = "92px";
   $("col-catalog-check").style.width = "32px";
   $("th-catalog-check").style.padding = "";
