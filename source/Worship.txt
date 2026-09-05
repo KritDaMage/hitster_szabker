@@ -1,13 +1,13 @@
 +	*	Még többet Tőled|Immer mehr von Dir |1991|https://open.spotify.com/track/7xWCQkxanipCfSgX9d0Xwa
-	*	Teremts bennem tiszta szívet|Create in me a clean heart|1984|https://open.spotify.com/track/19we8h3WOey67janOqMdtV
++	*	Teremts bennem tiszta szívet|Create in me a clean heart|1984|https://open.spotify.com/track/19we8h3WOey67janOqMdtV
 +	*	Szívből dicsérlek|My Heart Sings Praises|1996|https://open.spotify.com/track/55RoVRq3zy4pcqnS7vkW9i
 +	*	Áldott legyen a mi Urunk|Blessed be the name of the Lord|1991|https://open.spotify.com/track/4ewjJA3tufqQwMm9jdubux
-	*	Készítsük el|Prepare the Way|1997|https://open.spotify.com/track/720xjogfK4U7t9me3lod8O
-	*	Hősök jönnek és eltűnnek|Champion|1997|https://open.spotify.com/track/2n1Oh9DgoLOQwZC8MHbxS9
++	*	Készítsük el|Prepare the Way|1997|https://open.spotify.com/track/720xjogfK4U7t9me3lod8O
++	*	Hősök jönnek és eltűnnek|Champion|1997|https://open.spotify.com/track/2n1Oh9DgoLOQwZC8MHbxS9
 +	*	Fúj a szél a mennyből|Sweet Wind|1996|https://open.spotify.com/track/65Bq1UcAY8Pe9fa3mgeLL2
 +	*	A zene nem szól már|The Heart of Worship|2001|https://open.spotify.com/track/1NJBnGY0qu7yQKBYBZmiyh
 	*	A Te szentséged súlya szálljon ránk|Let The Weight Of Your Glory Fall|2001|https://open.spotify.com/track/3u5MRuQwIXElUaCSdTwXMC
-	*	Az Úrnak lelke rám száll (Táncolok, miként Dávid)|When The Spirit Of The Lord (Dance Like David)|1996|https://open.spotify.com/track/3q2XUvYdCRnd8pFsQTHflK
++	*	Az Úrnak lelke rám száll (Táncolok, miként Dávid)|When The Spirit Of The Lord (Dance Like David)|1996|https://open.spotify.com/track/3q2XUvYdCRnd8pFsQTHflK
 +	*	Az Úrért mi indulunk|For The Lord Is Marching On|1986|https://open.spotify.com/track/5RgRyQ2EhWqGLtwJ6JxHo5
 +	*	Az Ő neve Bástya|The Name Of The Lord|1988|https://open.spotify.com/track/5ILEeyRKO9yr1JInxMdcy5
 +	*	Mennyei tábor|The Battle Belongs to the Lord|1989|https://open.spotify.com/track/004dqsaJ3B8BBpqpN0F4YT
@@ -17,10 +17,10 @@
 +	*	Ez az a dal|Song from Heaven|1994|https://open.spotify.com/track/5eEYwf33l7cM1rL5drc7hr
 +	*	Az Úr van itt|The Lord Thy God|1988|https://open.spotify.com/track/2teyZ1zasA65ano68bdMjN
 +	*	Táncolva éneklek|I Will Dance (Undignified)|1998|https://open.spotify.com/track/1MA9IERoCa9jdgVDd8HRXJ
-	*	Több erőt, több szeretetet|More Love, More Power|1987|https://open.spotify.com/track/4EQYur0tRZpHbQJxgCRy4Q
++	*	Több erőt, több szeretetet|More Love, More Power|1987|https://open.spotify.com/track/4EQYur0tRZpHbQJxgCRy4Q
 +	*	Halleluja|Agnus Dei|1990|https://open.spotify.com/track/1qxDqbzmWODOkr0Ja5Iotz
 +	*	Az egész föld felett (Jézus vezess)|Lord Reign In Me|1998|https://open.spotify.com/track/0xpArDftqKd86QDfBSJ16o
-	*	Tudom, közel vagy|In Your Hands|1997|https://open.spotify.com/track/0pNMnHtsuMWsTNvixhiTOC
++	*	Tudom, közel vagy|In Your Hands|1997|https://open.spotify.com/track/0pNMnHtsuMWsTNvixhiTOC
 +	*	Megváltóm, szabadítóm|For All You've Done|2004|https://open.spotify.com/track/2y7SeplcEJuF3IYfNRerwK
 +	*	Karjaid tartanak|With All I Am|2004|https://open.spotify.com/track/41q8IpBfJMjKZr3XCFTkdP
 +	*	Én Uram, erősségem|I Will Love|2004|https://open.spotify.com/track/4G8MeXHICrtFC8ioiSq2KS
@@ -40,7 +40,7 @@
 +	*	Minden lehetséges!|All Things Are Possible|1997|https://open.spotify.com/track/0c0hKIeHA05UsSuMuk4b5r
 +	*	Dicséret, áldás|Ancient of Days|1992|https://open.spotify.com/track/6wN3ucC8m1QiFTt6DIiy3E
 	*	Az Úr oly hatalmas Istenünk|Awesome God|1988|https://open.spotify.com/track/2R0B44jOb1mC2rU8ObMh0f
-	*	Akár a lélegzet|Breathe|1995|https://open.spotify.com/track/3f7Kj9ZX3DEIdAc2UnrOKi
++	*	Akár a lélegzet|Breathe|1995|https://open.spotify.com/track/3f7Kj9ZX3DEIdAc2UnrOKi
 +	*	Vonj közel Hozzád|Draw Me Close|2001|https://open.spotify.com/track/6ci70PFY04KxK9oFOceqMw
 +	*	Ragadj magaddal|Dwell In Your House|2000|https://open.spotify.com/track/2tj5seccws8PJ0SppbCSEc
 +	*	Itt vagyok, várok|Eagle's Wings|1998|https://open.spotify.com/track/5Iz1riXB7eA26AC0JoaXIT
@@ -88,11 +88,11 @@
 +	*	Ismerni Téged|Know You More|2005|https://open.spotify.com/track/3i9d41XDdhBFuVSdw6pmXF
 		Hillsong London|I Will Go|2004|https://open.spotify.com/track/2rLtRCaAgQZ4Ca3mpDdcen
 +	*	Jézusé, minden Jézusé|Jesus, All For Jesus|2002|https://open.spotify.com/track/0e1Hq0UFcpNk4GQ7pqt4x1
-+	*	Lényed érint |Come and Fill Me Up|1993|https://open.spotify.com/track/0suyXTXscZ3W6lTov4awJ9
++	*	Lényed érint|Come and Fill Me Up|1993|https://open.spotify.com/track/0suyXTXscZ3W6lTov4awJ9
 	*	Halleluja (Kegyelmed éneklem)|Hallelujah (Your Love Is Amazing)|2000|https://open.spotify.com/track/6Ox1lYnKPfmrP6Nc3aoak2
 +	*	Mennyei folyó|The River Is Here|1994|https://open.spotify.com/track/3aiSmHL9ogTV6Z5tmxO7xQ
 +	*	Nem lesz egyedül a szívem|King Of Kings|1989|https://open.spotify.com/track/6DphiGz7q1AvlKsx5PY3vL
-+	*	Ó Uram, hűséges Istenem |Hallowed Be Thy Name|1989|https://open.spotify.com/track/3wv66CYEmrUhUR7W15z5im
++	*	Ó Uram, hűséges Istenem|Hallowed Be Thy Name|1989|https://open.spotify.com/track/3wv66CYEmrUhUR7W15z5im
 		Darrell Evans|Trading My Sorrows|1998|https://open.spotify.com/track/4lD8ygUjwpsMvnHgJaSJBC
 +	*	Felállok, hogy dicsérjelek (Gyújts tüzet a lelkemben)|Light The Fire|2005|https://open.spotify.com/track/5zIgNuXVRYcUUhGVbtYJe5
 +	*	Mindig csak Rólad énekelnék (Hegyek és tengerek felett)|I Could Sing of Your Love Forever|1994|https://open.spotify.com/track/0ypipC0JkFZVZZXpzCzw05
@@ -110,7 +110,7 @@
 +	*	Mert az Isten jó!|For the Lord Is Good|1995|https://open.spotify.com/track/5gbGkEDmdIyNHOiYPfbwcI
 +	*	Jézus, térdet hajtunk|Lord Jesus We Enthrone You|1995|https://open.spotify.com/track/0YTwaPPNvyTZWbAXy1BCBz
 +	*	Ünnepeld Jézust|Celebrate Jesus|1988|https://open.spotify.com/track/0flSftnT35Z5okm91QQFDI
-+	*	Menjetek be kapuin hálaadással |Enter Into His Gates|1976|https://open.spotify.com/track/5o96xjNPLwyBfT42ogJ0zX
++	*	Menjetek be kapuin hálaadással|Enter Into His Gates|1976|https://open.spotify.com/track/5o96xjNPLwyBfT42ogJ0zX
 +	*	Minden időben áldom|Let Us Exalt His Name|1988|https://open.spotify.com/track/1M2tsj1jeThW77q8l5Lt66
 	*	Jézus, neved oly csodálatos|The Sweetest Name of All|1981|https://open.spotify.com/track/3dlZF6S5GHIQ9yPwL2NIYE
 +	*	El-Shaddai|El-Shaddai|1982|https://open.spotify.com/track/7rJlIt0X1SZXLyCNOerJWu
@@ -165,11 +165,11 @@
 +	*	A kegyelmed elég|Your Grace Is Enough|2004|https://open.spotify.com/track/4s4bRV7Hdmw127h83Hfi9F
 +	*	Uram, szent vagy|You Are Holy (Prince Of Peace)|2002|https://open.spotify.com/track/1gUoaZkPi7vMZdxMlGsGOw
 	*	Győztesek vagyunk|We Have Overcome|2007|https://open.spotify.com/track/4SKYuHYyMYX7rJ8dRLKISm
-+	*	Mily nagy Istenünk (A fény királya Ő)|How Great Is Our God|2004|https://open.spotify.com/track/6h7ynLR6bONLbeZLGFHW6y
++	*	Mily nagy Istenünk (A fény királya Ő)|How Great Is Our God|2004|https://open.spotify.com/track/5Xiz4KHePDAnoI7nC7Vofr
 	!	Nincs más olyan, mint Te|There Is None Like You|1991|https://open.spotify.com/track/6NLvZYW0COmwDboKdLhYIi
 	*	Hadd legyen Jézus|Let It Be Jesus|2014|https://open.spotify.com/track/47KYmH58ZG6dGgtkrkvu6E
 +	*	Szeretünk Téged|Saviour King|2007|https://open.spotify.com/track/6tHBcuvF4vOQp9IZztaJzG
-+	*	Te vagy szerelme|You Are My Passion|1997|https://open.spotify.com/track/2ST2RkITpqVBBQeD7n9Hoi
++	*	Te vagy szerelme|You Are My Passion|1996|https://open.spotify.com/track/2ST2RkITpqVBBQeD7n9Hoi
 +	*	Krisztus enyém|In Christ Alone/The Solid Rock|2001|https://open.spotify.com/track/0omUByfZ4tzOKdJm2E96oX
 	*	Az Urat követők|Those Who Trust|1999|https://open.spotify.com/track/312ITk2QHN7FhubOXGNbxU
 +	*	Az Úrnak népe Izrael|The Mighty One of Israel|1988|https://open.spotify.com/track/40VUdumyRDkEj6RGynIBBF

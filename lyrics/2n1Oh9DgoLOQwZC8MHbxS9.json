@@ -1,0 +1,12 @@
+{
+  "title": "Hősök jönnek és eltűnnek",
+  "original_title": "Champion",
+  "author": "Noel Richards, Tricia Richards",
+  "translator": "Beregszászi Csaba, Szakály László",
+  "sections": [
+    { "type": "verse", "text": "Hősök jönnek és eltűnnek, de Jézus örök példakép,\nŐ a Királyok Királya, urak hatalmas Ura,\nmégis úgy jött, mint egy szolga, értünk adta életét." },
+    { "type": "chorus", "text": "Köszöntse minden nép a győztesek Győztesét,\nelőtte hódol az egész világ." },
+    { "type": "chorus", "text": "Köszöntse minden nép, a győztesek Győztesét,\nelőtte hódol a világ." },
+    { "type": "verse", "text": "A Mindenség Ura a hősünk, megtöri a bűn bilincsét,\nmennyei ragyogás árad, szűnik már a sötétség,\ngyőztes harcba vezet minket, kardján megcsillan a fény." }
+  ]
+}

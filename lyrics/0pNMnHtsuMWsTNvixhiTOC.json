@@ -1,0 +1,11 @@
+{
+  "title": "Tudom, közel vagy",
+  "original_title": "In Your Hands",
+  "author": "Reuben Morgan",
+  "translator": "Veress Zoltán, Pintér Béla",
+  "sections": [
+    { "type": "verse", "text": "Több vagy nekem, már mindennél,\nszívemben élsz, enyém lettél, szeretlek én.\nTudom, közel vagy, magadhoz ölelsz,\nmert tiéd vagyok én, soha nem hagysz egyedül,\nmert tiéd vagyok én, soha nem hagysz egyedül." },
+    { "type": "verse", "text": "Az életed feláldoztad, szabad vagyok és látom már,\nTe vagy a cél." },
+    { "type": "bridge", "text": "Mindenkor mellettem voltál,\nbár sokszor nem éreztem én,\néveken át mindvégig vártál rám." }
+  ]
+}
