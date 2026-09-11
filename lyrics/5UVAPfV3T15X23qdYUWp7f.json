@@ -1,0 +1,13 @@
+{
+  "title": "Azért, mert él (Ámen)",
+  "original_title": "Because He Lives (Amen)",
+  "author": "Matt Maher",
+  "translator": "Petényi Kinga",
+  "sections": [
+    { "type": "verse", "text": "Én hiszem a Fiút,\nHiszem Őt, aki feltámadt.\nHiszem, hogy győztes vagyok\nAz Ő vére hatalmával." },
+    { "type": "chorus", "text": "Ámen, ámen,\nÉlek én, élek én, mert Ő él.\nÁmen, ámen,\nÉrjen dalom az égig fel, ne múljon el.\nAzért, mert él." },
+    { "type": "verse", "text": "A sírban halott voltam vele,\nSzégyen és bűn borított be.\nIrgalma néven szólított\nÉs elgördítette a követ." },
+    { "type": "bridge", "text": "Azért, mert él, jobb lesz a holnapom,\nAzért, mert él, félni nincs már okom.\nTudom, kezében tartja életem s jövőm." },
+    { "type": "tag", "text": "Azért, mert él, azért, mert él." }
+  ]
+}

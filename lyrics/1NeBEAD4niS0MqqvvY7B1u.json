@@ -1,0 +1,12 @@
+{
+  "title": "Csodálatos, szent és fenséges",
+  "original_title": "The Potter's Hand",
+  "author": "Darlene Zschech",
+  "translator": "Németh S. Judit",
+  "sections": [
+    { "type": "verse", "text": "Csodálatos, szent és fenséges Megváltóm vagy, kegyelmed éltet.\nSorsom Tiéd, szelíden hívtál, s itt vagyok.\nVezess engem Szellemed által, taníts, Uram, világosságra,\nKedves szavad megragad és vonz Hozzád." },
+    { "type": "pre-chorus", "text": "Ó, alakíts és változtass el képmásodra, Te mennyei Mester,\nSzereteted égjen szívemben." },
+    { "type": "chorus", "text": "Jöjj hát, járj át, szólj és formálj, légy Úr bennem, várlak szüntelen.\nKelj fel, ó Uram, jöjj és áldj meg újra, Szent Szellemed tűzzel áraszd rám." },
+    { "type": "tag", "text": "Tűzzel áraszd rám!" }
+  ]
+}

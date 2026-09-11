@@ -530,37 +530,44 @@ def write_reprint(songs, printed, per_page):
 
     new_songs, changed, dropped = diff_against_printed(songs, printed)
 
-    def block(title, items, fmt):
-        out.append(f"{title} ({len(items)})")
-        if items:
-            out.extend("  " + fmt(x) for x in items)
-        else:
-            out.append("  (nincs)")
-        out.append("")
+    # Ha egy dal track ID-t valt, a regi bejegyzes "kidobando"-nak, az uj
+    # "vadonatuj"-nak latszik - pedig ez egy sima csere, egyetlen lapról.
+    # Az angol cim alapjan parositjuk oket, de csak ha egyertelmu a parositas.
+    csere = [(song, printed[song["track_id"]]) for song, _ in changed]
+    for regi in list(dropped):
+        parok = [s for s in new_songs if s["original_title"] == regi["original_title"]]
+        masok = [d for d in dropped if d["original_title"] == regi["original_title"]]
+        if len(parok) == 1 and len(masok) == 1:
+            csere.append((parok[0], regi))
+            new_songs.remove(parok[0])
+            dropped.remove(regi)
 
-    # ha ugyanaz a cim tobb csoportban is szerepel, akkor tobb lap van belole a
-    # pakliban, es mindegyik megy - ezt ki kell irni, kulonben felrevezeto
-    tobbszoros = {s["hu_title"] for s, _ in changed} & {s["hu_title"] for s in dropped}
-
-    def sokszoros(hu):
-        return "   << EBBOL TOBB LAP VAN, MINDEGYIKET DOBD KI" if hu in tobbszoros else ""
-
-    def changed_line(x):
-        song, before = x[0], printed[x[0]["track_id"]]
+    def csere_sor(par):
+        song, regi = par
         line = f"{song['hu_title']} | {song['original_title']} | {song['year']}"
-        # a kidobando lapot a REGI erteke alapjan lehet megtalalni a pakliban
         was = []
-        if before["hu_title"] != song["hu_title"]:
-            was.append(before["hu_title"])
-        if before["year"] != song["year"]:
-            was.append(before["year"])
+        if regi["hu_title"] != song["hu_title"]:
+            was.append(regi["hu_title"])
+        if regi["year"] != song["year"]:
+            was.append(regi["year"])
+        if regi["track_id"] != song["track_id"]:
+            was.append("mas QR")
         if was:
             line += f"   (a lapon: {' / '.join(was)})"
         return line + sokszoros(song["hu_title"])
 
+    tobbszoros = {s["hu_title"] for s, _ in csere} & {s["hu_title"] for s in dropped}
+
+    def sokszoros(hu):
+        return "   << EBBOL TOBB LAP VAN, MINDEGYIKET DOBD KI" if hu in tobbszoros else ""
+
+    def block(title, items, fmt):
+        out.append(f"{title} ({len(items)})")
+        out.extend("  " + fmt(x) for x in items) if items else out.append("  (nincs)")
+        out.append("")
+
     block("DOBD KI A REGIT, NYOMTASD KI AZ UJAT",
-          sorted(changed, key=lambda x: x[0]["hu_title"].lower()),
-          changed_line)
+          sorted(csere, key=lambda x: x[0]["hu_title"].lower()), csere_sor)
     block("VADONATUJ, CSAK NYOMTASD KI",
           sorted(new_songs, key=lambda x: x["hu_title"].lower()),
           lambda s: f"{s['hu_title']} | {s['original_title']} | {s['year']}")
@@ -572,7 +579,7 @@ def write_reprint(songs, printed, per_page):
     out.append("Ha kinyomtattad: python tools/generate_cards.py --nyomtatva")
     REPRINT_FILE.parent.mkdir(parents=True, exist_ok=True)
     REPRINT_FILE.write_text("\n".join(out) + "\n", encoding="utf-8")
-    return len(new_songs) + len(changed) + len(dropped)
+    return len(new_songs) + len(csere) + len(dropped)
 
 
 def main():

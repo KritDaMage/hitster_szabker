@@ -1,0 +1,13 @@
+{
+  "title": "Halleluja (Kegyelmed éneklem)",
+  "original_title": "Hallelujah (Your Love Is Amazing)",
+  "author": "Brian Doerksen, Brenton Brown",
+  "translator": "Csöngedi Péter",
+  "sections": [
+    { "type": "chorus", "text": "Halleluja, halleluja, halleluja, kegyelmed éneklem." },
+    { "type": "verse", "text": "Kegyelmed egy bárka, igen biztos bástya,\nKegyelmed a szikla, lábam nem inog.\nKegyelmed nagy rejtély, ahogy felemeltél,\nBűnöm súlya elszállt, többé nem emészt." },
+    { "type": "chorus", "text": "Ó, halleluja, halleluja, halleluja, kegyelmed éneklem." },
+    { "type": "verse", "text": "Ha jelenléted rám száll, az öröm nyomban átjár,\nS növekedve formál mélyen legbelül.\nBármikor, ha látlak, nagy jóságod áthat,\nS érzem azt, hogy árad e szent dallam felém." },
+    { "type": "chorus", "text": "Ó, halleluja, halleluja, halleluja, kegyelmed éneklem." }
+  ]
+}

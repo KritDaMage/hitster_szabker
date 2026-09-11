@@ -1,0 +1,11 @@
+{
+  "title": "Úr Jézus, megváltóm (Kiálts az Úrnak)",
+  "original_title": "My Jesus, My Saviour (Shout to the Lord)",
+  "author": "Darlene Zschech",
+  "translator": "Németh S. Judit",
+  "sections": [
+    { "type": "verse", "text": "Úr Jézus, Megváltóm, nincs senki olyan, mint Te.\nMinden napon magasztalom a Te szereteted nagy voltát.\nVígaszom, oltalmam, menedékem, váram,\nAmi vagyok, egész valóm Téged szomjaz, Téged vár." },
+    { "type": "chorus", "text": "Kiálts az Úrnak, te föld, énekelj, adj dicsőséget a Felségesnek!\nHegyek, hódoljatok, zúgj, tenger a mi Urunk nagy nevének!\nÉneklem hűséged és kegyelmed, örökké szeretlek, én Istenem.\nSemmi sem ér fel a Te jelenléteddel." },
+    { "type": "tag", "text": "…a Te jelenléteddel." }
+  ]
+}

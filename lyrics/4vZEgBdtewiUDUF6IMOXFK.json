@@ -1,0 +1,11 @@
+{
+  "title": "Van egy folyó",
+  "original_title": "There Is a River",
+  "sections": [
+    { "type": "verse", "text": "Van egy folyó a szent városban, az élet folyója,\nOtt, ahol népe együtt él örökké az Úrral.\nIsten van közöttük, von föléjük sátort,\nNincs többé könny és gyász, mert az elsők már elmúltak." },
+    { "type": "chorus", "text": "Nagy vígasság, hangos öröm van az Úr házában,\nNagy vígasság, hangos öröm van az Úr házában." },
+    { "type": "bridge", "text": "Nem múlik el, soha nem múlik el, nem múlik el Jézus országa." },
+    { "type": "chorus", "text": "Nagy vígasság, hangos öröm van az Úr házában,\nNagy vígasság, hangos öröm van az Úr házában." },
+    { "type": "outro", "text": "A menny királyságában, a menny királyságában." }
+  ]
+}

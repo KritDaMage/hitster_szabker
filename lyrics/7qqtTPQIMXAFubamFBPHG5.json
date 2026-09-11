@@ -1,0 +1,12 @@
+{
+  "title": "Méltó nagy neved",
+  "original_title": "Worthy",
+  "author": "Steven Furtick, Chris Brown, Mack Brock",
+  "translator": "Agape Worship",
+  "sections": [
+    { "type": "verse", "text": "Keresztem hordoztad és meghaltál,\nSzabadságomért harcoltál.\nTiéd az életem, és örökké a Te jóságod éneklem." },
+    { "type": "chorus", "text": "Méltó nagy neved, Jézus, minden dicséret csak Téged illet meg.\nMéltó nagy neved, Jézus, minden dicséret csak Téged illet meg." },
+    { "type": "verse", "text": "Lemostad szégyenem, és szerelmed\nElvette minden kételyem.\nKegyelmed nem fogy el, és örökké a Te jóságod hirdetem." },
+    { "type": "bridge", "text": "Magasztaljon föld és az ég,\nDicsőséged áraszd szét.\nEgyedül Te vagy méltó,\nMinden név fölött való." }
+  ]
+}

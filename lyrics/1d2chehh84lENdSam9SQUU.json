@@ -1,0 +1,11 @@
+{
+  "title": "Kegyelemből léphetünk be",
+  "original_title": "Only by Grace",
+  "author": "Gerrit Gustafson",
+  "translator": "Mézes Áron",
+  "sections": [
+    { "type": "verse", "text": "Kegyelemből léphetünk be, szent jelenlétedbe,\nNem saját érdemeinkért, csak Jézus vérével." },
+    { "type": "chorus", "text": "Jelenlétedbe hívsz most, hívsz, ó Uram,\nKegyelem által vezérelsz, jövünk Hozzád, Uram,\nJövünk Hozzád, Uram." },
+    { "type": "bridge", "text": "Minden törvényszegésünket elvetted,\nS a Bárány drága szent vérével mostál meg." }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "title": "Kiálts az Úr közel!",
+  "original_title": "Sing Out",
+  "author": "Ron Kenoly",
+  "translator": "Pintér Béla",
+  "sections": [
+    { "type": "verse", "text": "Kiálts az Úr közel! Építsd házát a szívedben!\nDicsőséges trón, imádat hazája,\nÉpüljön a Királynak!" },
+    { "type": "verse", "text": "Kiálts boldog énekkel! Az Ő szerelme nem fogy el.\nAhogy dicsérjük Őt, megújítja szívünk és betölti élettel.\nKiálts az Úr közel!" },
+    { "type": "chorus", "text": "Az Úr ott él, ahol dicsőítik Őt,\nMert háza dicsőség." },
+    { "type": "bridge", "text": "Eljöttünk, hogy együtt, egy szívvel\nImádjuk zenével és dallal.\nÖrvendjünk hát mindazért, amit tett értünk Atyánk.\nEmeljük fel hódolatunk!" }
+  ]
+}
