@@ -1,9 +1,12 @@
 {
+  "track_id": "7GoYovaEPv6dpjxbiPVN4s",
   "versions": [
     {
+      "youtube": "",
       "title": "Romjaimba élet száll",
       "original_title": "Glorious Ruins",
       "author": "Matt Crocker & Joel Houston",
+      "translator": "",
       "sections": [
         { "type": "verse", "text": "Viharos szél dúl, ez a Föld széthull, de velem vagy!\nA világ elmúlik, de kegyelmeden lelkem szárnyal!" },
         { "type": "pre-chorus", "text": "Ha Te vagy velem, tűz sem árthat nekem.\nLelkem életre kel, ha Rád nézek.\nKereszted alatt elhagy minden kudarc,\nA Te szent kegyelmed fényében." },
@@ -12,6 +15,7 @@
       ]
     },
     {
+      "youtube": "",
       "title": "Romokból életet",
       "original_title": "Glorious Ruins",
       "author": "Matt Crocker & Joel Houston",

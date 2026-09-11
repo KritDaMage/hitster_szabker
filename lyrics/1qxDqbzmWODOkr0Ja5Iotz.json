@@ -1,15 +1,19 @@
 {
+  "track_id": "1qxDqbzmWODOkr0Ja5Iotz",
   "versions": [
     {
+      "youtube": "",
       "title": "Halleluja",
       "original_title": "Agnus Dei",
       "author": "Michael W. Smith",
+      "translator": "",
       "sections": [
         { "type": "verse", "text": "Halleluja, Halleluja! Az Úr uralkodik!\nHalleluja, Halleluja! Az Úr uralkodik!" },
         { "type": "chorus", "text": "Halleluja! Szent vagy! Szent vagy!\nÖrök Isten, Mindenható!\nMéltó egyedül! Méltó egyedül!\nSzent vagy! Szent vagy!\nÖrök Isten, Mindenható!\nMéltó egyedül! Méltó egyedül!\nÁmen!" }
       ]
     },
     {
+      "youtube": "",
       "title": "Isten Báránya!",
       "original_title": "Agnus Dei",
       "author": "Michael W. Smith",

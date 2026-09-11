@@ -1,12 +1,15 @@
 {
+  "track_id": "1NeBEAD4niS0MqqvvY7B1u",
+  "youtube": "https://youtu.be/mwWBwon0-po?si=4tSyd_WLCKA4PceD",
   "title": "Csodálatos, szent és fenséges",
   "original_title": "The Potter's Hand",
   "author": "Darlene Zschech",
   "translator": "Németh S. Judit",
   "sections": [
-    { "type": "verse", "text": "Csodálatos, szent és fenséges Megváltóm vagy, kegyelmed éltet.\nSorsom Tiéd, szelíden hívtál, s itt vagyok.\nVezess engem Szellemed által, taníts, Uram, világosságra,\nKedves szavad megragad és vonz Hozzád." },
-    { "type": "pre-chorus", "text": "Ó, alakíts és változtass el képmásodra, Te mennyei Mester,\nSzereteted égjen szívemben." },
-    { "type": "chorus", "text": "Jöjj hát, járj át, szólj és formálj, légy Úr bennem, várlak szüntelen.\nKelj fel, ó Uram, jöjj és áldj meg újra, Szent Szellemed tűzzel áraszd rám." },
+    { "type": "verse", "text": "Csodálatos, szent és fenséges\nMegváltóm vagy, kegyelmed éltet.\nSorsom Tiéd, szelíden hívtál, s itt vagyok." },
+    { "type": "verse", "text": "Vezess engem Szellemed által,\nTaníts, Uram, világosságra,\nKedves szavad megragad és vonz Hozzád." },
+    { "type": "pre-chorus", "text": "Ó, alakíts és változtass el\nKépmásodra, Te mennyei Mester,\nSzereteted égjen szívemben." },
+    { "type": "chorus", "text": "Jöjj hát, járj át, szólj és formálj,\nLégy Úr bennem, várlak szüntelen.\nKelj fel, ó Uram, jöjj és áldj meg újra,\nSzent Szellemed tűzzel áraszd rám." },
     { "type": "tag", "text": "Tűzzel áraszd rám!" }
   ]
 }

@@ -1,10 +1,12 @@
 {
+  "track_id": "4t82u0Yj9TUgnQ2mrMb7x2",
   "versions": [
     {
+      "youtube": "https://youtu.be/wkjbKGiuoQQ?si=8XN7xpPZqcV8korf&t=1905",
       "title": "Tündöklő fény",
       "original_title": "Here I Am To Worship",
       "author": "Tim Hughes",
-      "youtube": "https://youtu.be/wkjbKGiuoQQ?si=8XN7xpPZqcV8korf&t=1905",
+      "translator": "",
       "sections": [
         { "type": "verse", "text": "Tündöklő fény sötét éjbe lejöttél,\nNyisd meg szemem világát,\nAlkotó kéz magadnak teremtettél,\nHogy éljünk örök léten át." },
         { "type": "chorus", "text": "Én ünnepelni jöttem, meghajtom a térdem,\nItt vagyok hogy valljam Te vagy az Úr.\nTe mindenestől vonzó, szeretetre méltó,\nMindenestől szépnek látlak én." },
@@ -13,6 +15,7 @@
       ]
     },
     {
+      "youtube": "",
       "title": "Eljött hozzám",
       "original_title": "Here I Am To Worship",
       "author": "Tim Hughes",

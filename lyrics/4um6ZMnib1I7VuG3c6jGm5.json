@@ -1,6 +1,8 @@
 {
+  "track_id": "4um6ZMnib1I7VuG3c6jGm5",
   "versions": [
     {
+      "youtube": "",
       "title": "Add, hogy a szívemmel lássak",
       "original_title": "Open The Eyes Of My Heart",
       "author": "Paul Baloche",
@@ -12,9 +14,11 @@
       ]
     },
     {
+      "youtube": "",
       "title": "Nyisd meg a szívem",
       "original_title": "Open The Eyes Of My Heart",
       "author": "Paul Baloche",
+      "translator": "",
       "sections": [
         { "type": "verse", "text": "Nyisd meg a szívem, Ó Jézus,\nNyisd meg a szívem, Uram,\nLátnom kell Téged,\nLátnom kell Téged." },
         { "type": "chorus", "text": "Dicsőség Ura,\nRagyog fel, mint hold az éjben,\nLelkemnek Pásztora,\nTeremts tiszta szívet bennem." },

@@ -1,12 +1,14 @@
 {
+  "track_id": "1NJBnGY0qu7yQKBYBZmiyh",
+  "youtube": "https://youtu.be/6SeS8cVhOXQ?si=bMwaFpyHAy-Qv2un",
   "title": "A zene nem szól már",
   "original_title": "The Heart of Worship",
   "author": "Matt Redman, Michael W. Smith",
   "translator": "Varga Eszter, Bagyinszky Judit",
   "sections": [
-    { "type": "verse", "text": "Zene nem szól már, és minden távol jár, jöhetek Hozzád,\nMit is mondhatnék, mit hozhatnék eléd, mi Neked is érték." },
-    { "type": "verse", "text": "Többet, mint egyszerű dalt, ami halkan elhal, hadd hozzam azt, amit vársz,\nTudom, hogy mélyebbre látsz, puszta felszínen át, bennem Te kincset találsz." },
-    { "type": "chorus", "text": "Adj nekem, Uram, imádó szívet, ami csak Rólad szól, csak Rólad szól, Jézus!\nNe ródd fel nekem, hogy mássá tettem, ami csak Rólad szól, csak Rólad szól, Jézus!" },
-    { "type": "bridge", "text": "Szavak nem tudnák elmondani, Atyám, ami méltó Hozzád,\nNekem semmim sincs, mit adhatnék Neked, fogadd lényemet." }
+    { "type": "verse", "text": "Zene nem szól már,\nÉs minden távol jár,\nJöhetek Hozzád,\nMit is mondhatnék,\nMit hozhatnék eléd,\nMi Neked is érték." },
+    { "type": "pre-chorus", "text": "Többet, mint egyszerű dalt,\nAmi halkan elhal,\nHadd hozzam azt, amit vársz,\nTudom, hogy mélyebbre látsz,\nPuszta felszínen át,\nBennem Te kincset találsz." },
+    { "type": "chorus", "text": "Adj nekem, Uram, imádó szívet,\nAmi csak Rólad szól, csak Rólad szól, Jézus!\nNe ródd fel nekem, hogy mássá tettem,\nAmi csak Rólad szól, csak Rólad szól, Jézus!" },
+    { "type": "verse", "text": "Szavak nem tudnák\nElmondani, Atyám,\nAmi méltó Hozzád,\nNekem semmim sincs,\nMit adhatnék Neked,\nFogadd lényemet." }
   ]
 }
