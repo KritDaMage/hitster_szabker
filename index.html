@@ -1476,44 +1476,60 @@ async function saveLyricsEdit(){
   renderLyrics();
 }
 
-/* eredeti cím + évszám + magyar cím a Spotify helyett, lásd titles.json */
+/* A Worship.txt a projekt EGYETLEN kézzel írt dallistája — az eredeti cím,
+   az évszám, a magyar cím és az is, hogy van-e a dalhoz dalszöveg.
+   Nincs belőle generált másolat: amit beleírsz, az azonnal él.
+
+   Egy sor, tabbal tagolva:
+     <+ vagy üres> TAB <* vagy üres> TAB <szint 1-3 vagy üres> TAB
+     <magyar cím>|<eredeti cím>|<évszám>|<Spotify-link>
+
+   Csak a CSILLAGOS sorok kerülnek az appba (azokból van kártya). A + jel
+   mondja meg, hogy keressünk-e hozzá lyrics/<track_id>.json fájlt, a track ID
+   pedig a Spotify-link végéről jön — ez köti össze a dalt a szövegével. */
 let titlesCache = null;
+let songOrder = [];
 async function loadTitles(){
   if (titlesCache) return titlesCache;
+  const byId = {}, order = [];
   try {
-    const r = await fetch("titles.json", { cache: "no-store" });
-    titlesCache = r.ok ? await r.json() : {};
-  } catch(e){ titlesCache = {}; }
-  if (MOCK) titlesCache["0".repeat(22)] = { title: "Mock Eredeti Cím", year: 1999, hu: "Minta Magyar Cím" };
+    const r = await fetch("Worship.txt", { cache: "no-store" });
+    if (r.ok) {
+      for (const line of (await r.text()).split("\n")) {
+        const col = line.split("\t");
+        if (col.length < 4 || col[1].trim() !== "*") continue;
+        const f = col[3].split("|");
+        if (f.length < 4) continue;
+        const m = f[3].match(/track\/([A-Za-z0-9]{22})/);
+        if (!m || byId[m[1]]) continue;
+        const year = parseInt(f[2].trim(), 10);
+        byId[m[1]] = {
+          hu: f[0].trim(),
+          title: f[1].trim(),
+          year: Number.isFinite(year) ? year : "",
+          level: parseInt(col[2].trim(), 10) || 0,
+          hasLyrics: col[0].trim() === "+"
+        };
+        order.push(m[1]);
+      }
+    }
+  } catch(e){}
+  titlesCache = byId;
+  songOrder = order;
   return titlesCache;
 }
 
-async function loadCatalog(){
-  try {
-    const r = await fetch("lyrics/index.json", { cache: "no-store" });
-    if (!r.ok) return [];
-    return await r.json();
-  } catch(e){ return []; }
-}
-
-/* a teljes dalválaszték: minden csillagos (titles.json-beli) dal, függetlenül attól,
-   hogy van-e hozzá dalszöveg-fájl — ez az egyetlen forrás a katalógusnak,
+/* a teljes dalválaszték: minden csillagos dal, függetlenül attól, hogy van-e
+   hozzá dalszöveg-fájl — ez az egyetlen forrás a katalógusnak,
    a véletlen dal adogatónak és a felfedés-számlálónak is */
 let allSongsCache = null;
 async function loadAllSongs(){
   if (allSongsCache) return allSongsCache;
-  const [entries, titles] = await Promise.all([loadCatalog(), loadTitles()]);
-  const all = entries.map(e => ({ id: e.id, title: e.title, hasLyrics: true }));
-  if (MOCK && !all.some(e => e.id === "0".repeat(22))) {
-    all.push({ id: "0".repeat(22), title: "Minta Magyar Cím", hasLyrics: true });
-  }
-  const withLyrics = new Set(all.map(e => e.id));
-  Object.keys(titles).forEach(id => {
-    if (withLyrics.has(id) || !titles[id].hu) return;
-    all.push({ id, title: titles[id].hu, hasLyrics: false });
-  });
-  allSongsCache = all;
-  return all;
+  const titles = await loadTitles();
+  allSongsCache = songOrder
+    .filter(id => titles[id].hu)
+    .map(id => ({ id, title: titles[id].hu, hasLyrics: titles[id].hasLyrics }));
+  return allSongsCache;
 }
 
 /* fejlesztői mód: a katalógusban kézzel bejelölhető, mely dalok vannak kész
@@ -1854,15 +1870,14 @@ function renderLyrics(){
   if (lyricsVersionIndex >= versions.length) lyricsVersionIndex = 0;
   const active = versions[lyricsVersionIndex] || null;
 
-  // original_title a titles.json-ból jön elsőként (lásd CLAUDE.md) — az eredeti
+  // original_title a Worship.txt-ből jön elsőként (lásd CLAUDE.md) — az eredeti
   // (angol) cím a dal tulajdonsága, nem a fordításé, tehát nem térhet el
-  // fordításonként, és a titles.json a hiteles forrás rá; a lyrics-fájl saját
-  // original_title mezője csak azoknál a (+ jelű, de * nélküli) daloknál esik
-  // latba, amikhez nincs titles.json bejegyzés.
+  // fordításonként, és a mesterlista a hiteles forrás rá; a lyrics-fájl saját
+  // original_title mezője csak akkor esik latba, ha a dal nincs a mesterlistában.
   // A magyar title viszont a FORDÍTÁS tulajdonsága: ha egy dalnak több
   // (versions) fordítása van, mindegyiknek lehet — és gyakran van is — más
   // magyar címe, ezért ott a lyrics-fájl aktív verziójáé az elsőbbség, a
-  // titles.json csak akkor esik latba, ha az aktív verzió nem ad meg sajátot.
+  // mesterlista csak akkor esik latba, ha az aktív verzió nem ad meg sajátot.
   const tid = lyricsPlayerTrackId || trackId;
   const override = (tid && titlesCache) ? titlesCache[tid] : null;
   const huTitle = (active && active.title) || (override && override.hu) || revealed.huTitle;
@@ -2115,7 +2130,13 @@ function parsePlaylistId(text){
 }
 
 async function scan(){
-  if (MOCK) { hit("0".repeat(22)); return; }
+  if (MOCK) {
+    // fejlesztői módban nincs kamera: a valódi dallistából húzunk egyet,
+    // így a beolvasás utáni út is az éles adatokon fut
+    const all = await loadAllSongs();
+    if (all.length) hit(all[Math.floor(Math.random() * all.length)].id);
+    return;
+  }
   show("scan");
   $("scan-err").textContent = "";
   try {
@@ -2603,10 +2624,17 @@ if (MOCK) {
         openCatalog();
         openMenu();
       } else if (v === "lyrics") {
-        trackId = "0".repeat(22);
-        lyricsPlayerTrackId = null;
-        renderLyrics();
-        openLyricsDrawer();
+        (async () => {
+          const all = await loadAllSongs();
+          const first = all.find(e => e.hasLyrics);
+          if (!first) return;
+          trackId = first.id;
+          lyricsPlayerTrackId = null;
+          lyricsData = await loadLyrics(first.id);
+          lyricsVersionIndex = 0;
+          renderLyrics();
+          openLyricsDrawer();
+        })();
       } else {
         show(v);
       }

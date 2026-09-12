@@ -1,7 +1,7 @@
 """
 Hitster Szabker kartyagenerator.
 
-Beolvassa a source/Worship.txt-t, kiszedi a csillaggal (*) jelolt sorokat
+Beolvassa a Worship.txt-t, kiszedi a csillaggal (*) jelolt sorokat
 (azokat, amikhez mar van magyar cim), es egy nyomtatasra kesz HTML-t general:
 minden dalhoz egy "domino" alaku egyseget, benne egymas mellett a QR-kod
 (bal fel) es az evszam+cim (jobb fel). A jobb felet hatrahajtva a ket fel
@@ -32,7 +32,7 @@ from reportlab.graphics import renderPM
 from svglib.svglib import svg2rlg
 
 ROOT = Path(__file__).resolve().parent.parent
-SOURCE_FILE = ROOT / "source" / "Worship.txt"
+SOURCE_FILE = ROOT / "Worship.txt"
 OUTPUT_FILE = ROOT / "tools" / "output" / "cards.html"
 # a legutobbi tenyleges nyomtatas allapota (verziokovetett, hogy ne vesszen el)
 PRINTED_FILE = ROOT / "tools" / "printed.txt"
@@ -123,15 +123,18 @@ def parse_songs():
         if not line.strip():
             continue
         cols = line.split("\t")
-        if len(cols) < 3 or cols[1] != "*":
+        # oszlopok: <+/ures> TAB <*/ures> TAB <szint 1-3 / ures> TAB <adatok>
+        if len(cols) < 4 or cols[1] != "*":
             continue
-        hu_title, original_title, year, spotify_link = cols[2].split("|")
+        hu_title, original_title, year, spotify_link = cols[3].split("|")
         track_id = spotify_link.strip().split("/")[-1].split("?")[0]
         songs.append({
             "hu_title": hu_title.strip(),
             "original_title": original_title.strip(),
             "year": year.strip(),
             "track_id": track_id,
+            "level": cols[2].strip(),
+            "has_lyrics": cols[0].strip() == "+",
         })
     return songs
 
@@ -582,6 +585,22 @@ def write_reprint(songs, printed, per_page):
     return len(new_songs) + len(csere) + len(dropped)
 
 
+def lyrics_figyelmeztetes(songs):
+    """A '+' jelolt sorokhoz letezik-e a lyrics fajl, es van-e arva fajl.
+
+    A dal es a szovege kozti kapcsolat a track ID: a lyrics fajl NEVE maga a
+    track ID. Ha a Worship.txt-ben track ID-t irsz at, a fajlt is at kell
+    nevezni (es benne a "track_id" mezot) - ez az egyetlen lepes, ami nem
+    automatikus. Ez a check pontosan azt az elcsuszast fogja el.
+    """
+    lyrics_dir = ROOT / "lyrics"
+    meglevo = {f.stem for f in lyrics_dir.glob("*.json")} if lyrics_dir.is_dir() else set()
+    listaban = {s["track_id"] for s in songs}
+    hianyzo = [s for s in songs if s.get("has_lyrics") and s["track_id"] not in meglevo]
+    arva = sorted(meglevo - listaban)
+    return hianyzo, arva
+
+
 def main():
     songs = parse_songs()
 
@@ -613,6 +632,16 @@ def main():
         print("utal, nagybetu kell (lasd CLAUDE.md); ha embert szolit meg, maradhat:")
         for cim, szo in figyelmeztetesek:
             print(f"  '{szo}'  ->  {cim}")
+        print()
+
+    hianyzo, arva = lyrics_figyelmeztetes(songs)
+    if hianyzo or arva:
+        print()
+        for s in hianyzo:
+            print(f"Figyelem: '+' jelolt, de nincs lyrics/{s['track_id']}.json  ->  {s['hu_title']}")
+        for tid in arva:
+            print(f"Figyelem: arva lyrics/{tid}.json - nincs hozza '+' jelolt sor a Worship.txt-ben")
+        print("(Track ID atirasakor a lyrics fajlt is at kell nevezni, es benne a track_id mezot.)")
         print()
 
     printed = load_printed()

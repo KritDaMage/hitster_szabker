@@ -5,7 +5,12 @@ Ide kerülnek a Szabker dicsi módhoz tartozó teljes dalszövegek, egy fájl da
 ## Fájlnév
 
 `<track ID>.json` — ugyanaz a 22 karakteres track ID, amit a QR-kódoknál és a
-gyökérbeli `titles.json`-nél is használunk (a Spotify-megosztólink végén van).
+gyökérbeli `Worship.txt`-ben is használunk (a Spotify-megosztólink végén van).
+
+**A fájlnév az azonosító, nem csak elnevezés.** Ez köti a szöveget a dalhoz,
+ezért ha a `Worship.txt`-ben track ID-t írsz át, ezt a fájlt is át kell nevezni
+(és benne a `track_id` mezőt). A `tools/generate_cards.py` figyelmeztet, ha egy
+`+` jelölt sorhoz nincs fájl, vagy ha egy fájlhoz nincs sor.
 
 Példa: `4uLU6hMCjMI75M1A2tKUQC.json`
 
@@ -50,7 +55,7 @@ listában — ott, ahol a dalban ténylegesen elhangzik.
   verzió kaphat saját `youtube` mezőt (ugyanúgy, mint a `title`/`translator`/stb.).
 - `title`, `original_title`, `author`, `translator`: mind opcionális. Ha
   kitöltöd őket, ezek jelennek meg a dalszöveg-nézet tetején — ha nem, az app
-  visszaesik a Spotifytól kapott (és a gyökérbeli `titles.json`-ben megadott)
+  visszaesik a Spotifytól kapott (és a gyökérbeli `Worship.txt`-ben megadott)
   címre, előadóra.
 - `type`: rövid angol szó, ami a nézetben szó szerint megjelenik címkeként —
   ezért érdemes a dal tényleges szerkezetét leírni, nem csak a legközelebbi
@@ -98,33 +103,20 @@ a legfelső szinten nem kell (és nem is szabad) kitölteni, csak a
 `versions` elemein belül. Ha egy dalnak csak egy fordítása van, maradhat a
 régi, lapos formátum (`versions` nélkül) — nem kötelező áttérni.
 
-## `index.json` — a dalkatalógus
+## A dalkatalógus
 
-A menü „Szabker dicsi" módban megjelenő „Dalkatalógus" gombja ezt a fájlt
-tölti be, hogy felsorolhassa az összes olyan dalt, amihez tényleges
-dalszöveg-fájl készült — kártya beolvasása nélkül is böngészhető, és
-mindegyik sor átvisz a saját dalszövegére.
+A menü „Szabker dicsi" módban megjelenő „Dalkatalógus" gombja a gyökérbeli
+`Worship.txt`-ből épül fel: minden **csillagos** (`*`) sor bekerül, és a sor
+**első oszlopa** (`+`) mondja meg, hogy van-e a dalhoz szöveg. Így a katalógus
+azokat a dalokat is felsorolja, amikhez még nincs dalszöveg — azok halványabb
+sorként jelennek meg.
 
-Formátum: `{ id, title }` párok tömbje, a `title` a lyrics-fájl `title`
-mezőjével egyezik meg:
+**Új dalszöveg felvételekor nincs külön nyilvántartás, amibe át kell vezetni:**
+elég kitenni a `+` jelet a `Worship.txt` megfelelő sorába. A track ID köti össze
+a kettőt.
 
-```json
-[
-  { "id": "4uLU6hMCjMI75M1A2tKUQC", "title": "Magyar cím" }
-]
-```
-
-**Amikor felveszel egy új `<track ID>.json` dalszöveg-fájlt, vedd fel ide is
-egy sorral** — ez a két hely nincs automatikusan szinkronban, statikus
-GitHub Pages hosting mellett nincs könyvtárlistázás, amiből az app magától
-összeszedhetné. A `0000000000000000000000.json` mock fixtúrát szándékosan
-NEM tartalmazza (azt az app `?mock=1` alatt kézzel fűzi hozzá).
-
-## `0000000000000000000000.json`
-
-Ez **nem** egy valódi dal — ez a fejlesztői mód (`?mock=1`) fixtúrája. A
-`scan()` mock módban mindig a `"0".repeat(22)` track ID-t „olvassa be”
-(`index.html`, `MOCK` blokk), így ez a fájl kell ahhoz, hogy a
-dalszöveg-nézetet be lehessen tesztelni bejelentkezés nélkül. Ne töröld, és
-ne írj bele valódi dalt — ha egy tényleges számot dolgozol fel, azt a saját
-track ID-jával mentsd.
+> Korábban volt itt egy `index.json`, és egy `0000000000000000000000.json` mock
+> fixtúra is. **Mindkettő megszűnt** (2026 szeptember): az `index.json` a
+> `Worship.txt` kézzel karbantartott másolata volt, és elcsúszott tőle; a mock
+> fixtúra helyett a fejlesztői mód (`?mock=1`) most a valódi listából húz egy
+> véletlen dalt. Ne hozd vissza egyiket sem.
