@@ -1,13 +1,13 @@
 {
   "track_id": "0suyXTXscZ3W6lTov4awJ9",
-  "youtube": "",
+  "youtube": "https://youtu.be/ERl2RnmBeDE?si=jj8vY6pgnPYVKGik",
   "title": "Lényed érint",
   "original_title": "Come and Fill Me Up",
   "author": "Brian Doerksen",
   "translator": "Harkai Tamás",
   "sections": [
-    { "type": "verse", "text": "Lényed érint, érzem átjár, Isten Lelke,\nKérlek, tölts be most, tölts be teljesen!" },
-    { "type": "verse", "text": "Jövök Hozzád, Téged várlak, hiszek Benned,\nÉlő vízfolyam, gyere, tölts be most!" },
-    { "type": "chorus", "text": "Kegyelmed mossa át szívem teljesen!\nLelked ömöljön, folyjon, úgy vágyom Rád!\nSzeretlek, kívánlak, szükségem van Rád,\nSzeretlek, kívánlak, szükségem van Rád!" }
+    { "type": "verse", "text": "Lényed érint, érzem átjár,\nIsten Lelke, kérlek, tölts be most,\nTölts be teljesen!" },
+    { "type": "verse", "text": "Jövök Hozzád, Téged várlak,\nHiszek Benned, Élő vízfolyam,\nGyere, tölts be most!" },
+    { "type": "chorus", "text": "Kegyelmed mossa át szívem teljesen!\nLelked ömöljön, folyjon, úgy vágyom Rád!\nSzeretlek, imádlak, szükségem van Rád,\nSzeretlek, imádlak, szükségem van Rád!" }
   ]
 }

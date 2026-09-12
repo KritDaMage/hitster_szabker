@@ -1,5 +1,15 @@
 {
     "liveServer.settings.port": 5500,
     "liveServer.settings.CustomBrowser": "microsoft-edge",
-    "liveServer.settings.ignoreFiles": ["source/**"]
+    "liveServer.settings.ignoreFiles": ["source/**"],
+
+    // A Worship.txt oszlopszinezese (Rainbow CSV bovitmeny).
+    // Enelkul a bovitmeny automatikusan valaszt szeparatort, es azt nyeri,
+    // amelyik TOBB oszlopot ad. Mióta van negyedik tab-oszlop (nehezsegi
+    // szint), a tab is 4 oszlopot ad, ezert holtversenyben legyozi a pipe-ot,
+    // es a cim|cim|ev|link blokk egyetlen szint kap. Ez a sor rogziti a
+    // pipe-ot, igy a cim / eredeti cim / evszam / link kulon szinnel latszik.
+    "files.associations": {
+        "Worship.txt": "csv (pipe)"
+    }
 }

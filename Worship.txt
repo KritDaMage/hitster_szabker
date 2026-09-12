@@ -127,7 +127,7 @@
 			Hillsong Worship|Beautiful Exchange|2010|https://open.spotify.com/track/7qY9WL7tj1NVMGySyryKZQ
 +	*		Áldom szent neved|Blessed Be Your Name|2002|https://open.spotify.com/track/14HrSWGYPCDwqAcVFUYKsq
 +	*		Arcra borulok|Facedown|2004|https://open.spotify.com/track/3KRXMLdvj3KrE1H4tNO3MO
-			Planetshakers|Get Up|2009|https://open.spotify.com/track/1LoUWWxkewQyQavBEloyLV
++	*		Aki szereti Őt|Get Up|2009|https://open.spotify.com/track/1LoUWWxkewQyQavBEloyLV
 +	*		Ég és Föld Királya (Csodás Isten)|God of Wonders|2000|https://open.spotify.com/track/1Ufqrz9z8n3DHo2sUpCVis
 	*		Hozsánna (Látom az élő Jézust)|Hosanna|2007|https://open.spotify.com/track/4sVaN6vnj7Y4ROClK7vzMd
 +	*		Kell, hogy végre érezd|Mighty To Save|2006|https://open.spotify.com/track/0lZrte7ghfHGLKqf3fkqKl
@@ -144,6 +144,7 @@
 +	*		Oly jó Veled|I Need You More|2009|https://open.spotify.com/track/5js9X9MkMgwrES3CEyzUts
 +	*		Istenünk, szent vagy|Our God is Holy|1996|https://open.spotify.com/track/5Tl9HmNmYSrVp3J67e813I
 +	*		A himnusz|The Anthem|2009|https://open.spotify.com/track/35C881Jr4vznaiQSQtI56P
++	*		Vérével váltott meg|The Anthem|2012|https://open.spotify.com/track/3JTAiYMIby5pLUjJCcuYSS
 	*		Körülvesz a völgy|You Never Let Go|2005|https://open.spotify.com/track/6iycYNyYgphDgTsKfwpqhr
 +	*		Bemegyek a Szentek Szentjébe|For Your Name Is Holy|1999|https://open.spotify.com/track/59ZOe9FjRDNYR9CLDJGYKE
 	*		Ő az Úr (Megölték a bárányt)|He Is Lord|1977|https://open.spotify.com/track/1lFQGQmvAyH5xm3el02XcW
@@ -182,7 +183,8 @@
 	*		Meghívtál, hogy vízre lépjek|Oceans (Where Feet May Fail)|2013|https://open.spotify.com/track/5Mw9bXG1dLNhbjofkVS2oR
 	*		Végtelen folyó|River|2016|https://open.spotify.com/track/6MiF8paL5jLWtEoS6EdgM6
 +	*		Te vagy az út|The Way|2014|https://open.spotify.com/track/5FwWDLc0qKR7dYsthePn4S
-			Planetshakers|Dance|2014|https://open.spotify.com/track/430tNrSMPTC7DZs4pMES5s
+			???|Dance|2014|https://open.spotify.com/track/430tNrSMPTC7DZs4pMES5s
++	*		Lépj, táncolj|Dance|2006|https://open.spotify.com/track/69Dcj20lWZFrqELjB1PQnM
 	*		Szálljon a hálánk|Endless Praise|2014|https://open.spotify.com/track/6iD7c2EjxRKw9Ibx85mtXI
 	*		Fényeddel|My Lighthouse|2014|https://open.spotify.com/track/7DwexLUJZ9ekNPa2DJTtbG
 	*		Velem vagy mindig|I Am Not Alone|2015|https://open.spotify.com/track/3RBnnfWA4Q2AqNuwTDdDgz
@@ -262,5 +264,6 @@
 +	*		Méltó nagy neved|Worthy|2018|https://open.spotify.com/track/7qqtTPQIMXAFubamFBPHG5
 +	*		Itt vagyok|To You|2001|https://open.spotify.com/track/1eD8zwx6moLmpfusp3kkRb
 			???|Beautiful Exchange|2010|https://open.spotify.com/track/6Z3LOmP5bdskYF16mVfVTq
-	*		Királyom|That's My King|2024|https://open.spotify.com/track/5r3D7E5p84hikjoSHDMwLt
-	*		Több illetne Téged meg|That's What We Came For|1998|https://open.spotify.com/track/3TqPg5Rp233AHyxdd4uPur
++	*		Királyom|That's My King|2024|https://open.spotify.com/track/5r3D7E5p84hikjoSHDMwLt
++	*		Több illetne Téged meg|That's What We Came For|1998|https://open.spotify.com/track/3TqPg5Rp233AHyxdd4uPur
+	*		Méltó|Praise Him|2002|https://open.spotify.com/track/1L7zGlS3HRMxhZVTaHFjgX
