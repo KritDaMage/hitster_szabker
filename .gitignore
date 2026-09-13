@@ -3,3 +3,5 @@ CLAUDE.md
 /tools/output
 /.vscode
 !/source/*.txt
+/.claude/
+/plans/

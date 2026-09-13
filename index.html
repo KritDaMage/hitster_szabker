@@ -30,12 +30,19 @@
   --vinyl-d:#0b0919;
   --disc: 78vw;
   --font: "Bricolage Grotesque", "Segoe UI", system-ui, -apple-system, sans-serif;
+  /* mozgás: közös görbék és időzítés (plans/001) */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-drawer: 300ms;
+  --current-bg: var(--fill);   /* a kiválasztott mód jelölése a menüben */
+  --focus: var(--gold);
 }
 :root[data-theme="light"]{
   --ink:#FDFBF6;
   --ink-lift:#E7E4DD;
   --paper:#221F26;
-  --dim:#726E78;
+  --dim:#67636D;
   --line-rgb:34,31,38;
   --hot:#4169E1;
   --hot-rgb:65,105,225;
@@ -46,6 +53,8 @@
   --vinyl-b:#232323;
   --vinyl-c:#3c3c3c;
   --vinyl-d:#0a0a0a;
+  --current-bg: var(--ink);
+  --focus: var(--hot);
 }
 @media (min-height:800px){ :root{ --disc: 72vw; } }
 
@@ -71,7 +80,8 @@ body{
 }
 button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 [hidden]{display:none !important}
-:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:4px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:4px}
+.menu:focus, #v-lyrics:focus, .rules-panel:focus{outline:none}   /* a panel maga csak a fókusz kiindulópontja, a Tab innen lép a gombokra */
 
 /* ─── shell ──────────────────────────────────────────────── */
 header{
@@ -81,7 +91,9 @@ header{
 }
 .head-left{display:flex}
 .head-mode-row{display:flex;align-items:center;gap:10px}
-.hamburger{width:22px;height:22px;display:grid;place-items:center;color:var(--paper)}
+.hamburger{width:44px;height:44px;margin:-11px;display:grid;place-items:center;color:var(--paper);
+  transition:transform 160ms var(--ease-out)}   /* 44px érintési terület, a negatív margó miatt a helyfoglalás marad 22px */
+.hamburger:active{transform:scale(.93)}
 .hamburger svg{width:20px;height:20px}
 .head-mode{display:flex;flex-direction:column;gap:3px}
 .head-progress{display:flex;flex-direction:column;align-items:flex-start;gap:4px;font-size:9px;margin-left:32px}
@@ -93,37 +105,52 @@ header{
 /* ─── bal oldali menü ────────────────────────────────────── */
 .menu-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;
-  opacity:0;pointer-events:none;transition:opacity .25s ease;
+  opacity:0;pointer-events:none;transition:opacity var(--dur-drawer) var(--ease-out);
 }
 .menu-overlay.open{opacity:1;pointer-events:auto}
 .menu{
   position:fixed;top:0;left:0;bottom:0;width:76%;max-width:280px;
-  background:var(--ink-lift);z-index:21;padding:max(24px,env(safe-area-inset-top)) 18px 18px;
+  background:var(--ink-lift);z-index:21;padding:max(24px,env(safe-area-inset-top)) 18px max(18px,env(safe-area-inset-bottom));
   display:flex;flex-direction:column;gap:8px;
-  overflow-y:auto;overflow-x:hidden;
-  transform:translateX(-100%);transition:transform .25s ease;
+  overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
+  transform:translateX(-100%);visibility:hidden;box-shadow:12px 0 40px rgba(0,0,0,.4);
+  transition:transform var(--dur-drawer) var(--ease-drawer), visibility 0s linear var(--dur-drawer);
 }
-.menu.open{transform:translateX(0)}
+.menu.open{transform:translateX(0);visibility:visible;
+  transition:transform var(--dur-drawer) var(--ease-drawer), visibility 0s}
 .menu h2{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
 .menu-dev{display:flex;flex-direction:column;gap:8px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(var(--line-rgb),.12)}
 .menu-divider{border-top:1px solid rgba(var(--line-rgb),.12);margin-top:18px}
+/* a két mód-blokk ugyanabban a rácscellában: nem kell magasságot animálni, csak áttűnni (plans/003) */
+.menu-mode-settings{display:grid;margin-top:18px}
 .menu-catalog{
+  grid-area:1/1;
   display:flex;flex-direction:column;gap:8px;
-  margin-top:0;
-  max-height:0;opacity:0;overflow:hidden;transform:translateY(-10px);
-  transition:max-height .3s ease, opacity .25s ease, transform .25s ease, margin-top .3s ease;
-  pointer-events:none;
+  opacity:0;transform:translateY(-10px);visibility:hidden;pointer-events:none;
+  transition:opacity 200ms var(--ease-out), transform 200ms var(--ease-out), visibility 0s linear 200ms;
 }
 .menu-catalog.show{
-  margin-top:18px;
-  max-height:260px;opacity:1;transform:translateY(0);
-  pointer-events:auto;
+  opacity:1;transform:translateY(0);visibility:visible;pointer-events:auto;
+  transition:opacity 200ms var(--ease-out), transform 200ms var(--ease-out), visibility 0s;
 }
 .menu-bottom{margin-top:auto;display:flex;flex-direction:column;gap:14px}
-.menu-link{padding:10px 16px;font-size:13px;color:var(--dim);text-align:left;text-decoration:underline;text-underline-offset:3px}
-.menu-item{padding:14px 16px;border-radius:12px;text-align:left;font-size:16px;font-weight:600;color:var(--paper)}
+.menu-link{min-height:44px;padding:10px 16px;font-size:13px;color:var(--dim);text-align:left;text-decoration:underline;text-underline-offset:3px}
+.menu-item{padding:14px 16px;border-radius:12px;text-align:left;font-size:16px;font-weight:600;color:var(--paper);
+  transition:background-color 150ms var(--ease-out), color 250ms var(--ease-in-out), transform 160ms var(--ease-out)}
+.menu-item:active{transform:scale(.98)}
+.menu-item:not([aria-current="true"]):active{background:rgba(var(--line-rgb),.08)}
 .menu-account{display:flex;flex-direction:column;gap:8px}
-.menu-item[aria-current="true"]{background:var(--fill);color:var(--fill-ink)}
+.menu-item[aria-current="true"]{color:var(--fill-ink)}
+/* a kiválasztott mód jelölése átcsúszik a két gomb között (plans/006) */
+.menu-modes{position:relative;display:flex;flex-direction:column;gap:8px}
+.menu-modes::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:calc(50% - 4px);border-radius:12px;
+  background:var(--current-bg);
+  transition:transform 250ms var(--ease-in-out);
+}
+body[data-mode="szabker"] .menu-modes::before{transform:translateY(calc(100% + 8px))}
+.menu-modes .menu-item{position:relative}
+@media (prefers-reduced-motion: reduce){ .menu-modes::before{transition:none} }
 
 main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;padding:20px 0}
 .view{display:none;width:100%;flex-direction:column;align-items:center;gap:26px}
@@ -132,7 +159,7 @@ main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;paddin
 /* ─── jobb oldali fiók: dalszöveg (próba, mint a bal oldali menü) ── */
 .lyrics-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;
-  opacity:0;pointer-events:none;transition:opacity .25s ease;
+  opacity:0;pointer-events:none;transition:opacity var(--dur-drawer) var(--ease-out);
 }
 .lyrics-overlay.open{opacity:1;pointer-events:auto}
 #v-lyrics{
@@ -140,9 +167,11 @@ main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;paddin
   position:fixed;top:0;right:0;bottom:0;width:100%;max-width:640px;
   background:var(--ink);z-index:21;overflow:hidden;
   padding:max(24px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));
-  transform:translateX(100%);transition:transform .25s ease;
+  transform:translateX(100%);visibility:hidden;box-shadow:-12px 0 40px rgba(0,0,0,.4);
+  transition:transform var(--dur-drawer) var(--ease-drawer), visibility 0s linear var(--dur-drawer);
 }
-#v-lyrics.open{transform:translateX(0);box-shadow:-12px 0 40px rgba(0,0,0,.4)}
+#v-lyrics.open{transform:translateX(0);visibility:visible;
+  transition:transform var(--dur-drawer) var(--ease-drawer), visibility 0s}
 .lyrics-close-row{flex:0 0 auto;display:flex;justify-content:space-between}
 .lyrics-pager-row{flex:0 0 auto}
 
@@ -150,12 +179,12 @@ main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;paddin
 .edit-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:30;
   display:flex;align-items:center;justify-content:center;padding:20px;
-  opacity:0;pointer-events:none;transition:opacity .2s ease;
+  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s ease, visibility 0s linear .2s;
 }
-.edit-overlay.open{opacity:1;pointer-events:auto}
+.edit-overlay.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .2s ease, visibility 0s}
 .rules-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:30;
-  opacity:0;pointer-events:none;transition:opacity .25s ease;
+  opacity:0;pointer-events:none;transition:opacity var(--dur-drawer) var(--ease-out);
 }
 .rules-overlay.open{opacity:1;pointer-events:auto}
 .rules-panel{
@@ -164,11 +193,20 @@ main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;paddin
   background:var(--ink);z-index:31;
   padding:max(24px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));
   color:var(--paper);
-  transform:translateX(100%);transition:transform .25s ease;
+  transform:translateX(100%);visibility:hidden;box-shadow:-12px 0 40px rgba(0,0,0,.4);
+  transition:transform var(--dur-drawer) var(--ease-drawer), visibility 0s linear var(--dur-drawer);
 }
-.rules-panel.open{transform:translateX(0);box-shadow:-12px 0 40px rgba(0,0,0,.4)}
+.rules-panel.open{transform:translateX(0);visibility:visible;
+  transition:transform var(--dur-drawer) var(--ease-drawer), visibility 0s}
+/* mozgáscsökkentés: a panelek nem csúsznak, csak beúsznak — a három panel szabályai után kell állnia */
+@media (prefers-reduced-motion: reduce){
+  .menu, #v-lyrics, .rules-panel{transform:none;opacity:0;
+    transition:opacity 200ms var(--ease-out), visibility 0s linear 200ms}
+  .menu.open, #v-lyrics.open, .rules-panel.open{opacity:1;
+    transition:opacity 200ms var(--ease-out), visibility 0s}
+}
 .rules-close-row{flex:0 0 auto;display:flex;justify-content:space-between}
-.rules-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:28px}
+.rules-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:28px}
 .rules-panel h2{margin:0}
 .rules-sub{color:var(--dim);font-size:13px;margin:0}
 .rules-group-title{color:var(--dim);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;margin:0}
@@ -357,11 +395,11 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 }
 .catalog-scrolltop.show{opacity:1;transform:translateY(0);pointer-events:auto}
 .catalog-scrolltop svg{width:20px;height:20px;fill:currentColor}
-.switch-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%}
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:44px;padding:0 16px}
 .switch-row span{font-size:14px;font-weight:600;color:var(--dim)}
 .switch{position:relative;width:42px;height:24px;border-radius:999px;background:var(--dim);flex:0 0 auto;transition:background .2s ease}
 .switch[aria-checked="true"]{background:var(--hot)}
-.switch-knob{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--paper);transition:transform .2s ease}
+.switch-knob{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--paper);transition:transform 200ms var(--ease-in-out)}
 .switch[aria-checked="true"] .switch-knob{transform:translateX(18px)}
 .dev{padding:14px 16px;border-radius:12px;background:var(--ink-lift);text-align:left;font-size:15px;font-weight:600}
 
@@ -377,7 +415,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   transform:translateZ(0)}
 .lyrics-player{display:flex;align-items:center;gap:12px;margin-bottom:4px}
 .lyrics-player-btn{width:40px;height:40px;border-radius:50%;background:var(--hot);color:var(--hot-ink);
-  display:grid;place-items:center;flex:0 0 auto}
+  display:grid;place-items:center;flex:0 0 auto;transition:transform 160ms var(--ease-out)}
 .lyrics-player-btn:active{transform:scale(.93)}
 .lyrics-player-btn svg{width:18px;height:18px;fill:currentColor}
 .lyrics-player-bar{flex:1 1 auto;height:6px;border-radius:999px;background:var(--ink-lift);overflow:hidden;
@@ -394,12 +432,13 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 .lyrics-video-btn{position:absolute;inset:0;width:100%;height:100%;display:grid;place-items:center;
   background:rgba(0,0,0,.25);border:0;cursor:pointer}
 .lyrics-video-btn span{width:52px;height:52px;border-radius:50%;background:var(--hot);color:var(--hot-ink);
-  display:grid;place-items:center}
+  display:grid;place-items:center;transition:transform 160ms var(--ease-out)}
 .lyrics-video-btn span svg{width:22px;height:22px;fill:currentColor;margin-left:3px}
 .lyrics-video-btn:active span{transform:scale(.93)}
 .lyrics-pager{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px}
-.lyrics-pager-btn{width:32px;height:32px;border-radius:50%;background:var(--ink-lift);color:var(--paper);
-  display:grid;place-items:center;font-size:18px;font-weight:700;flex:0 0 auto}
+.lyrics-pager-btn{position:relative;width:32px;height:32px;border-radius:50%;background:var(--ink-lift);color:var(--paper);
+  display:grid;place-items:center;font-size:18px;font-weight:700;flex:0 0 auto;transition:transform 160ms var(--ease-out)}
+.lyrics-pager-btn::after{content:"";position:absolute;inset:-6px}   /* 44px érintési terület, a kinézet marad 32px */
 .lyrics-pager-btn:active{transform:scale(.93)}
 .lyrics-pager-label{color:var(--dim);font-size:13px;font-weight:600;min-width:3.5ch;text-align:center}
 .lyrics-section{display:flex;flex-direction:column;gap:4px}
@@ -458,7 +497,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   <div class="head-left">
     <div class="head-mode">
       <div class="head-mode-row">
-        <button class="hamburger" id="b-menu" aria-label="Menü">
+        <button class="hamburger" id="b-menu" aria-label="Menü" aria-expanded="false" aria-controls="menu">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
         <span id="mode-label">Kártyák</span>
@@ -474,129 +513,128 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 
 <div class="menu-overlay" id="menu-overlay"></div>
 <div class="lyrics-overlay" id="lyrics-overlay"></div>
-<div class="rules-overlay" id="rules-overlay">
-  <div class="rules-panel" id="rules-panel">
-    <div class="rules-close-row">
-      <button type="button" class="pill ghost" id="b-rules-close">Vissza</button>
+<div class="rules-overlay" id="rules-overlay"></div>
+<div class="rules-panel" id="rules-panel" role="dialog" aria-modal="true" aria-label="Játékszabályok" tabindex="-1">
+  <div class="rules-close-row">
+    <button type="button" class="pill ghost" id="b-rules-close">Vissza</button>
+  </div>
+  <div class="rules-scroll">
+    <h2>Játékszabályok</h2>
+    <p class="rules-sub">A klasszikus Hitster menete, a mi verziónkra szabva.</p>
+
+    <div class="rule-card">
+      <div class="rule-card-icon">
+        <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 66h56" stroke-dasharray="1 9"/>
+          <circle cx="20" cy="66" r="11"/>
+          <circle cx="20" cy="66" r="3" fill="currentColor" stroke="none"/>
+          <circle cx="48" cy="66" r="11"/>
+          <circle cx="48" cy="66" r="3" fill="currentColor" stroke="none"/>
+          <path d="M66 52l16 14-16 14"/>
+        </svg>
+      </div>
+      <div class="rule-card-body">
+        <h3 class="rule-card-title">Cél</h3>
+        <p>A dalokat időrendbe kell rakni — ki tudja a legjobban, melyik szám mikor jelent meg?</p>
+      </div>
     </div>
-    <div class="rules-scroll">
-      <h2>Játékszabályok</h2>
-      <p class="rules-sub">A klasszikus Hitster menete, a mi verziónkra szabva.</p>
 
-      <div class="rule-card">
-        <div class="rule-card-icon">
-          <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M10 66h56" stroke-dasharray="1 9"/>
-            <circle cx="20" cy="66" r="11"/>
-            <circle cx="20" cy="66" r="3" fill="currentColor" stroke="none"/>
-            <circle cx="48" cy="66" r="11"/>
-            <circle cx="48" cy="66" r="3" fill="currentColor" stroke="none"/>
-            <path d="M66 52l16 14-16 14"/>
-          </svg>
-        </div>
-        <div class="rule-card-body">
-          <h3 class="rule-card-title">Cél</h3>
-          <p>A dalokat időrendbe kell rakni — ki tudja a legjobban, melyik szám mikor jelent meg?</p>
-        </div>
+    <h3 class="rules-group-title">Egy kör</h3>
+
+    <div class="rule-card">
+      <div class="rule-card-icon">
+        <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 30V18a4 4 0 0 1 4-4h12"/>
+          <path d="M82 30V18a4 4 0 0 0-4-4H66"/>
+          <path d="M14 66v12a4 4 0 0 0 4 4h12"/>
+          <path d="M82 66v12a4 4 0 0 1-4 4H66"/>
+          <rect x="30" y="30" width="36" height="36" rx="3"/>
+          <rect x="37" y="37" width="9" height="9" rx="1.5" fill="currentColor" stroke="none"/>
+          <rect x="50" y="37" width="9" height="9" rx="1.5" fill="currentColor" stroke="none"/>
+          <rect x="37" y="50" width="9" height="9" rx="1.5" fill="currentColor" stroke="none"/>
+        </svg>
       </div>
-
-      <h3 class="rules-group-title">Egy kör</h3>
-
-      <div class="rule-card">
-        <div class="rule-card-icon">
-          <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 30V18a4 4 0 0 1 4-4h12"/>
-            <path d="M82 30V18a4 4 0 0 0-4-4H66"/>
-            <path d="M14 66v12a4 4 0 0 0 4 4h12"/>
-            <path d="M82 66v12a4 4 0 0 1-4 4H66"/>
-            <rect x="30" y="30" width="36" height="36" rx="3"/>
-            <rect x="37" y="37" width="9" height="9" rx="1.5" fill="currentColor" stroke="none"/>
-            <rect x="50" y="37" width="9" height="9" rx="1.5" fill="currentColor" stroke="none"/>
-            <rect x="37" y="50" width="9" height="9" rx="1.5" fill="currentColor" stroke="none"/>
-          </svg>
-        </div>
-        <div class="rule-card-body">
-          <h3 class="rule-card-title">1. Beolvasás</h3>
-          <p>A soron lévő játékos beolvassa egy kártya QR-kódját. Elindul a dal, de a képernyőn semmi nem árulja el, mi szól — se cím, se évszám.</p>
-        </div>
+      <div class="rule-card-body">
+        <h3 class="rule-card-title">1. Beolvasás</h3>
+        <p>A soron lévő játékos beolvassa egy kártya QR-kódját. Elindul a dal, de a képernyőn semmi nem árulja el, mi szól — se cím, se évszám.</p>
       </div>
+    </div>
 
-      <div class="rule-card icon-left">
-        <div class="rule-card-icon">
-          <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M10 78h76"/>
-            <circle cx="26" cy="78" r="2.8" fill="currentColor" stroke="none"/>
-            <circle cx="70" cy="78" r="2.8" fill="currentColor" stroke="none"/>
-            <rect x="14" y="58" width="22" height="14" rx="3"/>
-            <rect x="60" y="58" width="22" height="14" rx="3"/>
-            <rect x="35" y="14" width="26" height="32" rx="4"/>
-            <path d="M48 48v14"/>
-            <path d="M41 58l7 7 7-7"/>
-          </svg>
-        </div>
-        <div class="rule-card-body">
-          <h3 class="rule-card-title">2. Elhelyezés</h3>
-          <p>Amíg szól, a játékos eldönti, hova illik a dal a saját, már kirakott idővonalán: korábbi vagy későbbi számok közé.</p>
-        </div>
+    <div class="rule-card icon-left">
+      <div class="rule-card-icon">
+        <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 78h76"/>
+          <circle cx="26" cy="78" r="2.8" fill="currentColor" stroke="none"/>
+          <circle cx="70" cy="78" r="2.8" fill="currentColor" stroke="none"/>
+          <rect x="14" y="58" width="22" height="14" rx="3"/>
+          <rect x="60" y="58" width="22" height="14" rx="3"/>
+          <rect x="35" y="14" width="26" height="32" rx="4"/>
+          <path d="M48 48v14"/>
+          <path d="M41 58l7 7 7-7"/>
+        </svg>
       </div>
-
-      <div class="rule-card">
-        <div class="rule-card-icon">
-          <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="42" cy="50" r="28"/>
-            <circle cx="42" cy="50" r="9" fill="currentColor" stroke="none"/>
-            <path d="M70 30a28 28 0 0 1 4 30"/>
-            <path d="M76 50l4 11-11-3"/>
-          </svg>
-        </div>
-        <div class="rule-card-body">
-          <h3 class="rule-card-title">3. Felfedés</h3>
-          <p>Miután letette a kártyát, jöhet a felfedés: a lemez <b>fekete szélére</b> kattintva előjön a cím (magyar és eredeti), a lemez <b>közepére</b> kattintva pedig az évszám.</p>
-        </div>
+      <div class="rule-card-body">
+        <h3 class="rule-card-title">2. Elhelyezés</h3>
+        <p>Amíg szól, a játékos eldönti, hova illik a dal a saját, már kirakott idővonalán: korábbi vagy későbbi számok közé.</p>
       </div>
+    </div>
 
-      <div class="rule-card icon-left">
-        <div class="rule-card-icon">
-          <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="34" cy="44" r="22"/>
-            <path d="M23 45l8 8 16-18"/>
-            <path d="M70 26l16 32M86 26l-16 32"/>
-          </svg>
-        </div>
-        <div class="rule-card-body">
-          <h3 class="rule-card-title">4. Eredmény</h3>
-          <p>Ha a kártya jó helyre került az idővonalon, ott is marad; ha nem, félrekerül.</p>
-        </div>
+    <div class="rule-card">
+      <div class="rule-card-icon">
+        <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="42" cy="50" r="28"/>
+          <circle cx="42" cy="50" r="9" fill="currentColor" stroke="none"/>
+          <path d="M70 30a28 28 0 0 1 4 30"/>
+          <path d="M76 50l4 11-11-3"/>
+        </svg>
       </div>
-
-      <div class="rule-card">
-        <div class="rule-card-icon">
-          <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M32 16h32v20a16 16 0 0 1-32 0V16z"/>
-            <path d="M32 24H18a10 10 0 0 0 14 16"/>
-            <path d="M64 24h14a10 10 0 0 1-14 16"/>
-            <path d="M48 52v12"/>
-            <path d="M40 68h16l2 12H38l2-12z"/>
-          </svg>
-        </div>
-        <div class="rule-card-body">
-          <h3 class="rule-card-title">Győzelem</h3>
-          <p>Az nyer, aki elsőként összerak 10 helyesen elhelyezett kártyát az idővonalán — vagy amennyit a társaság előre megbeszélt.</p>
-        </div>
+      <div class="rule-card-body">
+        <h3 class="rule-card-title">3. Felfedés</h3>
+        <p>Miután letette a kártyát, jöhet a felfedés: a lemez <b>fekete szélére</b> kattintva előjön a cím (magyar és eredeti), a lemez <b>közepére</b> kattintva pedig az évszám.</p>
       </div>
+    </div>
 
-      <div class="rule-card icon-left">
-        <div class="rule-card-icon">
-          <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M36 64V20l40-8v40"/>
-            <circle cx="28" cy="68" r="10"/>
-            <circle cx="68" cy="60" r="10"/>
-          </svg>
-        </div>
-        <div class="rule-card-body">
-          <h3 class="rule-card-title">Szabker dicsi mód</h3>
-          <p>QR-kódos dicsi játéknál a fizikai kártya hátoldalán már ott van az évszám és a cím, ezért ott a lemez nem fordul/fedi fel újra semmit — csak a Dalszöveg gomb segít, ha van hozzá felvéve szöveg. A "QR nélkül" kapcsolóval a kártyák helyett a katalógusból jön egy véletlen dal.</p>
-        </div>
+    <div class="rule-card icon-left">
+      <div class="rule-card-icon">
+        <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="34" cy="44" r="22"/>
+          <path d="M23 45l8 8 16-18"/>
+          <path d="M70 26l16 32M86 26l-16 32"/>
+        </svg>
+      </div>
+      <div class="rule-card-body">
+        <h3 class="rule-card-title">4. Eredmény</h3>
+        <p>Ha a kártya jó helyre került az idővonalon, ott is marad; ha nem, félrekerül.</p>
+      </div>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-card-icon">
+        <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M32 16h32v20a16 16 0 0 1-32 0V16z"/>
+          <path d="M32 24H18a10 10 0 0 0 14 16"/>
+          <path d="M64 24h14a10 10 0 0 1-14 16"/>
+          <path d="M48 52v12"/>
+          <path d="M40 68h16l2 12H38l2-12z"/>
+        </svg>
+      </div>
+      <div class="rule-card-body">
+        <h3 class="rule-card-title">Győzelem</h3>
+        <p>Az nyer, aki elsőként összerak 10 helyesen elhelyezett kártyát az idővonalán — vagy amennyit a társaság előre megbeszélt.</p>
+      </div>
+    </div>
+
+    <div class="rule-card icon-left">
+      <div class="rule-card-icon">
+        <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M36 64V20l40-8v40"/>
+          <circle cx="28" cy="68" r="10"/>
+          <circle cx="68" cy="60" r="10"/>
+        </svg>
+      </div>
+      <div class="rule-card-body">
+        <h3 class="rule-card-title">Szabker dicsi mód</h3>
+        <p>QR-kódos dicsi játéknál a fizikai kártya hátoldalán már ott van az évszám és a cím, ezért ott a lemez nem fordul/fedi fel újra semmit — csak a Dalszöveg gomb segít, ha van hozzá felvéve szöveg. A "QR nélkül" kapcsolóval a kártyák helyett a katalógusból jön egy véletlen dal.</p>
       </div>
     </div>
   </div>
@@ -611,38 +649,41 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
     </div>
   </div>
 </div>
-<nav class="menu" id="menu">
+<nav class="menu" id="menu" aria-label="Menü" tabindex="-1">
   <button class="menu-item" id="b-menu-rules" hidden>Játékszabályok</button>
   <div class="menu-account" id="menu-account" hidden>
     <button class="menu-item" id="b-menu-devices">Eszközválasztó</button>
-    <button class="menu-item" id="b-menu-logout">Kijelentkezés</button>
   </div>
 
   <div class="menu-divider" id="menu-divider-top"></div>
 
   <h2>Mód</h2>
-  <button class="menu-item" data-mode="general">Általános</button>
-  <button class="menu-item" data-mode="szabker">Szabker dicsi</button>
+  <div class="menu-modes">
+    <button class="menu-item" data-mode="general">Általános</button>
+    <button class="menu-item" data-mode="szabker">Szabker dicsi</button>
+  </div>
 
   <div class="menu-divider"></div>
 
-  <div class="menu-catalog" id="menu-general">
-    <h2>Általános</h2>
-    <label class="switch-row">
-      <span>QR nélkül</span>
-      <button type="button" class="switch" id="b-general-random-toggle" role="switch" aria-checked="false"><span class="switch-knob"></span></button>
-    </label>
-    <input type="url" class="catalog-search" id="playlist-url-input" placeholder="Publikus Spotify lejátszási lista linkje" autocomplete="off">
-    <p class="err" id="playlist-err"></p>
-  </div>
+  <div class="menu-mode-settings">
+    <div class="menu-catalog" id="menu-general">
+      <h2>Általános</h2>
+      <label class="switch-row">
+        <span>QR nélkül</span>
+        <button type="button" class="switch" id="b-general-random-toggle" role="switch" aria-checked="false"><span class="switch-knob"></span></button>
+      </label>
+      <input type="url" class="catalog-search" id="playlist-url-input" placeholder="Publikus Spotify lejátszási lista linkje" autocomplete="off">
+      <p class="err" id="playlist-err"></p>
+    </div>
 
-  <div class="menu-catalog" id="menu-catalog">
-    <h2>Dicsi</h2>
-    <label class="switch-row">
-      <span>QR nélkül</span>
-      <button type="button" class="switch" id="b-random-toggle" role="switch" aria-checked="false"><span class="switch-knob"></span></button>
-    </label>
-    <button class="menu-item" id="b-catalog">Dalkatalógus</button>
+    <div class="menu-catalog" id="menu-catalog">
+      <h2>Dicsi</h2>
+      <label class="switch-row">
+        <span>QR nélkül</span>
+        <button type="button" class="switch" id="b-random-toggle" role="switch" aria-checked="false"><span class="switch-knob"></span></button>
+      </label>
+      <button class="menu-item" id="b-catalog">Dalkatalógus</button>
+    </div>
   </div>
 
   <div class="menu-dev" id="menu-dev" hidden>
@@ -665,6 +706,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
       <span>Világos mód</span>
       <button type="button" class="switch" id="b-theme-toggle" role="switch" aria-checked="false"><span class="switch-knob"></span></button>
     </label>
+    <button class="menu-link" id="b-menu-logout" hidden>Kijelentkezés</button>
   </div>
 </nav>
 
@@ -720,7 +762,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   </section>
 
   <!-- 5. dalszöveg (Szabker dicsi mód) — jobb oldali fiók, próba -->
-  <section class="view" id="v-lyrics">
+  <section class="view" id="v-lyrics" role="dialog" aria-modal="true" aria-label="Dalszöveg" tabindex="-1">
     <div class="lyrics-close-row">
       <button type="button" class="pill ghost" id="b-lyrics-edit" hidden>Szerkesztés</button>
       <button class="pill ghost" id="b-lyrics-back">Vissza</button>
@@ -1356,11 +1398,17 @@ let revealed = { title: "", artist: "", huTitle: "" };
 let revealBusy = false;  // a fel-/visszatakaró fade alatt igaz — addig a reveal() nem indul ujra
 let catalogReturnView = "play";  // hova menjen a katalógus "Vissza" gombja
 let lyricsPlayerTrackId = null;  // csak katalógusból nyitott dalszövegnél: lejátszó gomb + progress sáv a cím fölött
+let lyricsOpener = null;  // ahonnan a dalszöveg-fiókot megnyitották: bezáráskor ide tér vissza a fókusz
 function openLyricsDrawer(){
   const alreadyOpen = $("v-lyrics").classList.contains("open");
+  if (!alreadyOpen) lyricsOpener = document.activeElement;
   $("v-lyrics").classList.add("open");
   $("lyrics-overlay").classList.add("open");
-  if (!alreadyOpen) history.pushState({ modal: "lyrics" }, "");
+  syncInert();
+  if (!alreadyOpen) {
+    history.pushState({ modal: "lyrics" }, "");
+    $("v-lyrics").focus({ preventScroll: true });
+  }
 }
 async function toggleLyricsPlayer(){
   const id = lyricsPlayerTrackId;
@@ -1375,8 +1423,12 @@ async function toggleLyricsPlayer(){
   await startPlayback(id);
 }
 function closeLyricsDrawer(){
+  const hadFocus = $("v-lyrics").contains(document.activeElement);
   $("v-lyrics").classList.remove("open");
   $("lyrics-overlay").classList.remove("open");
+  syncInert();
+  if (hadFocus && lyricsOpener && lyricsOpener.isConnected) lyricsOpener.focus({ preventScroll: true });
+  lyricsOpener = null;
 }
 async function loadLyrics(id){
   try {
@@ -1770,10 +1822,15 @@ function lyricsSearchText(data){
 
 async function openCatalog(){
   const alreadyOpen = $("v-catalog").classList.contains("on");
+  const fromMenu = $("menu").classList.contains("open") && !!history.state && history.state.modal === "menu";
+  // a katalógus már nyitva van, és a menüből kérték újra: elég a menüt bezárni
+  if (fromMenu && alreadyOpen) { history.back(); return; }
   catalogReturnView = views.find(v => v !== "catalog" && $("v-"+v).classList.contains("on")) || "play";
   closeMenu();
   show("catalog");
-  if (!alreadyOpen) history.pushState({ modal: "catalog" }, "");
+  // a menüből nyitva a menü history-bejegyzését cseréljük le, hogy ne maradjon árva bejegyzés
+  if (fromMenu) history.replaceState({ modal: "catalog" }, "");
+  else if (!alreadyOpen) history.pushState({ modal: "catalog" }, "");
   $("catalog-search").value = "";
   const [all, titles] = await Promise.all([loadAllSongs(), loadTitles()]);
   catalogEntries = all.map(e => {
@@ -1856,6 +1913,11 @@ function youtubeVideoBlock(id, start){
   box.appendChild(btn);
   holder.appendChild(box);
   return holder;
+}
+// fordítás-lapozáskor a szöveg röviden beúszik, hogy látsszon a váltás (plans/007)
+function fadeInLyrics(){
+  const el = $("lyrics-scroll");
+  if (el.animate) el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 150, easing: "cubic-bezier(0.23, 1, 0.32, 1)" });
 }
 function renderLyrics(){
   const wrap = $("lyrics-scroll");
@@ -1947,7 +2009,7 @@ function renderLyrics(){
     prev.className = "lyrics-pager-btn";
     prev.setAttribute("aria-label", "Előző fordítás");
     prev.textContent = "‹";
-    prev.onclick = () => { lyricsVersionIndex = (lyricsVersionIndex - 1 + versions.length) % versions.length; renderLyrics(); };
+    prev.onclick = () => { lyricsVersionIndex = (lyricsVersionIndex - 1 + versions.length) % versions.length; renderLyrics(); fadeInLyrics(); };
     const label = document.createElement("span");
     label.className = "lyrics-pager-label";
     label.textContent = (lyricsVersionIndex + 1) + " / " + versions.length;
@@ -1956,7 +2018,7 @@ function renderLyrics(){
     next.className = "lyrics-pager-btn";
     next.setAttribute("aria-label", "Következő fordítás");
     next.textContent = "›";
-    next.onclick = () => { lyricsVersionIndex = (lyricsVersionIndex + 1) % versions.length; renderLyrics(); };
+    next.onclick = () => { lyricsVersionIndex = (lyricsVersionIndex + 1) % versions.length; renderLyrics(); fadeInLyrics(); };
     pager.appendChild(prev);
     pager.appendChild(label);
     pager.appendChild(next);
@@ -1993,7 +2055,7 @@ function renderLyrics(){
     empty.textContent = "Nincs dalszöveg.";
     wrap.appendChild(empty);
   }
-  if (MOCK && active && active.youtube) {
+  if (active && active.youtube) {
     const yt = parseYoutube(active.youtube);
     if (yt) wrap.appendChild(youtubeVideoBlock(yt.id, yt.start));
   }
@@ -2355,8 +2417,8 @@ function closeLyricsDrawerByUser(){
   if (lyricsPlayerTrackId && trackId === lyricsPlayerTrackId && playing) toggle();
   closeLyricsDrawer();
 }
-$("b-lyrics-back").onclick = () => history.back();
-$("lyrics-overlay").onclick = () => history.back();
+$("b-lyrics-back").onclick = () => dismiss("lyrics", closeLyricsDrawerByUser);
+$("lyrics-overlay").onclick = () => dismiss("lyrics", closeLyricsDrawerByUser);
 if (MOCK) {
   // a fejlesztői élő szerver bármelyik lyrics/*.json fájl mentésekor újratölti az oldalt —
   // nem csak a beépített szerkesztőn keresztüli mentésnél, hanem az IDE-ből közvetlenül
@@ -2370,8 +2432,17 @@ if (MOCK) {
 $("b-catalog").onclick = openCatalog;
 $("b-catalog-back").onclick = () => history.back();
 window.addEventListener("popstate", () => {
-  if ($("v-lyrics").classList.contains("open")) closeLyricsDrawerByUser();
+  // mindig a legfelső nyitott réteget zárjuk: szabályok > dalszöveg > menü > katalógus
+  if ($("rules-panel").classList.contains("open")) closeRules();
+  else if ($("v-lyrics").classList.contains("open")) closeLyricsDrawerByUser();
+  else if ($("menu").classList.contains("open")) closeMenu();
   else if ($("v-catalog").classList.contains("on")) show(catalogReturnView);
+});
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape" || $("edit-overlay").classList.contains("open")) return;
+  if ($("rules-panel").classList.contains("open")) dismiss("rules", closeRules);
+  else if ($("v-lyrics").classList.contains("open")) dismiss("lyrics", closeLyricsDrawerByUser);
+  else if ($("menu").classList.contains("open")) dismiss("menu", closeMenu);
 });
 $("catalog-search").addEventListener("input", () => renderCatalogList($("catalog-search").value));
 function updateCatalogScrollTop(){
@@ -2537,29 +2608,75 @@ function toggleTheme(){
   applyTheme();
 }
 function openMenu(){
+  const alreadyOpen = $("menu").classList.contains("open");
   $("menu-account").hidden = !(MOCK || !!localStorage.getItem("tok"));
+  $("b-menu-logout").hidden = $("menu-account").hidden;
   // a felső elválasztó csak akkor kell, ha van felette valami
   $("menu-divider-top").hidden = $("menu-account").hidden && $("b-menu-rules").hidden;
   $("menu").classList.add("open");
   $("menu-overlay").classList.add("open");
+  $("b-menu").setAttribute("aria-expanded", "true");
+  syncInert();
+  // saját history-bejegyzés: a telefon vissza gombja a menüt zárja be, ne az oldalt hagyja el
+  if (!alreadyOpen) {
+    history.pushState({ modal: "menu" }, "");
+    $("menu").focus({ preventScroll: true });
+  }
 }
-function closeMenu(){ $("menu").classList.remove("open"); $("menu-overlay").classList.remove("open"); }
+function closeMenu(){
+  const hadFocus = $("menu").contains(document.activeElement);
+  // ha a menüben volt a fókusz (pl. a playlist-mezőben), előbb blur, hogy a "change" mentés lefusson
+  if (hadFocus) document.activeElement.blur();
+  $("menu").classList.remove("open");
+  $("menu-overlay").classList.remove("open");
+  $("b-menu").setAttribute("aria-expanded", "false");
+  syncInert();
+  if (hadFocus) $("b-menu").focus({ preventScroll: true });
+}
 function logout(){
   localStorage.removeItem("tok");
-  closeMenu();
+  dismiss("menu", closeMenu);
   closeLyricsDrawer();
   show("auth");
 }
-function openRules(){ $("rules-overlay").classList.add("open"); $("rules-panel").classList.add("open"); }
-function closeRules(){ $("rules-overlay").classList.remove("open"); $("rules-panel").classList.remove("open"); }
+function openRules(){
+  const alreadyOpen = $("rules-panel").classList.contains("open");
+  $("rules-overlay").classList.add("open");
+  $("rules-panel").classList.add("open");
+  syncInert();
+  if (!alreadyOpen) {
+    history.pushState({ modal: "rules" }, "");
+    $("rules-panel").focus({ preventScroll: true });
+  }
+}
+function closeRules(){
+  const hadFocus = $("rules-panel").contains(document.activeElement);
+  $("rules-overlay").classList.remove("open");
+  $("rules-panel").classList.remove("open");
+  syncInert();
+  if (hadFocus) $("b-menu-rules").focus({ preventScroll: true });
+}
+// a legfelső nyitott panel alatti tartalom ne legyen elérhető billentyűzettel és képernyőolvasóval
+function syncInert(){
+  const top = ["rules-panel", "v-lyrics", "menu"].map(id => $(id)).find(el => el.classList.contains("open")) || null;
+  const layers = [document.querySelector("header"), document.querySelector("footer"), $("menu"), $("rules-panel"),
+    ...document.querySelectorAll("main > .view")];
+  layers.forEach(el => { if (el) el.inert = !!top && el !== top; });
+}
+// a felhasználó zár be egy panelt: ha a legfelső history-bejegyzés az övé, a vissza gomb útján
+// (a popstate zárja be), különben — pl. árva bejegyzésnél — közvetlenül
+function dismiss(modal, close){
+  if (history.state && history.state.modal === modal) history.back();
+  else close();
+}
 
 $("b-menu").onclick = openMenu;
 $("b-menu-logout").onclick = logout;
-$("b-menu-devices").onclick = () => { closeMenu(); pickDevice(); };
+$("b-menu-devices").onclick = () => { dismiss("menu", closeMenu); pickDevice(); };
 $("b-menu-rules").onclick = openRules;
-$("b-rules-close").onclick = closeRules;
-$("rules-overlay").onclick = e => { if (e.target.id === "rules-overlay") closeRules(); };
-$("menu-overlay").onclick = closeMenu;
+$("b-rules-close").onclick = () => dismiss("rules", closeRules);
+$("rules-overlay").onclick = e => { if (e.target.id === "rules-overlay") dismiss("rules", closeRules); };
+$("menu-overlay").onclick = () => dismiss("menu", closeMenu);
 document.querySelectorAll(".menu-item[data-mode]").forEach(b => {
   b.onclick = async () => {
     const newMode = b.dataset.mode;
