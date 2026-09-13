@@ -110,22 +110,45 @@ header{
 .menu-overlay.open{opacity:1;pointer-events:auto}
 .menu{
   position:fixed;top:0;left:0;bottom:0;width:76%;max-width:280px;
-  background:var(--ink-lift);z-index:21;padding:max(24px,env(safe-area-inset-top)) 18px max(18px,env(safe-area-inset-bottom));
-  display:flex;flex-direction:column;gap:8px;
-  overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
+  background:var(--ink-lift);z-index:21;overflow:hidden;
   transform:translateX(-100%);visibility:hidden;box-shadow:12px 0 40px rgba(0,0,0,.4);
   transition:transform var(--dur-drawer) var(--ease-drawer), visibility 0s linear var(--dur-drawer);
 }
 .menu.open{transform:translateX(0);visibility:visible;
   transition:transform var(--dur-drawer) var(--ease-drawer), visibility 0s}
-.menu h2{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
-.menu-dev{display:flex;flex-direction:column;gap:8px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(var(--line-rgb),.12)}
-.menu-divider{border-top:1px solid rgba(var(--line-rgb),.12);margin-top:18px}
+/* két panel egymás mellett: a fő menü és a fejlesztői aloldal (csak mock) */
+.menu-pane{
+  position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
+  display:flex;flex-direction:column;gap:4px;background:var(--ink-lift);
+  padding:max(24px,env(safe-area-inset-top)) 18px max(18px,env(safe-area-inset-bottom));
+  transition:transform var(--dur-drawer) var(--ease-drawer), opacity var(--dur-drawer) var(--ease-drawer);
+}
+.menu-pane > *{flex-shrink:0}
+.menu-sub{transform:translateX(100%)}
+.menu.sub-open .menu-sub{transform:none}
+.menu.sub-open .menu-main{transform:translateX(-25%);opacity:0}
+.menu.instant .menu-pane{transition:none}
+.menu h2{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);padding:0 16px;margin-bottom:6px}
+.menu-divider{height:1px;background:rgba(var(--line-rgb),.12);margin:12px 16px}
+.menu-spacer{flex:1 0 16px}
+/* egyetlen sortípus a menüben: 48px magas, 15px / 600 */
+.menu-item{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:48px;padding:0 16px;
+  border-radius:12px;text-align:left;font-size:15px;font-weight:600;color:var(--paper);cursor:pointer;
+  transition:background-color 150ms var(--ease-out), color 250ms var(--ease-in-out), transform 160ms var(--ease-out)}
+button.menu-item:active{transform:scale(.98)}
+button.menu-item:not([aria-current="true"]):active{background:rgba(var(--line-rgb),.08)}
+.menu-item > svg{width:18px;height:18px;color:var(--dim);flex:0 0 auto}
+.menu-item-hot{color:var(--hot)}
+.menu-item-dim{color:var(--dim);font-weight:400;font-size:14px}
+.menu-back{display:flex;align-items:center;gap:4px;min-height:44px;margin:-10px 0 8px -8px;padding:0 8px;align-self:flex-start;
+  font-size:14px;font-weight:600;color:var(--dim)}
+.menu-back svg{width:18px;height:18px}
+.menu-sub-foot{margin-top:auto;padding-top:18px}
 /* a két mód-blokk ugyanabban a rácscellában: nem kell magasságot animálni, csak áttűnni (plans/003) */
-.menu-mode-settings{display:grid;margin-top:18px}
+.menu-mode-settings{display:grid}
 .menu-catalog{
   grid-area:1/1;
-  display:flex;flex-direction:column;gap:8px;
+  display:flex;flex-direction:column;gap:4px;
   opacity:0;transform:translateY(-10px);visibility:hidden;pointer-events:none;
   transition:opacity 200ms var(--ease-out), transform 200ms var(--ease-out), visibility 0s linear 200ms;
 }
@@ -133,24 +156,34 @@ header{
   opacity:1;transform:translateY(0);visibility:visible;pointer-events:auto;
   transition:opacity 200ms var(--ease-out), transform 200ms var(--ease-out), visibility 0s;
 }
-.menu-bottom{margin-top:auto;display:flex;flex-direction:column;gap:14px}
-.menu-link{min-height:44px;padding:10px 16px;font-size:13px;color:var(--dim);text-align:left;text-decoration:underline;text-underline-offset:3px}
-.menu-item{padding:14px 16px;border-radius:12px;text-align:left;font-size:16px;font-weight:600;color:var(--paper);
-  transition:background-color 150ms var(--ease-out), color 250ms var(--ease-in-out), transform 160ms var(--ease-out)}
-.menu-item:active{transform:scale(.98)}
-.menu-item:not([aria-current="true"]):active{background:rgba(var(--line-rgb),.08)}
-.menu-account{display:flex;flex-direction:column;gap:8px}
-.menu-item[aria-current="true"]{color:var(--fill-ink)}
+.menu-input{width:100%;margin-top:4px;padding:12px 14px;border-radius:12px;background:rgba(var(--line-rgb),.07);color:var(--paper);
+  font:inherit;font-size:14px;border:none;outline:none;-webkit-appearance:none;appearance:none}
+.menu-input::placeholder{color:var(--dim)}
 /* a kiválasztott mód jelölése átcsúszik a két gomb között (plans/006) */
-.menu-modes{position:relative;display:flex;flex-direction:column;gap:8px}
+.menu-modes{position:relative;display:flex;flex-direction:column;gap:4px}
 .menu-modes::before{
-  content:"";position:absolute;left:0;right:0;top:0;height:calc(50% - 4px);border-radius:12px;
+  content:"";position:absolute;left:0;right:0;top:0;height:calc(50% - 2px);border-radius:12px;
   background:var(--current-bg);
   transition:transform 250ms var(--ease-in-out);
 }
-body[data-mode="szabker"] .menu-modes::before{transform:translateY(calc(100% + 8px))}
+body[data-mode="szabker"] .menu-modes::before{transform:translateY(calc(100% + 4px))}
 .menu-modes .menu-item{position:relative}
-@media (prefers-reduced-motion: reduce){ .menu-modes::before{transition:none} }
+.menu-modes .menu-item[aria-current="true"]{color:var(--fill-ink)}
+/* téma: az aktuális érték és egy hold/nap ikon, koppintásra átfordul */
+.menu-val{display:flex;align-items:center;gap:10px;color:var(--dim);font-weight:400;font-size:14px}
+.theme-ico{display:grid;width:22px;height:22px;color:var(--paper)}
+.theme-ico svg{grid-area:1/1;width:22px;height:22px;transition:transform 300ms var(--ease-out), opacity 200ms var(--ease-out)}
+.theme-ico .i-sun{opacity:0;transform:rotate(-90deg) scale(.5)}
+:root[data-theme="light"] .theme-ico .i-sun{opacity:1;transform:none}
+:root[data-theme="light"] .theme-ico .i-moon{opacity:0;transform:rotate(90deg) scale(.5)}
+@media (prefers-reduced-motion: reduce){
+  .menu-modes::before{transition:none}
+  .menu-pane{transition:opacity 200ms var(--ease-out)}
+  .menu-sub, .menu.sub-open .menu-main{transform:none}
+  .menu-sub{opacity:0}
+  .menu.sub-open .menu-sub{opacity:1}
+  .theme-ico svg, .theme-ico .i-sun, :root[data-theme="light"] .theme-ico .i-moon{transform:none}
+}
 
 main{flex:1 1 auto;display:flex;align-items:center;justify-content:center;padding:20px 0}
 .view{display:none;width:100%;flex-direction:column;align-items:center;gap:26px}
@@ -380,7 +413,7 @@ h1{font-size:clamp(26px,7.6vw,34px);font-weight:800;letter-spacing:-.035em;line-
 code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   background:var(--ink-lift);padding:3px 6px;border-radius:5px;word-break:break-all;color:var(--paper)}
 .err{color:var(--hot);font-size:14px;text-align:center;line-height:1.5;max-width:34ch;min-height:2.4em}
-#playlist-err{min-height:auto;max-width:none;text-align:left;font-size:12px}
+#playlist-err{min-height:auto;max-width:none;text-align:left;font-size:12px;padding:0 4px}
 .devs{display:flex;flex-direction:column;gap:8px;width:100%;max-width:420px;margin:0 auto}
 .catalog-search{width:100%;max-width:420px;margin:0 auto;padding:14px 16px;border-radius:12px;
   background:var(--ink-lift);color:var(--paper);font:inherit;font-size:15px;border:none;outline:none;
@@ -395,11 +428,10 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
 }
 .catalog-scrolltop.show{opacity:1;transform:translateY(0);pointer-events:auto}
 .catalog-scrolltop svg{width:20px;height:20px;fill:currentColor}
-.switch-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:44px;padding:0 16px}
-.switch-row span{font-size:14px;font-weight:600;color:var(--dim)}
 .switch{position:relative;width:42px;height:24px;border-radius:999px;background:var(--dim);flex:0 0 auto;transition:background .2s ease}
 .switch[aria-checked="true"]{background:var(--hot)}
 .switch-knob{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--paper);transition:transform 200ms var(--ease-in-out)}
+:root[data-theme="light"] .switch-knob{background:#fff}   /* világos témában ne legyen sötét a gomb */
 .switch[aria-checked="true"] .switch-knob{transform:translateX(18px)}
 .dev{padding:14px 16px;border-radius:12px;background:var(--ink-lift);text-align:left;font-size:15px;font-weight:600}
 
@@ -650,63 +682,74 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
   </div>
 </div>
 <nav class="menu" id="menu" aria-label="Menü" tabindex="-1">
-  <button class="menu-item" id="b-menu-rules" hidden>Játékszabályok</button>
-  <div class="menu-account" id="menu-account" hidden>
-    <button class="menu-item" id="b-menu-devices">Eszközválasztó</button>
-  </div>
-
-  <div class="menu-divider" id="menu-divider-top"></div>
-
-  <h2>Mód</h2>
-  <div class="menu-modes">
-    <button class="menu-item" data-mode="general">Általános</button>
-    <button class="menu-item" data-mode="szabker">Szabker dicsi</button>
-  </div>
-
-  <div class="menu-divider"></div>
-
-  <div class="menu-mode-settings">
-    <div class="menu-catalog" id="menu-general">
-      <h2>Általános</h2>
-      <label class="switch-row">
-        <span>QR nélkül</span>
-        <button type="button" class="switch" id="b-general-random-toggle" role="switch" aria-checked="false"><span class="switch-knob"></span></button>
-      </label>
-      <input type="url" class="catalog-search" id="playlist-url-input" placeholder="Publikus Spotify lejátszási lista linkje" autocomplete="off">
-      <p class="err" id="playlist-err"></p>
+  <div class="menu-pane menu-main" id="menu-main">
+    <h2>Játék</h2>
+    <div class="menu-modes">
+      <button class="menu-item" data-mode="general">Általános</button>
+      <button class="menu-item" data-mode="szabker">Szabker dicsi</button>
     </div>
 
-    <div class="menu-catalog" id="menu-catalog">
-      <h2>Dicsi</h2>
-      <label class="switch-row">
-        <span>QR nélkül</span>
-        <button type="button" class="switch" id="b-random-toggle" role="switch" aria-checked="false"><span class="switch-knob"></span></button>
-      </label>
-      <button class="menu-item" id="b-catalog">Dalkatalógus</button>
+    <div class="menu-divider"></div>
+
+    <div class="menu-mode-settings">
+      <div class="menu-catalog" id="menu-general">
+        <label class="menu-item">
+          <span>QR nélkül</span>
+          <button type="button" class="switch" id="b-general-random-toggle" role="switch" aria-checked="false"><span class="switch-knob"></span></button>
+        </label>
+        <input type="url" class="menu-input" id="playlist-url-input" placeholder="Publikus Spotify lejátszási lista linkje" autocomplete="off">
+        <p class="err" id="playlist-err"></p>
+      </div>
+
+      <div class="menu-catalog" id="menu-catalog">
+        <label class="menu-item">
+          <span>QR nélkül</span>
+          <button type="button" class="switch" id="b-random-toggle" role="switch" aria-checked="false"><span class="switch-knob"></span></button>
+        </label>
+        <button class="menu-item" id="b-catalog"><span>Dalkatalógus</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
     </div>
+    <button class="menu-item" id="b-menu-rules" hidden><span>Játékszabályok</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+
+    <div class="menu-spacer"></div>
+
+    <h2>Beállítások</h2>
+    <button type="button" class="menu-item" id="b-theme-toggle">
+      <span>Téma</span>
+      <span class="menu-val"><span id="theme-name">Sötét</span><span class="theme-ico" aria-hidden="true">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </span></span>
+    </button>
+    <button class="menu-item" id="b-menu-devices" hidden><span>Eszközválasztó</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+    <button class="menu-item" id="b-menu-dev" hidden aria-controls="menu-dev"><span>Fejlesztői navigáció</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+    <button class="menu-item menu-item-dim" id="b-mock-toggle" hidden>Fejlesztői mód</button>
+    <button class="menu-item menu-item-hot" id="b-menu-logout" hidden>
+      <span>Kijelentkezés</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h3"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+    </button>
   </div>
 
-  <div class="menu-dev" id="menu-dev" hidden>
-    <h2>Fejlesztői navigáció</h2>
+  <div class="menu-pane menu-sub" id="menu-dev" hidden inert>
+    <button type="button" class="menu-back" id="b-menu-dev-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+      <span>Menü</span>
+    </button>
+    <h2>Nézetek</h2>
     <button class="menu-item" data-view="auth">Belépés</button>
     <button class="menu-item" data-view="scan">Szkennelés</button>
     <button class="menu-item" data-view="play">Lejátszás</button>
     <button class="menu-item" data-view="dev">Eszközválasztó</button>
     <button class="menu-item" data-view="catalog">Dalkatalógus</button>
     <button class="menu-item" data-view="lyrics">Dalszöveg</button>
-    <button class="menu-item" data-err="auth">Hiba: lejárt belépés</button>
-    <button class="menu-item" data-err="play">Hiba: lejátszás</button>
-    <button class="menu-item" data-err="scan">Hiba: szkennelés</button>
-    <button class="menu-item" data-err="dev">Hiba: eszközválasztó</button>
-  </div>
-
-  <div class="menu-bottom">
-    <button class="menu-link" id="b-mock-toggle" hidden></button>
-    <label class="switch-row">
-      <span>Világos mód</span>
-      <button type="button" class="switch" id="b-theme-toggle" role="switch" aria-checked="false"><span class="switch-knob"></span></button>
-    </label>
-    <button class="menu-link" id="b-menu-logout" hidden>Kijelentkezés</button>
+    <h2 style="margin-top:16px">Hibaállapotok</h2>
+    <button class="menu-item menu-item-hot" data-err="auth">Lejárt belépés</button>
+    <button class="menu-item menu-item-hot" data-err="play">Lejátszás</button>
+    <button class="menu-item menu-item-hot" data-err="scan">Szkennelés</button>
+    <button class="menu-item menu-item-hot" data-err="dev">Eszközválasztó</button>
+    <div class="menu-sub-foot">
+      <button class="menu-item menu-item-dim" id="b-mock-exit">Kilépés a fejlesztői módból</button>
+    </div>
   </div>
 </nav>
 
@@ -2442,6 +2485,7 @@ document.addEventListener("keydown", e => {
   if (e.key !== "Escape" || $("edit-overlay").classList.contains("open")) return;
   if ($("rules-panel").classList.contains("open")) dismiss("rules", closeRules);
   else if ($("v-lyrics").classList.contains("open")) dismiss("lyrics", closeLyricsDrawerByUser);
+  else if ($("menu").classList.contains("sub-open") && $("menu").classList.contains("open")) setMenuSub(false);
   else if ($("menu").classList.contains("open")) dismiss("menu", closeMenu);
 });
 $("catalog-search").addEventListener("input", () => renderCatalogList($("catalog-search").value));
@@ -2573,7 +2617,7 @@ function applyMode(){
   $("blank-logo").hidden = mode !== "szabker";
   $("menu-catalog").classList.toggle("show", mode === "szabker");
   $("menu-general").classList.toggle("show", mode === "general");
-  document.querySelectorAll(".menu-item").forEach(b => {
+  document.querySelectorAll("#menu [data-mode]").forEach(b => {
     b.setAttribute("aria-current", b.dataset.mode === mode ? "true" : "false");
   });
   updateRevealProgress();
@@ -2599,7 +2643,9 @@ function toggleGeneralRandomMode(){
 }
 function applyTheme(){
   document.documentElement.dataset.theme = theme;
-  $("b-theme-toggle").setAttribute("aria-checked", theme === "light" ? "true" : "false");
+  const themeName = theme === "light" ? "Világos" : "Sötét";
+  $("theme-name").textContent = themeName;
+  $("b-theme-toggle").setAttribute("aria-label", "Téma: " + themeName + ". Koppints a váltáshoz.");
   document.querySelector('meta[name="theme-color"]').setAttribute("content", theme === "light" ? "#FDFBF6" : "#16123A");
 }
 function toggleTheme(){
@@ -2609,10 +2655,11 @@ function toggleTheme(){
 }
 function openMenu(){
   const alreadyOpen = $("menu").classList.contains("open");
-  $("menu-account").hidden = !(MOCK || !!localStorage.getItem("tok"));
-  $("b-menu-logout").hidden = $("menu-account").hidden;
-  // a felső elválasztó csak akkor kell, ha van felette valami
-  $("menu-divider-top").hidden = $("menu-account").hidden && $("b-menu-rules").hidden;
+  const loggedIn = MOCK || !!localStorage.getItem("tok");
+  $("b-menu-devices").hidden = !loggedIn;
+  $("b-menu-logout").hidden = !loggedIn;
+  // mindig a fő menüvel nyíljon, animáció nélkül visszaállítva
+  if (!alreadyOpen && $("menu").classList.contains("sub-open")) setMenuSub(false, true);
   $("menu").classList.add("open");
   $("menu-overlay").classList.add("open");
   $("b-menu").setAttribute("aria-expanded", "true");
@@ -2632,6 +2679,16 @@ function closeMenu(){
   $("b-menu").setAttribute("aria-expanded", "false");
   syncInert();
   if (hadFocus) $("b-menu").focus({ preventScroll: true });
+}
+// fejlesztői aloldal a menün belül
+function setMenuSub(on, instant){
+  const menu = $("menu");
+  if (instant) { menu.classList.add("instant"); menu.offsetWidth; }
+  menu.classList.toggle("sub-open", on);
+  $("menu-main").inert = on;
+  $("menu-dev").inert = !on;
+  if (instant) { menu.offsetWidth; menu.classList.remove("instant"); }
+  else (on ? $("b-menu-dev-back") : $("b-menu-dev")).focus({ preventScroll: true });
 }
 function logout(){
   localStorage.removeItem("tok");
@@ -2674,10 +2731,12 @@ $("b-menu").onclick = openMenu;
 $("b-menu-logout").onclick = logout;
 $("b-menu-devices").onclick = () => { dismiss("menu", closeMenu); pickDevice(); };
 $("b-menu-rules").onclick = openRules;
+$("b-menu-dev").onclick = () => setMenuSub(true);
+$("b-menu-dev-back").onclick = () => setMenuSub(false);
 $("b-rules-close").onclick = () => dismiss("rules", closeRules);
 $("rules-overlay").onclick = e => { if (e.target.id === "rules-overlay") dismiss("rules", closeRules); };
 $("menu-overlay").onclick = () => dismiss("menu", closeMenu);
-document.querySelectorAll(".menu-item[data-mode]").forEach(b => {
+document.querySelectorAll("#menu [data-mode]").forEach(b => {
   b.onclick = async () => {
     const newMode = b.dataset.mode;
     const changed = newMode !== mode;
@@ -2716,6 +2775,7 @@ applyTheme();
 
 if (MOCK) {
   $("menu-dev").hidden = false;
+  $("b-menu-dev").hidden = false;
   $("b-menu-rules").hidden = false;
   $("col-catalog-lastcol").style.width = "92px";
   $("col-catalog-check").style.width = "32px";
@@ -2732,7 +2792,7 @@ if (MOCK) {
     updateCatalogSortIndicators();
     renderCatalogList($("catalog-search").value);
   };
-  document.querySelectorAll(".menu-item[data-view]").forEach(b => {
+  document.querySelectorAll("#menu [data-view]").forEach(b => {
     b.onclick = () => {
       const v = b.dataset.view;
       if (v === "dev") {
@@ -2757,7 +2817,7 @@ if (MOCK) {
       }
     };
   });
-  document.querySelectorAll(".menu-item[data-err]").forEach(b => {
+  document.querySelectorAll("#menu [data-err]").forEach(b => {
     b.onclick = () => {
       const kind = b.dataset.err;
       if (kind === "auth") { show("auth"); $("auth-err").textContent = "Lejárt a bejelentkezés. Lépj be újra."; }
@@ -2766,16 +2826,13 @@ if (MOCK) {
       else if (kind === "dev") { show("dev"); $("dev-err").textContent = "Nincs elérhető eszköz. Nyisd meg a Spotify appot és játssz le benne bármit egy pillanatra, aztán frissítsd a listát."; }
     };
   });
-  $("b-mock-toggle").hidden = false;
-  $("b-mock-toggle").textContent = "Kilépés a fejlesztői módból";
-  $("b-mock-toggle").onclick = () => { location.search = ""; };
+  $("b-mock-exit").onclick = () => { location.search = ""; };
   $("b-lyrics-edit").hidden = false;
   $("b-lyrics-edit").onclick = openLyricsEditor;
   $("b-edit-cancel").onclick = closeLyricsEditor;
   $("b-edit-save").onclick = saveLyricsEdit;
 } else if (location.hostname !== "kritdamage.github.io") {
   $("b-mock-toggle").hidden = false;
-  $("b-mock-toggle").textContent = "Fejlesztői mód";
   $("b-mock-toggle").onclick = () => { location.search = "?mock=1"; };
 }
 
